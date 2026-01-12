@@ -1,0 +1,466 @@
+{
+  "updated_at": "2026-01-12T00:10:58.205Z",
+  "total_realms": 92,
+  "realms": [
+    {
+      "id": 3679,
+      "name": "Aegwynn",
+      "slug": "aegwynn"
+    },
+    {
+      "id": 1325,
+      "name": "Aggramar / Hellscream",
+      "slug": "aggramar"
+    },
+    {
+      "id": 3713,
+      "name": "Al'Akir / Skullcrusher / Xavius / Burning Legion",
+      "slug": "alakir"
+    },
+    {
+      "id": 1104,
+      "name": "Anetheron / Kil'jaeden / Rajaxx / Festung der Stürme / Gul'dan / Nathrezim",
+      "slug": "anetheron"
+    },
+    {
+      "id": 3686,
+      "name": "Antonidas",
+      "slug": "antonidas"
+    },
+    {
+      "id": 512,
+      "name": "Arak-arahm / Rashgarroth / Kael'thas / Throk'Feroth",
+      "slug": "arakarahm"
+    },
+    {
+      "id": 1302,
+      "name": "Archimonde",
+      "slug": "archimonde"
+    },
+    {
+      "id": 3702,
+      "name": "Argent Dawn",
+      "slug": "argent-dawn"
+    },
+    {
+      "id": 578,
+      "name": "Arthas / Blutkessel / Wrathbringer / Durotan / Kel'Thuzad / Vek'lor / Tirion",
+      "slug": "arthas"
+    },
+    {
+      "id": 1406,
+      "name": "Arygos / Khaz'goroth",
+      "slug": "arygos"
+    },
+    {
+      "id": 1923,
+      "name": "Ashenvale",
+      "slug": "ashenvale"
+    },
+    {
+      "id": 1597,
+      "name": "Auchindoun / Dunemaul / Sylvanas / Jaedenar",
+      "slug": "auchindoun"
+    },
+    {
+      "id": 1922,
+      "name": "Azuregos",
+      "slug": "azuregos"
+    },
+    {
+      "id": 1417,
+      "name": "Azuremyst / Stormrage",
+      "slug": "azuremyst"
+    },
+    {
+      "id": 580,
+      "name": "Blackmoore / Tichondrius / Lordaeron",
+      "slug": "blackmoore"
+    },
+    {
+      "id": 581,
+      "name": "Blackrock",
+      "slug": "blackrock"
+    },
+    {
+      "id": 1929,
+      "name": "Blackscar / Deathweaver / Borean Tundra / Thermaplugg / Grom / Booty Bay",
+      "slug": "blackscar"
+    },
+    {
+      "id": 1416,
+      "name": "Blade's Edge / Eonar / Vek'nilash / Aerie Peak / Bronzebeard",
+      "slug": "blades-edge"
+    },
+    {
+      "id": 1393,
+      "name": "Bronze Dragonflight / Nordrassil",
+      "slug": "bronze-dragonflight"
+    },
+    {
+      "id": 1307,
+      "name": "Chamber of Aspects",
+      "slug": "chamber-of-aspects"
+    },
+    {
+      "id": 1127,
+      "name": "Confrérie du Thorium / La Croisade écarlate / Culte de la Rive noire / Les Sentinelles / Kirin Tor / Les Clairvoyants / Conseil des Ombres",
+      "slug": "confrérie-du-thorium"
+    },
+    {
+      "id": 1605,
+      "name": "Deathguard",
+      "slug": "deathguard"
+    },
+    {
+      "id": 1084,
+      "name": "Dentarg / Tarren Mill",
+      "slug": "dentarg"
+    },
+    {
+      "id": 531,
+      "name": "Dethecus / Theradras / Onyxia / Mug'thol / Terrordar",
+      "slug": "dethecus"
+    },
+    {
+      "id": 1618,
+      "name": "Die Aldor",
+      "slug": "die-aldor"
+    },
+    {
+      "id": 1121,
+      "name": "Die Arguswacht / Die ewige Wacht / Die Todeskrallen / Das Syndikat / Der abyssische Rat / Kult der Verdammten / Das Konsortium / Die Silberne Hand",
+      "slug": "die-arguswacht"
+    },
+    {
+      "id": 1403,
+      "name": "Draenor",
+      "slug": "draenor"
+    },
+    {
+      "id": 1092,
+      "name": "Drak'thul / Burning Blade",
+      "slug": "drakthul"
+    },
+    {
+      "id": 1378,
+      "name": "Dun Modr / C'Thun",
+      "slug": "dun-modr"
+    },
+    {
+      "id": 3691,
+      "name": "Echsenkessel / Blackhand / Mal'Ganis / Taerar",
+      "slug": "echsenkessel"
+    },
+    {
+      "id": 1315,
+      "name": "Elune / Varimathras",
+      "slug": "elune"
+    },
+    {
+      "id": 1091,
+      "name": "Emeriss / Twilight's Hammer / Bloodscalp / Crushridge / Agamaggan / Hakkar",
+      "slug": "emeriss"
+    },
+    {
+      "id": 3692,
+      "name": "Eredar",
+      "slug": "eredar"
+    },
+    {
+      "id": 1925,
+      "name": "Eversong",
+      "slug": "eversong"
+    },
+    {
+      "id": 1385,
+      "name": "Exodar / Minahonda",
+      "slug": "exodar"
+    },
+    {
+      "id": 1623,
+      "name": "Fordragon",
+      "slug": "fordragon"
+    },
+    {
+      "id": 3703,
+      "name": "Frostwolf",
+      "slug": "frostwolf"
+    },
+    {
+      "id": 1614,
+      "name": "Galakrond / Deepholm / Razuvious",
+      "slug": "galakrond"
+    },
+    {
+      "id": 509,
+      "name": "Garona / Sargeras / Ner'zhul",
+      "slug": "garona"
+    },
+    {
+      "id": 1401,
+      "name": "Garrosh / Shattrath / Nozdormu / Perenolde / Teldrassil",
+      "slug": "garrosh"
+    },
+    {
+      "id": 3657,
+      "name": "Genjuros / Zenedar / Bladefist / Neptulon / Frostwhisper / Darksorrow",
+      "slug": "genjuros"
+    },
+    {
+      "id": 1928,
+      "name": "Goldrinn / Lich King / Greymane",
+      "slug": "goldrinn"
+    },
+    {
+      "id": 1602,
+      "name": "Gordunni",
+      "slug": "gordunni"
+    },
+    {
+      "id": 1303,
+      "name": "Grim Batol / Aggra (Português) / Frostmane",
+      "slug": "grim-batol"
+    },
+    {
+      "id": 1587,
+      "name": "Hellfire / Runetotem / Arathor / Kilrogg / Nagrand",
+      "slug": "hellfire"
+    },
+    {
+      "id": 1615,
+      "name": "Howling Fjord",
+      "slug": "howling-fjord"
+    },
+    {
+      "id": 1390,
+      "name": "Hyjal",
+      "slug": "hyjal"
+    },
+    {
+      "id": 1596,
+      "name": "Karazhan / Dragonblight / The Maelstrom / Ghostlands / Lightning's Blade / Deathwing",
+      "slug": "karazhan"
+    },
+    {
+      "id": 1305,
+      "name": "Kazzak",
+      "slug": "kazzak"
+    },
+    {
+      "id": 1080,
+      "name": "Khadgar / Bloodhoof",
+      "slug": "khadgar"
+    },
+    {
+      "id": 3690,
+      "name": "Khaz Modan",
+      "slug": "khaz-modan"
+    },
+    {
+      "id": 633,
+      "name": "Kor'gall / Executus / Shattered Hand / Bloodfeather / Terokkar / Saurfang / Darkspear / Burning Steppes",
+      "slug": "korgall"
+    },
+    {
+      "id": 1082,
+      "name": "Kul Tiras / Alonsus / Anachronos",
+      "slug": "kul-tiras"
+    },
+    {
+      "id": 1388,
+      "name": "Lightbringer / Mazrigos",
+      "slug": "lightbringer"
+    },
+    {
+      "id": 570,
+      "name": "Lothar / Baelgun / Azshara / Krag'jin",
+      "slug": "lothar"
+    },
+    {
+      "id": 3681,
+      "name": "Magtheridon",
+      "slug": "magtheridon"
+    },
+    {
+      "id": 1098,
+      "name": "Malygos / Malfurion",
+      "slug": "malygos"
+    },
+    {
+      "id": 1621,
+      "name": "Marécage de Zangar / Cho'gall / Eldre'Thalas / Sinstralis / Dalaran",
+      "slug": "marécage-de-zangar"
+    },
+    {
+      "id": 1085,
+      "name": "Moonglade / Steamwheedle Cartel / The Sha'tar",
+      "slug": "moonglade"
+    },
+    {
+      "id": 1624,
+      "name": "Naxxramas / Arathi / Illidan / Temple noir",
+      "slug": "naxxramas"
+    },
+    {
+      "id": 1105,
+      "name": "Nazjatar / Zuluhed / Dalvengyr / Aman'Thul / Frostmourne / Anub'arak",
+      "slug": "nazjatar"
+    },
+    {
+      "id": 612,
+      "name": "Nefarian / Gilneas / Destromath / Ulduar / Mannoroth / Gorgonnash / Nera'thor",
+      "slug": "nefarian"
+    },
+    {
+      "id": 1316,
+      "name": "Nemesis",
+      "slug": "nemesis"
+    },
+    {
+      "id": 3696,
+      "name": "Nethersturm / Alexstrasza / Madmortem / Proudmoore",
+      "slug": "nethersturm"
+    },
+    {
+      "id": 1408,
+      "name": "Norgannon / Dun Morogh",
+      "slug": "norgannon"
+    },
+    {
+      "id": 1301,
+      "name": "Outland",
+      "slug": "outland"
+    },
+    {
+      "id": 1309,
+      "name": "Pozzo dell'Eternità",
+      "slug": "pozzo-delleternità"
+    },
+    {
+      "id": 1396,
+      "name": "Quel'Thalas / Azjol-Nerub",
+      "slug": "quelthalas"
+    },
+    {
+      "id": 3682,
+      "name": "Ragnaros",
+      "slug": "ragnaros"
+    },
+    {
+      "id": 1329,
+      "name": "Ravencrest",
+      "slug": "ravencrest"
+    },
+    {
+      "id": 1099,
+      "name": "Rexxar / Alleria",
+      "slug": "rexxar"
+    },
+    {
+      "id": 1096,
+      "name": "Scarshield Legion / Sporeggar / Earthen Ring / Defias Brotherhood / Ravenholdt / Darkmoon Faire / The Venture Co",
+      "slug": "scarshield-legion"
+    },
+    {
+      "id": 3666,
+      "name": "Shadowsong / Aszune",
+      "slug": "shadowsong"
+    },
+    {
+      "id": 1598,
+      "name": "Shattered Halls / Chromaggus / Sunstrider / Balnazzar / Talnivarr / Ahn'Qiraj / Daggerspine / Laughing Skull / Trollbane / Boulderfist",
+      "slug": "shattered-halls"
+    },
+    {
+      "id": 3391,
+      "name": "Silvermoon",
+      "slug": "silvermoon"
+    },
+    {
+      "id": 1604,
+      "name": "Soulflayer",
+      "slug": "soulflayer"
+    },
+    {
+      "id": 3656,
+      "name": "Spinebreaker / Dragonmaw / Vashj / Stormreaver / Haomarush",
+      "slug": "spinebreaker"
+    },
+    {
+      "id": 2073,
+      "name": "Stormscale",
+      "slug": "stormscale"
+    },
+    {
+      "id": 1331,
+      "name": "Suramar / Medivh",
+      "slug": "suramar"
+    },
+    {
+      "id": 2074,
+      "name": "Terenas / Emerald Dream",
+      "slug": "terenas"
+    },
+    {
+      "id": 604,
+      "name": "Thrall / Kargath / Ambossar",
+      "slug": "thrall"
+    },
+    {
+      "id": 1405,
+      "name": "Todeswache / Zirkel des Cenarius / Der Mithrilorden / Forscherliga / Der Rat von Dalaran / Die Nachtwache",
+      "slug": "todeswache"
+    },
+    {
+      "id": 1402,
+      "name": "Turalyon / Doomhammer",
+      "slug": "turalyon"
+    },
+    {
+      "id": 3674,
+      "name": "Twisting Nether",
+      "slug": "twisting-nether"
+    },
+    {
+      "id": 1384,
+      "name": "Tyrande / Los Errantes / Colinas Pardas",
+      "slug": "tyrande"
+    },
+    {
+      "id": 1122,
+      "name": "Uldaman / Drek'Thar / Krasus / Eitrigg",
+      "slug": "uldaman"
+    },
+    {
+      "id": 1400,
+      "name": "Un'Goro / Sen'jin / Area 52",
+      "slug": "ungoro"
+    },
+    {
+      "id": 510,
+      "name": "Vol'jin / Chants éternels",
+      "slug": "voljin"
+    },
+    {
+      "id": 1313,
+      "name": "Wildhammer / Thunderhorn",
+      "slug": "wildhammer"
+    },
+    {
+      "id": 1097,
+      "name": "Ysera / Malorne",
+      "slug": "ysera"
+    },
+    {
+      "id": 1335,
+      "name": "Ysondre",
+      "slug": "ysondre"
+    },
+    {
+      "id": 1379,
+      "name": "Zul'jin / Uldum / Sanguino / Shen'dralar",
+      "slug": "zuljin"
+    }
+  ]
+}
