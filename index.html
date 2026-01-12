@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>WoW Profit Scanner</title>
         <style>
-            body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; }
+            body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
             .container { max-width: 1100px; margin: 0 auto; }
             .header-container { position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 40px; padding-top: 10px; }
             h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; }
@@ -14,10 +14,12 @@
             .update-time { font-size: 0.85em; color: #666; }
             .btn-import { background: #a335ee; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9em; transition: background 0.2s; }
             .btn-import:hover { background: #8a2be2; }
-            .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; cursor: pointer; }
+            .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
             .item-card.active { border-color: #a335ee; box-shadow: 0 0 15px rgba(163, 53, 238, 0.1); }
-            .main-row { display: flex; align-items: center; padding: 12px 20px; height: 60px; position: relative; z-index: 2; }
+            .main-row { display: flex; height: 60px; position: relative; z-index: 2; }
+            .main-row-left { display: flex; align-items: center; flex-grow: 1; padding-left: 20px; }
+            .main-row-right { display: flex; align-items: center; padding-right: 20px; cursor: pointer; }
             .col-icon img { width: 42px; height: 42px; border-radius: 4px; border: 1px solid #333; display: block; }
             .col-name { flex-grow: 1; padding-left: 20px; display: flex; align-items: center; }
             .name-text { font-weight: 600; font-size: 1.1em; color: #a335ee; position: relative; cursor: copy; transition: color 0.2s; }
@@ -31,10 +33,12 @@
             .col-price { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; min-width: 100px; justify-content: flex-end; }
             .gold-icon { width: 18px; height: 18px; border-radius: 50%; }
             .coin-xs { width: 10px; height: 10px; vertical-align: middle; }
-            .col-inputs { display: flex; align-items: center; gap: 15px; margin-left: 25px; border-left: 1px solid #333; padding-left: 15px; height: 40px; }
+            .col-inputs { display: flex; align-items: center; gap: 15px; margin-left: 25px; border-left: 1px solid #333; padding-left: 15px; height: 40px; cursor: default; }
             .qty-input { background: #0f1011; border: 1px solid #333; color: #fff; width: 50px; padding: 6px; border-radius: 4px; text-align: center; font-weight: bold; }
             .qty-input:focus { outline: 1px solid #a335ee; }
             .check-input { width: 18px; height: 18px; accent-color: #a335ee; cursor: pointer; }
+            input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+            input[type=number] { -moz-appearance: textfield; }
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; pointer-events: none; transition: opacity 0.2s; white-space: nowrap; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
             .name-text.copied .copy-tooltip { opacity: 1; }
             .details-row { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; position: relative; z-index: 1; }
@@ -42,6 +46,7 @@
             .details-content { padding: 20px; display: flex; gap: 30px; }
             .reagents-block { flex: 1.2; padding-right: 20px; border-right: 1px solid #333; }
             .servers-block { flex: 0.8; }
+            .servers-block h4 { margin-bottom: 25px; }
             h4 { margin: 0; color: #888; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }
             .block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
             .total-craft-cost { font-weight: bold; color: #f44336; font-size: 0.95em; }
@@ -51,8 +56,7 @@
             .reag-icon { width: 24px; height: 24px; border-radius: 3px; border: 1px solid #444; }
             .reagent-count { color: #ffd700; font-weight: bold; min-width: 25px; }
             .reagent-name { color: #ccc; }
-            .reag-right { color: #888; font-size: 0.9em; }
-            .gold-symbol { color: #ffd700; font-size: 0.8em; }
+            .reag-right { color: #ccc; font-size: 0.9em; display: flex; align-items: center; gap: 4px; }
             .craft-qty-info { margin-top: 15px; font-size: 0.9em; color: #4caf50; font-weight: bold; background: rgba(76, 175, 80, 0.1); padding: 8px; border-radius: 4px; text-align: center; }
             .empty-state { color: #555; font-style: italic; font-size: 0.9em; }
             .server-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; font-size: 0.95em; }
@@ -66,102 +70,88 @@
             <div class="header-container">
                 <h1>💎 WoW Profit Scanner</h1>
                 <div class="header-right">
-                    <span class="update-time">Оновлено: 1/12/2026, 6:08:24 PM</span>
+                    <span class="update-time">Оновлено: 1/12/2026, 6:37:08 PM</span>
                     <button class="btn-import">Згенерувати Import</button>
                 </div>
             </div>
             
             <div id="list">
-        <div class="item-card" onclick="toggleDetails(this)" data-recipe="[{&quot;name&quot;:&quot;Void Crystal&quot;,&quot;id&quot;:&quot;22450&quot;,&quot;count&quot;:6},{&quot;name&quot;:&quot;Large Prismatic Shard&quot;,&quot;id&quot;:&quot;22449&quot;,&quot;count&quot;:6},{&quot;name&quot;:&quot;Greater Planar Essence&quot;,&quot;id&quot;:&quot;22446&quot;,&quot;count&quot;:8},{&quot;name&quot;:&quot;Arcane Dust&quot;,&quot;id&quot;:&quot;22445&quot;,&quot;count&quot;:20}]">
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Mercurial Adamantite&quot;,&quot;id&quot;:&quot;31079&quot;,&quot;count&quot;:3},{&quot;name&quot;:&quot;Nightseye&quot;,&quot;id&quot;:&quot;23441&quot;,&quot;count&quot;:3}]">
             <div class="main-row">
-                <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_dr_knickknack_02b_nosound.jpg" alt="Aldor Stellar Console"></div>
-                <div class="col-name">
-                    <div class="name-text" onclick="copyName(event, 'Aldor Stellar Console')">
-                        Aldor Stellar Console
-                        <span class="copy-tooltip">Скопійовано!</span>
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_ancient_d_sconce.jpg" alt="Shattrath Sconce"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Shattrath Sconce')">
+                            Shattrath Sconce
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">398</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">4,699.95</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
                     </div>
                 </div>
-                <div class="col-exp">Burning Crusade</div>
-                <div class="col-lumber positive">
-                    <span class="lumber-label">1 Lumber = </span>
-                    <span class="lumber-value">145</span>
-                    <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
-                </div>
-                <div class="col-price">
-                    <span class="gold-amount">6,000</span>
-                    <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
-                </div>
-                <div class="col-inputs" onclick="event.stopPropagation()">
-                    <input type="number" class="qty-input" placeholder="0" min="0">
-                    <input type="checkbox" class="check-input">
-                </div>
             </div>
+
             <div class="details-row">
                 <div class="details-content">
                     <div class="reagents-block">
                         <div class="block-header">
                             <h4>🛠️ Recipe Cost (Region)</h4>
-                            <span class="total-craft-cost text-red">Total: -183 g</span>
+                            <span class="total-craft-cost text-red">Total: -717 g</span>
                         </div>
                         <ul class="recipe-list">
                     <li>
                         <div class="reag-left">
-                            <span class="reagent-count">6x</span>
-                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_enchant_voidcrystal.jpg" class="reag-icon">
-                            <span class="reagent-name">Void Crystal</span>
+                            <span class="reagent-count">3x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/spell_arcane_arcanepotency.jpg" class="reag-icon">
+                            <span class="reagent-name">Mercurial Adamantite</span>
                         </div>
                         <div class="reag-right">
-                             3 <span class="gold-symbol">g</span>
+                             170 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
                         </div>
                     </li>
                     <li>
                         <div class="reag-left">
-                            <span class="reagent-count">6x</span>
-                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_enchant_shardprismaticlarge.jpg" class="reag-icon">
-                            <span class="reagent-name">Large Prismatic Shard</span>
+                            <span class="reagent-count">3x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_jewelcrafting_nightseye_02.jpg" class="reag-icon">
+                            <span class="reagent-name">Nightseye</span>
                         </div>
                         <div class="reag-right">
-                             4 <span class="gold-symbol">g</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="reag-left">
-                            <span class="reagent-count">8x</span>
-                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_enchant_essencearcanelarge.jpg" class="reag-icon">
-                            <span class="reagent-name">Greater Planar Essence</span>
-                        </div>
-                        <div class="reag-right">
-                             8 <span class="gold-symbol">g</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="reag-left">
-                            <span class="reagent-count">20x</span>
-                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_enchant_dustarcane.jpg" class="reag-icon">
-                            <span class="reagent-name">Arcane Dust</span>
-                        </div>
-                        <div class="reag-right">
-                             4 <span class="gold-symbol">g</span>
+                             69 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
                         </div>
                     </li></ul>
-                        <div class="craft-qty-info">Requires: <b>40</b> Lumber</div>
+                        <div class="craft-qty-info">Requires: <b>10</b> Lumber</div>
                     </div>
                     <div class="servers-block">
                         <h4>🏆 Топ-3 (Найдешевші)</h4>
                         
             <div class="server-row">
-                <span class="server-name">Galakrond</span>
-                <span class="server-price">6,000 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+                <span class="server-name">Stormscale</span>
+                <span class="server-price">4,699.95 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
             </div>
         
             <div class="server-row">
-                <span class="server-name">Draenor</span>
-                <span class="server-price">6,713.76 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+                <span class="server-name">Eredar</span>
+                <span class="server-price">4,699.99 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
             </div>
         
             <div class="server-row">
-                <span class="server-name">Argent Dawn</span>
-                <span class="server-price">6,979.7 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+                <span class="server-name">Emeriss</span>
+                <span class="server-price">4,900 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
             </div>
         
                     </div>
@@ -169,56 +159,746 @@
             </div>
         </div>
         
-        <div class="item-card" onclick="toggleDetails(this)" data-recipe="[{&quot;name&quot;:&quot;Cobra Scales&quot;,&quot;id&quot;:&quot;29539&quot;,&quot;count&quot;:4},{&quot;name&quot;:&quot;Heavy Knothide Leather&quot;,&quot;id&quot;:&quot;23793&quot;,&quot;count&quot;:6},{&quot;name&quot;:&quot;Rune Thread&quot;,&quot;id&quot;:&quot;14341&quot;,&quot;count&quot;:3}]">
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Earthstorm Diamond&quot;,&quot;id&quot;:&quot;25867&quot;,&quot;count&quot;:2},{&quot;name&quot;:&quot;Hardened Adamantite Bar&quot;,&quot;id&quot;:&quot;23573&quot;,&quot;count&quot;:4}]">
             <div class="main-row">
-                <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_ak_scarecrow01.jpg" alt="Arakkoa Decoy Scarecrow"></div>
-                <div class="col-name">
-                    <div class="name-text" onclick="copyName(event, 'Arakkoa Decoy Scarecrow')">
-                        Arakkoa Decoy Scarecrow
-                        <span class="copy-tooltip">Скопійовано!</span>
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_dr_chandelier_01_nosound.jpg" alt="Draenei Crystal Chandelier"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Draenei Crystal Chandelier')">
+                            Draenei Crystal Chandelier
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">358</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">7,200</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
                     </div>
                 </div>
-                <div class="col-exp">Burning Crusade</div>
-                <div class="col-lumber positive">
-                    <span class="lumber-label">1 Lumber = </span>
-                    <span class="lumber-value">211</span>
-                    <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
-                </div>
-                <div class="col-price">
-                    <span class="gold-amount">5,200.98</span>
-                    <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
-                </div>
-                <div class="col-inputs" onclick="event.stopPropagation()">
-                    <input type="number" class="qty-input" placeholder="0" min="0">
-                    <input type="checkbox" class="check-input">
-                </div>
             </div>
+
             <div class="details-row">
                 <div class="details-content">
                     <div class="reagents-block">
                         <div class="block-header">
                             <h4>🛠️ Recipe Cost (Region)</h4>
-                            <span class="total-craft-cost text-red">Total: -975 g</span>
+                            <span class="total-craft-cost text-red">Total: -1,823 g</span>
                         </div>
                         <ul class="recipe-list">
                     <li>
                         <div class="reag-left">
-                            <span class="reagent-count">4x</span>
-                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_misc_monsterscales_18.jpg" class="reag-icon">
-                            <span class="reagent-name">Cobra Scales</span>
+                            <span class="reagent-count">2x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_misc_gem_diamond_04.jpg" class="reag-icon">
+                            <span class="reagent-name">Earthstorm Diamond</span>
                         </div>
                         <div class="reag-right">
-                             180 <span class="gold-symbol">g</span>
+                             600 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">4x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_ingot_adamantite.jpg" class="reag-icon">
+                            <span class="reagent-name">Hardened Adamantite Bar</span>
+                        </div>
+                        <div class="reag-right">
+                             156 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li></ul>
+                        <div class="craft-qty-info">Requires: <b>15</b> Lumber</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 (Найдешевші)</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Emeriss</span>
+                <span class="server-price">7,200 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Uldaman</span>
+                <span class="server-price">7,500 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Draenor</span>
+                <span class="server-price">7,998.1 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Thick Clefthoof Leather&quot;,&quot;id&quot;:&quot;25708&quot;,&quot;count&quot;:8},{&quot;name&quot;:&quot;Primal Earth&quot;,&quot;id&quot;:&quot;22452&quot;,&quot;count&quot;:2},{&quot;name&quot;:&quot;Primal Life&quot;,&quot;id&quot;:&quot;21886&quot;,&quot;count&quot;:2}]">
+            <div class="main-row">
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_ao_banner02.jpg" alt="Outland Mag'har Banner"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Outland Mag\'har Banner')">
+                            Outland Mag'har Banner
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">287</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">4,499.99</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <div class="block-header">
+                            <h4>🛠️ Recipe Cost (Region)</h4>
+                            <span class="total-craft-cost text-red">Total: -1,051 g</span>
+                        </div>
+                        <ul class="recipe-list">
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">8x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_misc_leatherscrap_14.jpg" class="reag-icon">
+                            <span class="reagent-name">Thick Clefthoof Leather</span>
+                        </div>
+                        <div class="reag-right">
+                             82 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">2x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_elemental_primal_earth.jpg" class="reag-icon">
+                            <span class="reagent-name">Primal Earth</span>
+                        </div>
+                        <div class="reag-right">
+                             9 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">2x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_elemental_primal_life.jpg" class="reag-icon">
+                            <span class="reagent-name">Primal Life</span>
+                        </div>
+                        <div class="reag-right">
+                             191 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li></ul>
+                        <div class="craft-qty-info">Requires: <b>12</b> Lumber</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 (Найдешевші)</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Blackmoore</span>
+                <span class="server-price">4,499.99 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Thrall</span>
+                <span class="server-price">4,996 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Dentarg</span>
+                <span class="server-price">5,000 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Ethereal Ink&quot;,&quot;id&quot;:&quot;43124&quot;,&quot;count&quot;:3},{&quot;name&quot;:&quot;Primal Life&quot;,&quot;id&quot;:&quot;21886&quot;,&quot;count&quot;:2}]">
+            <div class="main-row">
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_ak_totem01.jpg" alt="Talon King's Totem"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Talon King\'s Totem')">
+                            Talon King's Totem
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">253</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">2,999.65</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <div class="block-header">
+                            <h4>🛠️ Recipe Cost (Region)</h4>
+                            <span class="total-craft-cost text-red">Total: -468 g</span>
+                        </div>
+                        <ul class="recipe-list">
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">3x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_inscription_inkblack02.jpg" class="reag-icon">
+                            <span class="reagent-name">Ethereal Ink</span>
+                        </div>
+                        <div class="reag-right">
+                             29 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">2x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_elemental_primal_life.jpg" class="reag-icon">
+                            <span class="reagent-name">Primal Life</span>
+                        </div>
+                        <div class="reag-right">
+                             191 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li></ul>
+                        <div class="craft-qty-info">Requires: <b>10</b> Lumber</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 (Найдешевші)</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Kazzak</span>
+                <span class="server-price">2,999.65 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Garrosh</span>
+                <span class="server-price">3,500.77 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Argent Dawn</span>
+                <span class="server-price">3,600 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Aromatic Fish Oil&quot;,&quot;id&quot;:160711,&quot;count&quot;:5},{&quot;name&quot;:&quot;Ultramarine Ink&quot;,&quot;id&quot;:158187,&quot;count&quot;:5}]">
+            <div class="main-row">
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_8hu_kultiras_cratelarge01.jpg" alt="Proudmoore Shipping Crate"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Proudmoore Shipping Crate')">
+                            Proudmoore Shipping Crate
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Battle for Azeroth</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">248</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">2,000</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <div class="block-header">
+                            <h4>🛠️ Recipe Cost (Region)</h4>
+                            <span class="total-craft-cost text-red">Total: -14 g</span>
+                        </div>
+                        <ul class="recipe-list">
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">5x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/trade_alchemy_dpotion_e2.jpg" class="reag-icon">
+                            <span class="reagent-name">Aromatic Fish Oil</span>
+                        </div>
+                        <div class="reag-right">
+                             2 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">5x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_inscription_80_ultramarineink.jpg" class="reag-icon">
+                            <span class="reagent-name">Ultramarine Ink</span>
+                        </div>
+                        <div class="reag-right">
+                             1 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li></ul>
+                        <div class="craft-qty-info">Requires: <b>8</b> Lumber</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 (Найдешевші)</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Un'Goro</span>
+                <span class="server-price">2,000 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Echsenkessel</span>
+                <span class="server-price">2,599.5 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Auchindoun</span>
+                <span class="server-price">2,600.94 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Shadowsong Amethyst&quot;,&quot;id&quot;:&quot;32230&quot;,&quot;count&quot;:2},{&quot;name&quot;:&quot;Mercurial Adamantite&quot;,&quot;id&quot;:&quot;31079&quot;,&quot;count&quot;:6}]">
+            <div class="main-row">
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_ancient_d_standing_light.jpg" alt="Shattrath Lamppost"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Shattrath Lamppost')">
+                            Shattrath Lamppost
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">242</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">5,880.08</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <div class="block-header">
+                            <h4>🛠️ Recipe Cost (Region)</h4>
+                            <span class="total-craft-cost text-red">Total: -1,021 g</span>
+                        </div>
+                        <ul class="recipe-list">
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">2x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_jewelcrafting_shadowsongamethyst_01.jpg" class="reag-icon">
+                            <span class="reagent-name">Shadowsong Amethyst</span>
+                        </div>
+                        <div class="reag-right">
+                             1 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
                         </div>
                     </li>
                     <li>
                         <div class="reag-left">
                             <span class="reagent-count">6x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/spell_arcane_arcanepotency.jpg" class="reag-icon">
+                            <span class="reagent-name">Mercurial Adamantite</span>
+                        </div>
+                        <div class="reag-right">
+                             170 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li></ul>
+                        <div class="craft-qty-info">Requires: <b>20</b> Lumber</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 (Найдешевші)</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Rexxar</span>
+                <span class="server-price">5,880.08 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Silvermoon</span>
+                <span class="server-price">7,000 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Zul'jin</span>
+                <span class="server-price">7,994.99 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Heavy Knothide Leather&quot;,&quot;id&quot;:&quot;23793&quot;,&quot;count&quot;:3},{&quot;name&quot;:&quot;Primal Mana&quot;,&quot;id&quot;:&quot;22457&quot;,&quot;count&quot;:2}]">
+            <div class="main-row">
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_dr_bench_01_nosound.jpg" alt="Halaa Bench"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Halaa Bench')">
+                            Halaa Bench
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">238</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">5,875</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <div class="block-header">
+                            <h4>🛠️ Recipe Cost (Region)</h4>
+                            <span class="total-craft-cost text-red">Total: -1,111 g</span>
+                        </div>
+                        <ul class="recipe-list">
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">3x</span>
                             <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_misc_leatherscrap_11.jpg" class="reag-icon">
                             <span class="reagent-name">Heavy Knothide Leather</span>
                         </div>
                         <div class="reag-right">
-                             42 <span class="gold-symbol">g</span>
+                             41 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">2x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_elemental_primal_mana.jpg" class="reag-icon">
+                            <span class="reagent-name">Primal Mana</span>
+                        </div>
+                        <div class="reag-right">
+                             495 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li></ul>
+                        <div class="craft-qty-info">Requires: <b>20</b> Lumber</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 (Найдешевші)</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Echsenkessel</span>
+                <span class="server-price">5,875 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Blackmoore</span>
+                <span class="server-price">6,000 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Antonidas</span>
+                <span class="server-price">6,499.98 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Bolt of Netherweave&quot;,&quot;id&quot;:&quot;21840&quot;,&quot;count&quot;:4},{&quot;name&quot;:&quot;Stranglekelp&quot;,&quot;id&quot;:&quot;108330&quot;,&quot;count&quot;:10}]">
+            <div class="main-row">
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_sackherbsstranglekelp01.jpg" alt="Stranglekelp Sack"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Stranglekelp Sack')">
+                            Stranglekelp Sack
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">228</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">1,850</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <div class="block-header">
+                            <h4>🛠️ Recipe Cost (Region)</h4>
+                            <span class="total-craft-cost text-red">Total: -21 g</span>
+                        </div>
+                        <ul class="recipe-list">
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">4x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_fabric_netherweave_bolt.jpg" class="reag-icon">
+                            <span class="reagent-name">Bolt of Netherweave</span>
+                        </div>
+                        <div class="reag-right">
+                             1 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">10x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_misc_herb_stranglekelp_blade.jpg" class="reag-icon">
+                            <span class="reagent-name">Stranglekelp</span>
+                        </div>
+                        <div class="reag-right">
+                             2 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li></ul>
+                        <div class="craft-qty-info">Requires: <b>8</b> Lumber</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 (Найдешевші)</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Antonidas</span>
+                <span class="server-price">1,850 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Twisting Nether</span>
+                <span class="server-price">1,990 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Eredar</span>
+                <span class="server-price">1,998.98 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Mad Alchemist's Potion&quot;,&quot;id&quot;:&quot;34440&quot;,&quot;count&quot;:5},{&quot;name&quot;:&quot;Khorium Bar&quot;,&quot;id&quot;:&quot;23449&quot;,&quot;count&quot;:4},{&quot;name&quot;:&quot;Crystal Vial&quot;,&quot;id&quot;:&quot;3371&quot;,&quot;count&quot;:1}]">
+            <div class="main-row">
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_be_bottle04.jpg" alt="Glazed Sin'dorei Vial"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Glazed Sin\'dorei Vial')">
+                            Glazed Sin'dorei Vial
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">225</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">3,999.02</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <div class="block-header">
+                            <h4>🛠️ Recipe Cost (Region)</h4>
+                            <span class="total-craft-cost text-red">Total: -2,643 g</span>
+                        </div>
+                        <ul class="recipe-list">
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">5x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_potion_28.jpg" class="reag-icon">
+                            <span class="reagent-name">Mad Alchemist's Potion</span>
+                        </div>
+                        <div class="reag-right">
+                             25 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">4x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_ingot_09.jpg" class="reag-icon">
+                            <span class="reagent-name">Khorium Bar</span>
+                        </div>
+                        <div class="reag-right">
+                             630 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">1x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_alchemy_leadedvial.jpg" class="reag-icon">
+                            <span class="reagent-name">Crystal Vial</span>
+                        </div>
+                        <div class="reag-right">
+                             0 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li></ul>
+                        <div class="craft-qty-info">Requires: <b>6</b> Lumber</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 (Найдешевші)</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Auchindoun</span>
+                <span class="server-price">3,999.02 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Kazzak</span>
+                <span class="server-price">5,222 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Outland</span>
+                <span class="server-price">5,399.96 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Primal Mana&quot;,&quot;id&quot;:&quot;22457&quot;,&quot;count&quot;:3},{&quot;name&quot;:&quot;Bolt of Imbued Netherweave&quot;,&quot;id&quot;:&quot;21842&quot;,&quot;count&quot;:4},{&quot;name&quot;:&quot;Rune Thread&quot;,&quot;id&quot;:&quot;14341&quot;,&quot;count&quot;:3}]">
+            <div class="main-row">
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_exodar_wide_banner.jpg" alt="Grand Drape of the Exiles"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Grand Drape of the Exiles')">
+                            Grand Drape of the Exiles
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">204</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">5,200</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <div class="block-header">
+                            <h4>🛠️ Recipe Cost (Region)</h4>
+                            <span class="total-craft-cost text-red">Total: -1,521 g</span>
+                        </div>
+                        <ul class="recipe-list">
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">3x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_elemental_primal_mana.jpg" class="reag-icon">
+                            <span class="reagent-name">Primal Mana</span>
+                        </div>
+                        <div class="reag-right">
+                             495 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">4x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_fabric_netherweave_bolt_imbued.jpg" class="reag-icon">
+                            <span class="reagent-name">Bolt of Imbued Netherweave</span>
+                        </div>
+                        <div class="reag-right">
+                             9 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
                         </div>
                     </li>
                     <li>
@@ -228,7 +908,276 @@
                             <span class="reagent-name">Rune Thread</span>
                         </div>
                         <div class="reag-right">
-                             1 <span class="gold-symbol">g</span>
+                             0 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li></ul>
+                        <div class="craft-qty-info">Requires: <b>18</b> Lumber</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 (Найдешевші)</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Elune</span>
+                <span class="server-price">5,200 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Kazzak</span>
+                <span class="server-price">5,499.99 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Draenor</span>
+                <span class="server-price">5,993 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Dragon's Eye&quot;,&quot;id&quot;:&quot;42225&quot;,&quot;count&quot;:4},{&quot;name&quot;:&quot;Cobalt Bar&quot;,&quot;id&quot;:&quot;36916&quot;,&quot;count&quot;:8}]">
+            <div class="main-row">
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_dalaran_table_01.jpg" alt="Kirin Tor Glass Table"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Kirin Tor Glass Table')">
+                            Kirin Tor Glass Table
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">203</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">9,500.15</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <div class="block-header">
+                            <h4>🛠️ Recipe Cost (Region)</h4>
+                            <span class="total-craft-cost text-red">Total: -5,027 g</span>
+                        </div>
+                        <ul class="recipe-list">
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">4x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_jewelcrafting_dragonseye01.jpg" class="reag-icon">
+                            <span class="reagent-name">Dragon's Eye</span>
+                        </div>
+                        <div class="reag-right">
+                             1,199 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">8x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_ingot_cobalt.jpg" class="reag-icon">
+                            <span class="reagent-name">Cobalt Bar</span>
+                        </div>
+                        <div class="reag-right">
+                             29 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li></ul>
+                        <div class="craft-qty-info">Requires: <b>22</b> Lumber</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 (Найдешевші)</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Silvermoon</span>
+                <span class="server-price">9,500.15 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Ravencrest</span>
+                <span class="server-price">9,950.01 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Auchindoun</span>
+                <span class="server-price">9,998 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Hardened Adamantite Bar&quot;,&quot;id&quot;:&quot;23573&quot;,&quot;count&quot;:3},{&quot;name&quot;:&quot;Flask of Blinding Light&quot;,&quot;id&quot;:&quot;22861&quot;,&quot;count&quot;:4},{&quot;name&quot;:&quot;Primal Fire&quot;,&quot;id&quot;:&quot;21884&quot;,&quot;count&quot;:4}]">
+            <div class="main-row">
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_shadowcouncil_torch.jpg" alt="Shadow Council Torch"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Shadow Council Torch')">
+                            Shadow Council Torch
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">155</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">6,500.99</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <div class="block-header">
+                            <h4>🛠️ Recipe Cost (Region)</h4>
+                            <span class="total-craft-cost text-red">Total: -4,011 g</span>
+                        </div>
+                        <ul class="recipe-list">
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">3x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_ingot_adamantite.jpg" class="reag-icon">
+                            <span class="reagent-name">Hardened Adamantite Bar</span>
+                        </div>
+                        <div class="reag-right">
+                             156 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">4x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_potion_116.jpg" class="reag-icon">
+                            <span class="reagent-name">Flask of Blinding Light</span>
+                        </div>
+                        <div class="reag-right">
+                             63 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">4x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_elemental_primal_fire.jpg" class="reag-icon">
+                            <span class="reagent-name">Primal Fire</span>
+                        </div>
+                        <div class="reag-right">
+                             823 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li></ul>
+                        <div class="craft-qty-info">Requires: <b>16</b> Lumber</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 (Найдешевші)</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Echsenkessel</span>
+                <span class="server-price">6,500.99 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Die Arguswacht</span>
+                <span class="server-price">7,300.1 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Blackmoore</span>
+                <span class="server-price">7,399 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Cobra Scales&quot;,&quot;id&quot;:&quot;29539&quot;,&quot;count&quot;:4},{&quot;name&quot;:&quot;Heavy Knothide Leather&quot;,&quot;id&quot;:&quot;23793&quot;,&quot;count&quot;:6},{&quot;name&quot;:&quot;Rune Thread&quot;,&quot;id&quot;:&quot;14341&quot;,&quot;count&quot;:3}]">
+            <div class="main-row">
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_ak_scarecrow01.jpg" alt="Arakkoa Decoy Scarecrow"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Arakkoa Decoy Scarecrow')">
+                            Arakkoa Decoy Scarecrow
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">148</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">5,200.98</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <div class="block-header">
+                            <h4>🛠️ Recipe Cost (Region)</h4>
+                            <span class="total-craft-cost text-red">Total: -2,236 g</span>
+                        </div>
+                        <ul class="recipe-list">
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">4x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_misc_monsterscales_18.jpg" class="reag-icon">
+                            <span class="reagent-name">Cobra Scales</span>
+                        </div>
+                        <div class="reag-right">
+                             498 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">6x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_misc_leatherscrap_11.jpg" class="reag-icon">
+                            <span class="reagent-name">Heavy Knothide Leather</span>
+                        </div>
+                        <div class="reag-right">
+                             41 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">3x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/spell_shadow_antimagicshell.jpg" class="reag-icon">
+                            <span class="reagent-name">Rune Thread</span>
+                        </div>
+                        <div class="reag-right">
+                             0 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
                         </div>
                     </li></ul>
                         <div class="craft-qty-info">Requires: <b>20</b> Lumber</div>
@@ -256,76 +1205,195 @@
             </div>
         </div>
         
-        <div class="item-card" onclick="toggleDetails(this)" data-recipe="[{&quot;name&quot;:&quot;Aromatic Fish Oil&quot;,&quot;id&quot;:160711,&quot;count&quot;:5},{&quot;name&quot;:&quot;Ultramarine Ink&quot;,&quot;id&quot;:158187,&quot;count&quot;:5}]">
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Void Crystal&quot;,&quot;id&quot;:&quot;22450&quot;,&quot;count&quot;:6},{&quot;name&quot;:&quot;Large Prismatic Shard&quot;,&quot;id&quot;:&quot;22449&quot;,&quot;count&quot;:6},{&quot;name&quot;:&quot;Greater Planar Essence&quot;,&quot;id&quot;:&quot;22446&quot;,&quot;count&quot;:8},{&quot;name&quot;:&quot;Arcane Dust&quot;,&quot;id&quot;:&quot;22445&quot;,&quot;count&quot;:20}]">
             <div class="main-row">
-                <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_8hu_kultiras_cratelarge01.jpg" alt="Proudmoore Shipping Crate"></div>
-                <div class="col-name">
-                    <div class="name-text" onclick="copyName(event, 'Proudmoore Shipping Crate')">
-                        Proudmoore Shipping Crate
-                        <span class="copy-tooltip">Скопійовано!</span>
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_dr_knickknack_02b_nosound.jpg" alt="Aldor Stellar Console"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Aldor Stellar Console')">
+                            Aldor Stellar Console
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">143</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">5,900</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
                     </div>
                 </div>
-                <div class="col-exp">Burning Crusade</div>
-                <div class="col-lumber positive">
-                    <span class="lumber-label">1 Lumber = </span>
-                    <span class="lumber-value">247</span>
-                    <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
-                </div>
-                <div class="col-price">
-                    <span class="gold-amount">2,000</span>
-                    <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
-                </div>
-                <div class="col-inputs" onclick="event.stopPropagation()">
-                    <input type="number" class="qty-input" placeholder="0" min="0">
-                    <input type="checkbox" class="check-input">
-                </div>
             </div>
+
             <div class="details-row">
                 <div class="details-content">
                     <div class="reagents-block">
                         <div class="block-header">
                             <h4>🛠️ Recipe Cost (Region)</h4>
-                            <span class="total-craft-cost text-red">Total: -17 g</span>
+                            <span class="total-craft-cost text-red">Total: -172 g</span>
                         </div>
                         <ul class="recipe-list">
                     <li>
                         <div class="reag-left">
-                            <span class="reagent-count">5x</span>
-                            <img src="https://render.worldofwarcraft.com/eu/icons/56/trade_alchemy_dpotion_e2.jpg" class="reag-icon">
-                            <span class="reagent-name">Aromatic Fish Oil</span>
+                            <span class="reagent-count">6x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_enchant_voidcrystal.jpg" class="reag-icon">
+                            <span class="reagent-name">Void Crystal</span>
                         </div>
                         <div class="reag-right">
-                             3 <span class="gold-symbol">g</span>
+                             3 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
                         </div>
                     </li>
                     <li>
                         <div class="reag-left">
-                            <span class="reagent-count">5x</span>
-                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_inscription_80_ultramarineink.jpg" class="reag-icon">
-                            <span class="reagent-name">Ultramarine Ink</span>
+                            <span class="reagent-count">6x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_enchant_shardprismaticlarge.jpg" class="reag-icon">
+                            <span class="reagent-name">Large Prismatic Shard</span>
                         </div>
                         <div class="reag-right">
-                             1 <span class="gold-symbol">g</span>
+                             4 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">8x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_enchant_essencearcanelarge.jpg" class="reag-icon">
+                            <span class="reagent-name">Greater Planar Essence</span>
+                        </div>
+                        <div class="reag-right">
+                             8 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">20x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_enchant_dustarcane.jpg" class="reag-icon">
+                            <span class="reagent-name">Arcane Dust</span>
+                        </div>
+                        <div class="reag-right">
+                             4 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
                         </div>
                     </li></ul>
-                        <div class="craft-qty-info">Requires: <b>8</b> Lumber</div>
+                        <div class="craft-qty-info">Requires: <b>40</b> Lumber</div>
                     </div>
                     <div class="servers-block">
                         <h4>🏆 Топ-3 (Найдешевші)</h4>
                         
             <div class="server-row">
-                <span class="server-name">Un'Goro</span>
-                <span class="server-price">2,000 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+                <span class="server-name">Ragnaros</span>
+                <span class="server-price">5,900 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
             </div>
         
             <div class="server-row">
-                <span class="server-name">Echsenkessel</span>
-                <span class="server-price">2,599.5 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+                <span class="server-name">Galakrond</span>
+                <span class="server-price">6,000 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
             </div>
         
             <div class="server-row">
-                <span class="server-name">Auchindoun</span>
-                <span class="server-price">2,600.94 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+                <span class="server-name">Draenor</span>
+                <span class="server-price">6,713.76 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item-card" data-recipe="[{&quot;name&quot;:&quot;Shadowcloth&quot;,&quot;id&quot;:&quot;24272&quot;,&quot;count&quot;:4},{&quot;name&quot;:&quot;Spellcloth&quot;,&quot;id&quot;:&quot;24271&quot;,&quot;count&quot;:4},{&quot;name&quot;:&quot;Primal Mooncloth&quot;,&quot;id&quot;:&quot;21845&quot;,&quot;count&quot;:4}]">
+            <div class="main-row">
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_dr_loom_01.jpg" alt="Draenei Weaver's Loom"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, 'Draenei Weaver\'s Loom')">
+                            Draenei Weaver's Loom
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    <div class="col-exp">Burning Crusade</div>
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber positive">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">3</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">13,500.88</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <div class="block-header">
+                            <h4>🛠️ Recipe Cost (Region)</h4>
+                            <span class="total-craft-cost text-red">Total: -13,379 g</span>
+                        </div>
+                        <ul class="recipe-list">
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">4x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_fabric_felcloth_ebon.jpg" class="reag-icon">
+                            <span class="reagent-name">Shadowcloth</span>
+                        </div>
+                        <div class="reag-right">
+                             1,295 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">4x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_fabric_spellfire.jpg" class="reag-icon">
+                            <span class="reagent-name">Spellcloth</span>
+                        </div>
+                        <div class="reag-right">
+                             1,444 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="reag-left">
+                            <span class="reagent-count">4x</span>
+                            <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_fabric_moonrag_primal.jpg" class="reag-icon">
+                            <span class="reagent-name">Primal Mooncloth</span>
+                        </div>
+                        <div class="reag-right">
+                             606 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                        </div>
+                    </li></ul>
+                        <div class="craft-qty-info">Requires: <b>35</b> Lumber</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 (Найдешевші)</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Antonidas</span>
+                <span class="server-price">13,500.88 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Norgannon</span>
+                <span class="server-price">14,250 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Grim Batol</span>
+                <span class="server-price">14,499.79 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
             </div>
         
                     </div>
