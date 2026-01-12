@@ -2,6 +2,7 @@
     {
         "name": "Proudmoore Shipping Crate",
         "id": 252389,
+        "Exp": "Burning Crusade",
         "craftQty": 8,
         "recipe": [
             { "name": "Aromatic Fish Oil", "id": 160711, "count": 5 },
@@ -11,6 +12,7 @@
     {
         "name": "Aldor Stellar Console",
         "id": 257093,
+        "Exp": "Burning Crusade",
         "craftQty": 40,
         "recipe": [
             { "name": "Void Crystal", "id": "22450", "count": 6},
@@ -22,6 +24,7 @@
     {
         "name": "Arakkoa Decoy Scarecrow",
         "id": "258191",
+        "Exp": "Burning Crusade",
         "craftQty": 20,
         "recipe": [
             { "name": "Cobra Scales", "id": "29539", "count": 4},
