@@ -136,12 +136,11 @@ async function generateHTML() {
         fs.copyFileSync('import.js', 'public/import.js');
     }
 
-    // 1. Спочатку прораховуємо всі дані (щоб можна було відсортувати)
+    // 1. Підготовка даних (БЕЗ генерації HTML тут)
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
         
-        // Збираємо лістинги
         Object.keys(marketData).forEach(realmName => {
             const price = marketData[realmName][itemId];
             if (price) listings.push({ r: realmName, p: price });
@@ -151,144 +150,64 @@ async function generateHTML() {
             for(let i=0; i<3; i++) listings.push({ r: "Region (Commodity)", p: commoditiesMap[itemId] });
         }
 
-        // Якщо лістингів немає, повертаємо пустий об'єкт для фільтрації
         if (listings.length === 0) return { valid: false };
 
         listings.sort((a, b) => a.p - b.p);
         const bestListing = listings[0];
         
-        // Рахуємо крафт
         let craftCost = 0;
         let missingReagents = false;
+        let reagentsList = []; // Для передачі на фронтенд
         
         if (item.recipe) {
             item.recipe.forEach(reag => {
                 const reagId = safeId(reag.id);
                 const reagPrice = commoditiesMap[reagId];
+                const reagMeta = metaData[reagId] || { icon: '', name: '?' };
                 if (!reagPrice) missingReagents = true;
+                
                 craftCost += (reagPrice || 0) * reag.count;
+                
+                // Зберігаємо дані для фронтенда
+                reagentsList.push({
+                    name: reagMeta.name,
+                    count: reag.count,
+                    icon: reagMeta.icon,
+                    price: reagPrice
+                });
             });
         }
 
-        // Рахуємо Lumber Price (основний показник для сортування)
-        let lumberPrice = -Infinity; // За замовчуванням дуже малий
+        let lumberPrice = -Infinity; 
         if (item.craftQty > 0 && !missingReagents) {
             lumberPrice = (bestListing.p - craftCost) / item.craftQty;
         }
 
+        // Всі дані, необхідні для малювання картки
         return {
             valid: true,
-            item,
             itemId,
-            listings,
-            bestListing,
-            craftCost,
-            missingReagents,
-            lumberPrice
+            name: item.name,
+            icon: metaData[itemId]?.icon || '',
+            exp: item.Exp,
+            recipeRaw: item.recipe || [], // Для import.js
+            
+            lumberPrice: lumberPrice,
+            bestPrice: bestListing.p,
+            
+            craftCost: craftCost,
+            craftQty: item.craftQty,
+            reagentsList: reagentsList,
+            top3: listings.slice(0, 3)
         };
     });
 
-    // 2. Фільтруємо валідні та СОРТУЄМО за Lumber Price (від найбільшого)
     const sortedItems = calculatedItems
         .filter(data => data.valid)
         .sort((a, b) => b.lumberPrice - a.lumberPrice);
 
-    // 3. Генеруємо HTML
-    const rows = sortedItems.map(data => {
-        const { item, itemId, listings, bestListing, craftCost, missingReagents, lumberPrice } = data;
-        const top3 = listings.slice(0, 3);
-
-        // Генерація HTML рецепта
-        let recipeHtml = '';
-        if (item.recipe && item.recipe.length > 0) {
-            recipeHtml = '<ul class="recipe-list">';
-            item.recipe.forEach(reag => {
-                const reagId = safeId(reag.id);
-                const reagPrice = commoditiesMap[reagId];
-                const reagMeta = metaData[reagId] || { icon: '', name: '?' };
-                recipeHtml += `
-                    <li>
-                        <div class="reag-left">
-                            <span class="reagent-count">${reag.count}x</span>
-                            <img src="${reagMeta.icon}" class="reag-icon">
-                            <span class="reagent-name">${reagMeta.name}</span>
-                        </div>
-                        <div class="reag-right">
-                             ${reagPrice ? Math.round(reagPrice).toLocaleString() : '?'} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
-                        </div>
-                    </li>`;
-            });
-            recipeHtml += '</ul>';
-        } else {
-            recipeHtml = '<div class="empty-state">No recipe</div>';
-        }
-
-        let lumberClass = "neutral";
-        if (lumberPrice > 0) lumberClass = "positive";
-        else if (lumberPrice < 0) lumberClass = "negative";
-
-        const top3Html = top3.map(l => `
-            <div class="server-row">
-                <span class="server-name">${l.r}</span>
-                <span class="server-price">${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
-            </div>
-        `).join('');
-
-        const mainIcon = metaData[itemId]?.icon || '';
-        const expLabel = item.Exp ? `<div class="col-exp">${item.Exp}</div>` : '<div class="col-exp"></div>';
-        const recipeJson = JSON.stringify(item.recipe || []).replace(/"/g, '&quot;');
-        const displayLumber = lumberPrice === -Infinity ? 'N/A' : Math.floor(lumberPrice).toLocaleString();
-
-        return `
-        <div class="item-card" data-recipe="${recipeJson}">
-            <div class="main-row">
-                <div class="main-row-left">
-                    <div class="col-icon"><img src="${mainIcon}" alt="${item.name}"></div>
-                    <div class="col-name">
-                        <div class="name-text" onclick="copyName(event, '${item.name.replace(/'/g, "\\'")}')">
-                            ${item.name}
-                            <span class="copy-tooltip">Скопійовано!</span>
-                        </div>
-                    </div>
-                    ${expLabel}
-                </div>
-
-                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
-                    <div class="col-lumber ${lumberClass}">
-                        <span class="lumber-label">1 Lumber = </span>
-                        <span class="lumber-value">${displayLumber}</span>
-                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
-                    </div>
-                    <div class="col-price">
-                        <span class="gold-amount">${bestListing.p.toLocaleString()}</span>
-                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
-                    </div>
-                    <div class="col-inputs" onclick="event.stopPropagation()">
-                        <input type="number" class="qty-input" placeholder="0" min="0">
-                        <input type="checkbox" class="check-input">
-                    </div>
-                </div>
-            </div>
-
-            <div class="details-row">
-                <div class="details-content">
-                    <div class="reagents-block">
-                        <div class="block-header">
-                            <h4>🛠️ Recipe Cost (Region)</h4>
-                            <span class="total-craft-cost text-red">Total: -${Math.floor(craftCost).toLocaleString()} g</span>
-                        </div>
-                        ${recipeHtml}
-                        ${item.craftQty > 0 ? `<div class="craft-qty-info">Requires: <b>${item.craftQty}</b> Lumber</div>` : ''}
-                    </div>
-                    <div class="servers-block">
-                        <h4>🏆 Топ-3 (Найдешевші)</h4>
-                        ${top3Html}
-                    </div>
-                </div>
-            </div>
-        </div>
-        `;
-    }).join('');
+    // Перетворюємо дані в JSON стрічку для вставки в HTML
+    const jsonPayload = JSON.stringify(sortedItems);
 
     const html = `
     <!DOCTYPE html>
@@ -299,30 +218,49 @@ async function generateHTML() {
         <title>WoW Profit Scanner</title>
         <style>
             body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
-            .container { max-width: 1100px; margin: 0 auto; }
+            .container { max-width: 1100px; margin: 0 auto; padding-bottom: 50px; }
             .header-container { position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 40px; padding-top: 10px; }
             h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; }
             .header-right { position: absolute; right: 0; top: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
             .update-time { font-size: 0.85em; color: #666; }
             .btn-import { background: #a335ee; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9em; transition: background 0.2s; }
             .btn-import:hover { background: #8a2be2; }
+            
+            /* Load More Button */
+            .load-more-container { text-align: center; margin-top: 30px; }
+            .btn-load-more { 
+                background: #2a2b2e; color: #fff; border: 1px solid #444; 
+                padding: 10px 30px; border-radius: 4px; cursor: pointer; 
+                font-size: 1em; transition: all 0.2s; 
+            }
+            .btn-load-more:hover { background: #333; border-color: #666; }
+            .hidden { display: none; }
+
+            /* CARD STYLES */
             .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
             .item-card.active { border-color: #a335ee; box-shadow: 0 0 15px rgba(163, 53, 238, 0.1); }
+            
             .main-row { display: flex; height: 60px; position: relative; z-index: 2; }
             .main-row-left { display: flex; align-items: center; flex-grow: 1; padding-left: 20px; }
             .main-row-right { display: flex; align-items: center; padding-right: 20px; cursor: pointer; }
+            
             .col-icon img { width: 42px; height: 42px; border-radius: 4px; border: 1px solid #333; display: block; }
             .col-name { flex-grow: 1; padding-left: 20px; display: flex; align-items: center; }
             .name-text { font-weight: 600; font-size: 1.1em; color: #a335ee; position: relative; cursor: copy; transition: color 0.2s; }
             .name-text:hover { color: #fff; text-decoration: underline; }
-            .col-exp { width: 150px; text-align: center; color: #888; font-size: 0.85em; background: #252629; padding: 4px 8px; border-radius: 4px; margin-right: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-            .col-lumber { margin-right: 20px; display: flex; align-items: center; gap: 5px; font-size: 0.95em; padding: 4px 10px; border-radius: 4px; background: rgba(255,255,255,0.05); }
+            
+            .col-exp { width: 150px; text-align: center; color: #888; font-size: 0.85em; background: #252629; padding: 4px 8px; border-radius: 4px; margin-right: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            
+            .col-lumber { margin-right: 15px; display: flex; align-items: center; gap: 5px; font-size: 0.95em; padding: 4px 10px; border-radius: 4px; background: rgba(255,255,255,0.05); }
             .lumber-label { color: #888; font-size: 0.8em; text-transform: uppercase; margin-right: 5px; }
             .lumber-value { font-weight: bold; font-size: 1.1em; }
             .col-lumber.positive .lumber-value { color: #4caf50; }
             .col-lumber.negative .lumber-value { color: #f44336; }
-            .col-price { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; min-width: 100px; justify-content: flex-end; }
+            .col-lumber.neutral .lumber-value { color: #aaa; }
+            
+            .col-price { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; min-width: 140px; justify-content: flex-end; }
+            
             .gold-icon { width: 18px; height: 18px; border-radius: 50%; }
             .coin-xs { width: 10px; height: 10px; vertical-align: middle; }
             .col-inputs { display: flex; align-items: center; gap: 15px; margin-left: 25px; border-left: 1px solid #333; padding-left: 15px; height: 40px; cursor: default; }
@@ -331,8 +269,10 @@ async function generateHTML() {
             .check-input { width: 18px; height: 18px; accent-color: #a335ee; cursor: pointer; }
             input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
             input[type=number] { -moz-appearance: textfield; }
+            
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; pointer-events: none; transition: opacity 0.2s; white-space: nowrap; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
             .name-text.copied .copy-tooltip { opacity: 1; }
+            
             .details-row { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; position: relative; z-index: 1; }
             .item-card.active .details-row { max-height: 500px; } 
             .details-content { padding: 20px; display: flex; gap: 30px; }
@@ -367,10 +307,24 @@ async function generateHTML() {
                 </div>
             </div>
             
-            <div id="list">${rows}</div>
+            <div id="list"></div>
+            
+            <div class="load-more-container">
+                <button id="btnLoadMore" class="btn-load-more">Показати ще (20)</button>
+            </div>
         </div>
         
         <script>
+            // Вставляємо дані прямо в HTML
+            const ALL_DATA = ${jsonPayload};
+            let currentIndex = 0;
+            const ITEMS_PER_PAGE = 20;
+
+            function escapeHtml(text) {
+                if (!text) return text;
+                return text.replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            }
+
             function toggleDetails(card) { card.classList.toggle('active'); }
             function copyName(event, text) {
                 event.stopPropagation();
@@ -380,6 +334,123 @@ async function generateHTML() {
                     setTimeout(() => el.classList.remove('copied'), 1500);
                 });
             }
+
+            // Функція генерації HTML одного рядка
+            function createItemHTML(item) {
+                const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
+                const expLabel = item.exp ? \`<div class="col-exp">\${item.exp}</div>\` : '<div class="col-exp"></div>';
+                
+                let lumberClass = "neutral";
+                if (item.lumberPrice > 0) lumberClass = "positive";
+                else if (item.lumberPrice < 0 && item.lumberPrice !== -Infinity) lumberClass = "negative";
+
+                const displayLumber = item.lumberPrice === -Infinity ? 'N/A' : Math.floor(item.lumberPrice).toLocaleString();
+                const displayPrice = Math.floor(item.bestPrice).toLocaleString();
+
+                // Рецепт HTML
+                let recipeHtml = '';
+                if (item.reagentsList && item.reagentsList.length > 0) {
+                    recipeHtml = '<ul class="recipe-list">';
+                    item.reagentsList.forEach(r => {
+                         recipeHtml += \`
+                            <li>
+                                <div class="reag-left">
+                                    <span class="reagent-count">\${r.count}x</span>
+                                    <img src="\${r.icon}" class="reag-icon">
+                                    <span class="reagent-name">\${r.name}</span>
+                                </div>
+                                <div class="reag-right">
+                                     \${r.price ? Math.round(r.price).toLocaleString() : '?'} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                                </div>
+                            </li>\`;
+                    });
+                    recipeHtml += '</ul>';
+                } else {
+                    recipeHtml = '<div class="empty-state">No recipe</div>';
+                }
+
+                // Топ-3
+                const top3Html = item.top3.map(l => \`
+                    <div class="server-row">
+                        <span class="server-name">\${l.r}</span>
+                        <span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+                    </div>
+                \`).join('');
+
+                return \`
+                <div class="item-card" data-recipe="\${recipeJson}">
+                    <div class="main-row">
+                        <div class="main-row-left">
+                            <div class="col-icon"><img src="\${item.icon}" alt="\${item.name}"></div>
+                            <div class="col-name">
+                                <div class="name-text" onclick="copyName(event, '\${item.name.replace(/'/g, "\\\\'")}')">
+                                    \${item.name}
+                                    <span class="copy-tooltip">Скопійовано!</span>
+                                </div>
+                            </div>
+                            \${expLabel}
+                        </div>
+
+                        <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                            <div class="col-lumber \${lumberClass}">
+                                <span class="lumber-label">1 Lumber = </span>
+                                <span class="lumber-value">\${displayLumber}</span>
+                                <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                            </div>
+                            <div class="col-price">
+                                <span class="gold-amount">\${displayPrice}</span>
+                                <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                            </div>
+                            <div class="col-inputs" onclick="event.stopPropagation()">
+                                <input type="number" class="qty-input" placeholder="0" min="0">
+                                <input type="checkbox" class="check-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="details-row">
+                        <div class="details-content">
+                            <div class="reagents-block">
+                                <div class="block-header">
+                                    <h4>🛠️ Recipe Cost (Region)</h4>
+                                    <span class="total-craft-cost text-red">Total: -\${Math.floor(item.craftCost).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span>
+                                </div>
+                                \${recipeHtml}
+                                \${item.craftQty > 0 ? \`<div class="craft-qty-info">Requires: <b>\${item.craftQty}</b> Lumber</div>\` : ''}
+                            </div>
+                            <div class="servers-block">
+                                <h4>🏆 Топ-3 (Найдешевші)</h4>
+                                \${top3Html}
+                            </div>
+                        </div>
+                    </div>
+                </div>\`;
+            }
+
+            function loadMore() {
+                const list = document.getElementById('list');
+                const btn = document.getElementById('btnLoadMore');
+                
+                const nextItems = ALL_DATA.slice(currentIndex, currentIndex + ITEMS_PER_PAGE);
+                
+                if (nextItems.length > 0) {
+                    const html = nextItems.map(item => createItemHTML(item)).join('');
+                    list.insertAdjacentHTML('beforeend', html);
+                    currentIndex += nextItems.length;
+                }
+
+                // Ховаємо кнопку, якщо дійшли до кінця
+                if (currentIndex >= ALL_DATA.length) {
+                    btn.classList.add('hidden');
+                }
+            }
+
+            // Init
+            document.addEventListener('DOMContentLoaded', () => {
+                loadMore(); // Перше завантаження
+                
+                document.getElementById('btnLoadMore').addEventListener('click', loadMore);
+            });
         </script>
         <script src="import.js"></script>
     </body>
