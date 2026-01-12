@@ -4,107 +4,244 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>WoW Low Price Finder</title>
+        <title>WoW Decor Scanner</title>
         <style>
-            body { background: #121212; color: #e0e0e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; margin: 0; }
-            .container { max-width: 900px; margin: 0 auto; }
-            h1 { text-align: center; color: #fff; margin-bottom: 30px; }
+            body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; }
+            .container { max-width: 800px; margin: 0 auto; }
+            h1 { text-align: center; color: #fff; margin-bottom: 40px; font-weight: 300; letter-spacing: 1px; }
             
-            table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-            
-            .item-row { background: #1e1e1e; transition: transform 0.2s; }
-            .item-row:hover { transform: scale(1.01); background: #252525; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-            
-            td { padding: 15px; border-top: 1px solid #333; border-bottom: 1px solid #333; }
-            td:first-child { border-left: 1px solid #333; border-radius: 8px 0 0 8px; }
-            td:last-child { border-right: 1px solid #333; border-radius: 0 8px 8px 0; font-weight: bold; color: #aaa; }
+            .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; overflow: hidden; border: 1px solid #2a2b2e; transition: all 0.2s ease; cursor: pointer; }
+            .item-card:hover { border-color: #444; background: #202124; }
+            .item-card.active { border-color: #a335ee; box-shadow: 0 0 15px rgba(163, 53, 238, 0.1); }
 
-            .item-wrapper { display: flex; align-items: center; gap: 15px; }
-            img { width: 46px; height: 46px; border-radius: 6px; border: 1px solid #444; }
+            .main-row { display: flex; align-items: center; padding: 12px 20px; height: 60px; }
+            .col-icon img { width: 42px; height: 42px; border-radius: 4px; border: 1px solid #333; display: block; }
+            .col-name { flex-grow: 1; padding-left: 20px; display: flex; align-items: center; }
+            .name-text { font-weight: 600; font-size: 1.1em; color: #a335ee; position: relative; cursor: copy; transition: color 0.2s; }
+            .name-text:hover { color: #fff; text-decoration: underline; }
+            .col-price { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; }
+            .gold-icon { width: 18px; height: 18px; border-radius: 50%; }
+
+            .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; pointer-events: none; transition: opacity 0.2s; white-space: nowrap; }
+            .name-text.copied .copy-tooltip { opacity: 1; }
+
+            .details-row { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; }
+            .item-card.active .details-row { max-height: 400px; } /* Трохи збільшив для рецептів */
             
-            .item-info { display: flex; flex-direction: column; }
-            .item-name { font-weight: bold; font-size: 1.1em; color: #a335ee; } /* Epic purple color */
-            .item-id { font-size: 0.8em; color: #666; }
+            .details-content { padding: 20px; display: flex; gap: 20px; }
+            .reagents-block { flex: 1; padding-right: 20px; border-right: 1px solid #333; }
+            .servers-block { flex: 0.6; }
+            h4 { margin: 0 0 15px 0; color: #888; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }
             
-            .price-cell { text-align: right; }
-            .gold { color: #ffd700; font-weight: bold; font-size: 1.2em; }
-            
-            .update-time { text-align: center; color: #555; margin-top: 30px; font-size: 0.9em; }
+            /* Styles for Recipe List */
+            .recipe-list { list-style: none; padding: 0; margin: 0; }
+            .recipe-list li { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #222; font-size: 0.9em; }
+            .reagent-count { color: #ffd700; font-weight: bold; margin-right: 10px; }
+            .reagent-name { color: #ccc; }
+            .craft-qty-info { margin-top: 10px; font-size: 0.85em; color: #4caf50; font-weight: bold; }
+            .empty-state { color: #555; font-style: italic; font-size: 0.9em; }
+
+            .server-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #222; font-size: 0.95em; }
+            .server-name { color: #ccc; }
+            .server-price { color: #ffd700; font-weight: bold; display: flex; align-items: center; gap: 4px; }
+            .coin-sm { width: 12px; height: 12px; }
+
+            .footer { text-align: center; color: #444; margin-top: 40px; font-size: 0.8em; }
         </style>
     </head>
     <body>
         <div class="container">
-            <h1>💎 Найнижчі ціни (EU Region)</h1>
-            
-            <table>
-                
-        <tr class="item-row">
-            <td class="icon-cell">
-                <div class="item-wrapper">
-                    <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_ak_scarecrow01.jpg" alt="Arakkoa Decoy Scarecrow">
-                    <div class="item-info">
-                        <span class="item-name">Arakkoa Decoy Scarecrow</span>
-                        <span class="item-id">ID: 258191</span>
+            <h1>💎 WoW Decor Scanner</h1>
+            <div id="list">
+        <div class="item-card" onclick="toggleDetails(this)">
+            <div class="main-row">
+                <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_dr_knickknack_02b_nosound.jpg" alt="Aldor Stellar Console"></div>
+                <div class="col-name">
+                    <div class="name-text" onclick="copyName(event, 'Aldor Stellar Console')">
+                        Aldor Stellar Console
+                        <span class="copy-tooltip">Скопійовано!</span>
                     </div>
                 </div>
-            </td>
-            <td class="price-cell">
-                <span class="gold">5,200.98 g</span>
-            </td>
-            <td>Auchindoun</td>
-        </tr>
-    
-        <tr class="item-row">
-            <td class="icon-cell">
-                <div class="item-wrapper">
-                    <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_dr_chandelier_01_nosound.jpg" alt="Draenei Crystal Chandelier">
-                    <div class="item-info">
-                        <span class="item-name">Draenei Crystal Chandelier</span>
-                        <span class="item-id">ID: 262347</span>
-                    </div>
+                <div class="col-price">
+                    <span class="gold-amount">5,999</span>
+                    <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
                 </div>
-            </td>
-            <td class="price-cell">
-                <span class="gold">6,999.06 g</span>
-            </td>
-            <td>Rexxar</td>
-        </tr>
-    
-        <tr class="item-row">
-            <td class="icon-cell">
-                <div class="item-wrapper">
-                    <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_dr_loom_01.jpg" alt="Draenei Weaver's Loom">
-                    <div class="item-info">
-                        <span class="item-name">Draenei Weaver's Loom</span>
-                        <span class="item-id">ID: 258195</span>
-                    </div>
-                </div>
-            </td>
-            <td class="price-cell">
-                <span class="gold">13,500.88 g</span>
-            </td>
-            <td>Antonidas</td>
-        </tr>
-    
-        <tr class="item-row">
-            <td class="icon-cell">
-                <div class="item-wrapper">
-                    <img src="https://render.worldofwarcraft.com/eu/icons/56/inv_dr_bench_01_nosound.jpg" alt="Halaa Bench">
-                    <div class="item-info">
-                        <span class="item-name">Halaa Bench</span>
-                        <span class="item-id">ID: 258215</span>
-                    </div>
-                </div>
-            </td>
-            <td class="price-cell">
-                <span class="gold">5,400.11 g</span>
-            </td>
-            <td>Silvermoon</td>
-        </tr>
-    
-            </table>
+            </div>
 
-            <div class="update-time">Останнє оновлення: 1/12/2026, 3:35:38 PM</div>
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <h4>🛠️ Recipe / Info</h4>
+                        <ul class="recipe-list">
+                    <li>
+                        <span class="reagent-count">6x</span> 
+                        <span class="reagent-name">Void Crystal</span>
+                    </li>
+                
+                    <li>
+                        <span class="reagent-count">6x</span> 
+                        <span class="reagent-name">Large Prismatic Shard</span>
+                    </li>
+                
+                    <li>
+                        <span class="reagent-count">8x</span> 
+                        <span class="reagent-name">Greater Planar Essence</span>
+                    </li>
+                
+                    <li>
+                        <span class="reagent-count">20x</span> 
+                        <span class="reagent-name">Arcane Dust</span>
+                    </li>
+                </ul><div class="craft-qty-info">Lumber cost: 40</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 Сервери</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Echsenkessel</span>
+                <span class="server-price">5,999 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Echsenkessel</span>
+                <span class="server-price">5,999 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Echsenkessel</span>
+                <span class="server-price">5,999 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
         </div>
+        
+        <div class="item-card" onclick="toggleDetails(this)">
+            <div class="main-row">
+                <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_ak_scarecrow01.jpg" alt="Arakkoa Decoy Scarecrow"></div>
+                <div class="col-name">
+                    <div class="name-text" onclick="copyName(event, 'Arakkoa Decoy Scarecrow')">
+                        Arakkoa Decoy Scarecrow
+                        <span class="copy-tooltip">Скопійовано!</span>
+                    </div>
+                </div>
+                <div class="col-price">
+                    <span class="gold-amount">5,200.98</span>
+                    <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <h4>🛠️ Recipe / Info</h4>
+                        <ul class="recipe-list">
+                    <li>
+                        <span class="reagent-count">4x</span> 
+                        <span class="reagent-name">Cobra Scales</span>
+                    </li>
+                
+                    <li>
+                        <span class="reagent-count">6x</span> 
+                        <span class="reagent-name">Heavy Knothide Leather</span>
+                    </li>
+                
+                    <li>
+                        <span class="reagent-count">3x</span> 
+                        <span class="reagent-name">Rune Thread</span>
+                    </li>
+                </ul><div class="craft-qty-info">Lumber cost: 20</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 Сервери</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Auchindoun</span>
+                <span class="server-price">5,200.98 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Auchindoun</span>
+                <span class="server-price">5,200.98 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Auchindoun</span>
+                <span class="server-price">5,200.98 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item-card" onclick="toggleDetails(this)">
+            <div class="main-row">
+                <div class="col-icon"><img src="https://render.worldofwarcraft.com/eu/icons/56/inv_8hu_kultiras_cratelarge01.jpg" alt="Proudmoore Shipping Crate"></div>
+                <div class="col-name">
+                    <div class="name-text" onclick="copyName(event, 'Proudmoore Shipping Crate')">
+                        Proudmoore Shipping Crate
+                        <span class="copy-tooltip">Скопійовано!</span>
+                    </div>
+                </div>
+                <div class="col-price">
+                    <span class="gold-amount">2,000</span>
+                    <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                </div>
+            </div>
+
+            <div class="details-row">
+                <div class="details-content">
+                    <div class="reagents-block">
+                        <h4>🛠️ Recipe / Info</h4>
+                        <ul class="recipe-list">
+                    <li>
+                        <span class="reagent-count">5x</span> 
+                        <span class="reagent-name">Aromatic Fish Oil</span>
+                    </li>
+                
+                    <li>
+                        <span class="reagent-count">5x</span> 
+                        <span class="reagent-name">Ultramarine Ink</span>
+                    </li>
+                </ul><div class="craft-qty-info">Lumber cost: 8</div>
+                    </div>
+                    <div class="servers-block">
+                        <h4>🏆 Топ-3 Сервери</h4>
+                        
+            <div class="server-row">
+                <span class="server-name">Un'Goro</span>
+                <span class="server-price">2,000 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Un'Goro</span>
+                <span class="server-price">2,000 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+            <div class="server-row">
+                <span class="server-name">Un'Goro</span>
+                <span class="server-price">2,000 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
+            </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+            <div class="footer">Оновлено: 1/12/2026, 4:06:21 PM</div>
+        </div>
+        <script>
+            function toggleDetails(card) { card.classList.toggle('active'); }
+            function copyName(event, text) {
+                event.stopPropagation();
+                navigator.clipboard.writeText(text).then(() => {
+                    const el = event.currentTarget;
+                    el.classList.add('copied');
+                    setTimeout(() => el.classList.remove('copied'), 1500);
+                });
+            }
+        </script>
     </body>
     </html>
