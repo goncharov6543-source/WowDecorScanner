@@ -11,13 +11,14 @@ const CLIENT_SECRET = process.env.BLIZZARD_CLIENT_SECRET;
 const REGION = 'eu';
 
 const CONCURRENCY = 20; 
-const api = axios.create({ timeout: 60000 }); // Збільшив тайм-аут, бо файл реагентів великий
+// Збільшив тайм-аут для великих файлів
+const api = axios.create({ timeout: 60000 });
 
 // metaData[itemId] = { name, icon }
 let metaData = {};
-// marketData[realmName][itemId] = price (Тут тільки Декори)
+// marketData[realmName][itemId] = price (Тут ціни з серверів)
 let marketData = {};
-// commoditiesMap[itemId] = price (Тут тільки Реагенти, ціна одна на весь регіон)
+// commoditiesMap[itemId] = price (Тут регіональні ціни: реагенти + предмети)
 let commoditiesMap = {};
 
 // --- АВТОРИЗАЦІЯ ---
@@ -30,16 +31,22 @@ async function getAccessToken() {
     return res.data.access_token;
 }
 
+// --- НОРМАЛІЗАЦІЯ ID (Щоб працювало і "123", і 123) ---
+function safeId(value) {
+    return parseInt(value, 10);
+}
+
 // --- ДОПОМІЖНІ ФУНКЦІЇ ДЛЯ ID ---
 function getMainItemIds() {
-    return new Set(itemsData.map(i => i.id));
+    // Беремо ID головних предметів, перетворюючи їх у числа
+    return new Set(itemsData.map(i => safeId(i.id)));
 }
 
 function getReagentIds() {
     const ids = new Set();
     itemsData.forEach(item => {
         if (item.recipe) {
-            item.recipe.forEach(r => ids.add(r.id));
+            item.recipe.forEach(r => ids.add(safeId(r.id)));
         }
     });
     return ids;
@@ -48,11 +55,14 @@ function getReagentIds() {
 function getAllIdsArray() {
     const main = getMainItemIds();
     const reag = getReagentIds();
-    return Array.from(new Set([...main, ...reag]));
+    // Об'єднуємо два набори
+    const combined = new Set([...main, ...reag]);
+    return Array.from(combined);
 }
 
 // --- ОТРИМАННЯ КАРТИНОК І НАЗВ ---
-async function fetchMeta(itemId, token) {
+async function fetchMeta(rawId, token) {
+    const itemId = safeId(rawId);
     if (metaData[itemId]) return;
 
     try {
@@ -62,12 +72,12 @@ async function fetchMeta(itemId, token) {
         const iconUrl = mediaRes.data.assets.find(a => a.key === 'icon').value;
         
         let name = "Unknown Item";
-        const jsonItem = itemsData.find(i => i.id === itemId);
+        const jsonItem = itemsData.find(i => safeId(i.id) === itemId);
         if (jsonItem) {
             name = jsonItem.name;
         } else {
             itemsData.forEach(main => {
-                const r = main.recipe?.find(reag => reag.id === itemId);
+                const r = main.recipe?.find(reag => safeId(reag.id) === itemId);
                 if (r) name = r.name;
             });
         }
@@ -78,32 +88,34 @@ async function fetchMeta(itemId, token) {
     }
 }
 
-// --- КРОК 1: СКАНУВАННЯ РЕАГЕНТІВ (COMMODITIES) ---
-async function scanCommodities(token, reagentIdsSet) {
-    console.log("📦 Скачую базу регіональних цін (Commodities)...");
+// --- КРОК 1: СКАНУВАННЯ РЕГІОНАЛЬНИХ ЦІН (COMMODITIES) ---
+// Тепер шукаємо тут І реагенти, І головні предмети (якщо вони commodities)
+async function scanCommodities(token, allTargetIdsSet) {
+    console.log("📦 Скачую базу Commodities (Реагенти + Регіональні предмети)...");
     try {
         const url = `https://${REGION}.api.blizzard.com/data/wow/auctions/commodities?namespace=dynamic-${REGION}&locale=en_GB`;
         const res = await api.get(url, { headers: { Authorization: `Bearer ${token}` } });
         
-        // Файл величезний, тому фільтруємо відразу
         res.data.auctions.forEach(lot => {
-            // Перевіряємо, чи цей лот є реагентом з нашого списку
-            if (reagentIdsSet.has(lot.item.id)) {
+            const id = lot.item.id; // API завжди повертає число
+            
+            // Якщо цей предмет нам цікавий (як реагент АБО як головний)
+            if (allTargetIdsSet.has(id)) {
                 const price = lot.unit_price / 10000;
                 
                 // Зберігаємо найменшу ціну
-                if (!commoditiesMap[lot.item.id] || price < commoditiesMap[lot.item.id]) {
-                    commoditiesMap[lot.item.id] = price;
+                if (!commoditiesMap[id] || price < commoditiesMap[id]) {
+                    commoditiesMap[id] = price;
                 }
             }
         });
-        console.log(`✅ Знайдено ціни на ${Object.keys(commoditiesMap).length} реагентів.`);
+        console.log(`✅ Commodities: знайдено ціни для ${Object.keys(commoditiesMap).length} предметів.`);
     } catch (e) {
-        console.error("❌ Помилка сканування Commodities:", e.message);
+        console.error("❌ Помилка сканування Commodities (можливо тайм-аут):", e.message);
     }
 }
 
-// --- КРОК 2: СКАНУВАННЯ СЕРВЕРІВ (Тільки Декор) ---
+// --- КРОК 2: СКАНУВАННЯ СЕРВЕРІВ (Тільки Декор / Non-stackable) ---
 async function getRealms(token) {
     console.log("🌍 Отримую список серверів...");
     const res = await api.get(`https://${REGION}.api.blizzard.com/data/wow/connected-realm/index?namespace=dynamic-${REGION}&locale=en_GB`, {
@@ -135,7 +147,7 @@ async function scanServer(realmId, realmName, token, mainItemIdsSet) {
         res.data.auctions.forEach(lot => {
             const itemId = lot.item.id;
             
-            // Тут шукаємо ТІЛЬКИ готові предмети (декор)
+            // Тут шукаємо готові предмети
             if (mainItemIdsSet.has(itemId)) {
                 const price = (lot.buyout || lot.unit_price) / 10000;
                 if (!localBest[itemId] || price < localBest[itemId]) {
@@ -148,7 +160,7 @@ async function scanServer(realmId, realmName, token, mainItemIdsSet) {
             marketData[realmName][id] = localBest[id];
         });
 
-    } catch (e) { /* Ігноруємо помилки серверів */ }
+    } catch (e) { /* Ігноруємо помилки */ }
 }
 
 // --- ГЕНЕРАЦІЯ HTML ---
@@ -158,22 +170,36 @@ async function generateHTML() {
     const reportItems = itemsData.sort((a, b) => a.name.localeCompare(b.name));
 
     const rows = reportItems.map((item) => {
-        // 1. Шукаємо декор по серверах
+        const itemId = safeId(item.id);
         let listings = [];
+        
+        // 1. Збираємо ціни з СЕРВЕРІВ
         Object.keys(marketData).forEach(realmName => {
-            const price = marketData[realmName][item.id];
+            const price = marketData[realmName][itemId];
             if (price) {
                 listings.push({ r: realmName, p: price });
             }
         });
 
+        // 2. Збираємо ціни з РЕГІОНУ (якщо це Commodity)
+        if (commoditiesMap[itemId]) {
+            // Додаємо як "Region Price" 3 рази, щоб заповнити топ, якщо серверів немає
+            listings.push({ r: "Region (Commodity)", p: commoditiesMap[itemId] });
+            listings.push({ r: "Region (Commodity)", p: commoditiesMap[itemId] });
+            listings.push({ r: "Region (Commodity)", p: commoditiesMap[itemId] });
+        }
+
+        // Якщо все ще пусто - пропускаємо
         if (listings.length === 0) return '';
 
+        // Сортуємо унікальні (або просто сортуємо всі знайдені)
         listings.sort((a, b) => a.p - b.p);
+        
+        // Беремо топ 3
         const top3 = listings.slice(0, 3);
         const bestListing = listings[0]; 
 
-        // 2. Рахуємо ціну крафта (на основі регіональних цін Commodities)
+        // 3. Рахуємо ціну крафта
         let craftCost = 0;
         let recipeHtml = '';
         let missingReagents = false;
@@ -182,15 +208,16 @@ async function generateHTML() {
             recipeHtml = '<ul class="recipe-list">';
             
             item.recipe.forEach(reag => {
+                const reagId = safeId(reag.id);
                 // БЕРЕМО ЦІНУ З РЕГІОНАЛЬНОЇ БАЗИ
-                const reagPrice = commoditiesMap[reag.id];
+                const reagPrice = commoditiesMap[reagId];
                 
                 if (!reagPrice) missingReagents = true;
 
                 const totalReagCost = (reagPrice || 0) * reag.count;
                 craftCost += totalReagCost;
                 
-                const reagMeta = metaData[reag.id] || { icon: '', name: '?' };
+                const reagMeta = metaData[reagId] || { icon: '', name: '?' };
 
                 recipeHtml += `
                     <li>
@@ -210,7 +237,7 @@ async function generateHTML() {
             recipeHtml = '<div class="empty-state">No recipe</div>';
         }
 
-        // 3. Рахуємо Ламбер (Ціна сервера - Ціна регіон. реагентів)
+        // 4. Рахуємо Ламбер
         let lumberPrice = 0;
         let lumberClass = "neutral";
         
@@ -227,8 +254,9 @@ async function generateHTML() {
             </div>
         `).join('');
 
-        const mainIcon = metaData[item.id]?.icon || '';
+        const mainIcon = metaData[itemId]?.icon || '';
 
+        // ДИЗАЙН ЗАЛИШИВСЯ ТОЙ САМИЙ
         return `
         <div class="item-card" onclick="toggleDetails(this)">
             <div class="main-row">
@@ -351,20 +379,23 @@ async function generateHTML() {
 async function main() {
     const token = await getAccessToken();
     
-    // 1. Отримуємо ID для сканування
-    const mainItemIdsSet = getMainItemIds(); // Декори (для серверів)
-    const reagentIdsSet = getReagentIds();   // Реагенти (для Commodities)
-    const allIdsArray = getAllIdsArray();    // Все разом (для картинок)
+    // 1. Отримуємо ID (і гарантовано перетворюємо їх в числа)
+    const mainItemIdsSet = getMainItemIds();
+    const reagentIdsSet = getReagentIds();
+    
+    // Створюємо загальний список ВСІХ предметів (Main + Reagents) для пошуку в Commodities
+    const allIdsArray = getAllIdsArray();
+    const allTargetIdsSet = new Set(allIdsArray.map(id => safeId(id)));
 
     // 2. Вантажимо картинки
     console.log(`🖼️ Завантажую іконки для ${allIdsArray.length} об'єктів...`);
     const metaLimit = pLimit(10);
     await Promise.all(allIdsArray.map(id => metaLimit(() => fetchMeta(id, token))));
 
-    // 3. Скануємо ЦІНИ НА РЕАГЕНТИ (Один запит на регіон)
-    await scanCommodities(token, reagentIdsSet);
+    // 3. Скануємо COMMODITIES (Шукаємо тут І реагенти, І головні предмети)
+    await scanCommodities(token, allTargetIdsSet);
 
-    // 4. Скануємо СЕРВЕРИ (Тільки декор)
+    // 4. Скануємо СЕРВЕРИ (Тільки для головних предметів, які не Commodities)
     const realmIds = await getRealms(token);
     console.log(`🚀 Сканую ${realmIds.length} серверів (шукаємо ${mainItemIdsSet.size} видів декору)...`);
     
