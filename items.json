@@ -2,7 +2,7 @@
     {
         "name": "Proudmoore Shipping Crate",
         "id": 252389,
-        "Exp": "Burning Crusade",
+        "Exp": "Battle for Azeroth",
         "craftQty": 8,
         "recipe": [
             { "name": "Aromatic Fish Oil", "id": 160711, "count": 5 },
@@ -30,6 +30,131 @@
             { "name": "Cobra Scales", "id": "29539", "count": 4},
             { "name": "Heavy Knothide Leather", "id": "23793", "count": 6},
             { "name": "Rune Thread", "id": "14341", "count": 3}
+        ]
+    },
+    {
+        "name": "Draenei Crystal Chandelier",
+        "id": "262347",
+        "Exp": "Burning Crusade",
+        "craftQty": 15,
+        "recipe": [
+            { "name": "Earthstorm Diamond", "id": "25867", "count": 2},
+            { "name": "Hardened Adamantite Bar", "id": "23573", "count": 4}
+        ]
+    },
+    {
+        "name": "Draenei Weaver's Loom",
+        "id": "258195",
+        "Exp": "Burning Crusade",
+        "craftQty": 35,
+        "recipe": [
+            { "name": "Shadowcloth", "id": "24272", "count": 4},
+            { "name": "Spellcloth", "id": "24271", "count": 4},
+            { "name": "Primal Mooncloth", "id": "21845", "count": 4}
+        ]
+    },
+    {
+        "name": "Glazed Sin'dorei Vial",
+        "id": "264705",
+        "Exp": "Burning Crusade",
+        "craftQty": 6,
+        "recipe": [
+            { "name": "Mad Alchemist's Potion", "id": "34440", "count": 5},
+            { "name": "Khorium Bar", "id": "23449", "count": 4},
+            { "name": "Crystal Vial", "id": "3371", "count": 1}
+        ]
+    },
+    {
+        "name": "Grand Drape of the Exiles",
+        "id": "258202",
+        "Exp": "Burning Crusade",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Primal Mana", "id": "22457", "count": 3},
+            { "name": "Bolt of Imbued Netherweave", "id": "21842", "count": 4},
+            { "name": "Rune Thread", "id": "14341", "count": 3}
+        ]
+    },
+    {
+        "name": "Halaa Bench",
+        "id": "258215",
+        "Exp": "Burning Crusade",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Heavy Knothide Leather", "id": "23793", "count": 3},
+            { "name": "Primal Mana", "id": "22457", "count": 2}
+        ]
+    },
+    {
+        "name": "Kirin Tor Glass Table",
+        "id": "258211",
+        "Exp": "Burning Crusade",
+        "craftQty": 22,
+        "recipe": [
+            { "name": "Dragon's Eye", "id": "42225", "count": 4},
+            { "name": "Cobalt Bar", "id": "36916", "count": 8}
+        ]
+    },
+    {
+        "name": "Outland Mag'har Banner",
+        "id": "258190",
+        "Exp": "Burning Crusade",
+        "craftQty": 12,
+        "recipe": [
+            { "name": "Thick Clefthoof Leather", "id": "25708", "count": 8},
+            { "name": "Primal Earth", "id": "22452", "count": 2},
+            { "name": "Primal Life", "id": "21886", "count": 2}
+        ]
+    },
+    {
+        "name": "Shadow Council Torch",
+        "id": "264706",
+        "Exp": "Burning Crusade",
+        "craftQty": 16,
+        "recipe": [
+            { "name": "Hardened Adamantite Bar", "id": "23573", "count": 3},
+            { "name": "Flask of Blinding Light", "id": "22861", "count": 4},
+            { "name": "Primal Fire", "id": "21884", "count": 4}
+        ]
+    },
+    {
+        "name": "Shattrath Lamppost",
+        "id": "258201",
+        "Exp": "Burning Crusade",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Shadowsong Amethyst", "id": "32230", "count": 2},
+            { "name": "Mercurial Adamantite", "id": "31079", "count": 6}
+        ]
+    },
+    {
+        "name": "Shattrath Sconce",
+        "id": "258200",
+        "Exp": "Burning Crusade",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Mercurial Adamantite", "id": "31079", "count": 3},
+            { "name": "Nightseye", "id": "23441", "count": 3}
+        ]
+    },
+    {
+        "name": "Stranglekelp Sack",
+        "id": "264709",
+        "Exp": "Burning Crusade",
+        "craftQty": 8,
+        "recipe": [
+            { "name": "Bolt of Netherweave", "id": "21840", "count": 4},
+            { "name": "Stranglekelp", "id": "108330", "count": 10}
+        ]
+    },
+    {
+        "name": "Talon King's Totem",
+        "id": "258192",
+        "Exp": "Burning Crusade",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Ethereal Ink", "id": "43124", "count": 3},
+            { "name": "Primal Life", "id": "21886", "count": 2}
         ]
     }
   ]

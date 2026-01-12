@@ -30,9 +30,7 @@ async function getAccessToken() {
 
 // --- ID HELPER FUNCTIONS ---
 function safeId(value) { return parseInt(value, 10); }
-
 function getMainItemIds() { return new Set(itemsData.map(i => safeId(i.id))); }
-
 function getReagentIds() {
     const ids = new Set();
     itemsData.forEach(item => {
@@ -40,7 +38,6 @@ function getReagentIds() {
     });
     return ids;
 }
-
 function getAllIdsArray() {
     const main = getMainItemIds();
     const reag = getReagentIds();
@@ -132,24 +129,19 @@ async function scanServer(realmId, realmName, token, mainItemIdsSet) {
 
 // --- GENERATE HTML ---
 async function generateHTML() {
-    console.log("📝 Генерую звіт...");
+    console.log("📝 Прораховую прибутковість та генерую звіт...");
     
-    // Створення папки public, якщо немає
     if (!fs.existsSync('public')) fs.mkdirSync('public');
-
-    // !!! ВАЖЛИВО: Копіюємо файл логіки імпорту в папку сайту
     if (fs.existsSync('import.js')) {
         fs.copyFileSync('import.js', 'public/import.js');
-    } else {
-        console.warn("⚠️ Увага: файл import.js не знайдено, кнопка імпорту не працюватиме!");
     }
 
-    const reportItems = itemsData.sort((a, b) => a.name.localeCompare(b.name));
-
-    const rows = reportItems.map((item) => {
+    // 1. Спочатку прораховуємо всі дані (щоб можна було відсортувати)
+    const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
         
+        // Збираємо лістинги
         Object.keys(marketData).forEach(realmName => {
             const price = marketData[realmName][itemId];
             if (price) listings.push({ r: realmName, p: price });
@@ -159,26 +151,61 @@ async function generateHTML() {
             for(let i=0; i<3; i++) listings.push({ r: "Region (Commodity)", p: commoditiesMap[itemId] });
         }
 
-        if (listings.length === 0) return '';
+        // Якщо лістингів немає, повертаємо пустий об'єкт для фільтрації
+        if (listings.length === 0) return { valid: false };
 
         listings.sort((a, b) => a.p - b.p);
-        const top3 = listings.slice(0, 3);
-        const bestListing = listings[0]; 
-
+        const bestListing = listings[0];
+        
+        // Рахуємо крафт
         let craftCost = 0;
-        let recipeHtml = '';
         let missingReagents = false;
+        
+        if (item.recipe) {
+            item.recipe.forEach(reag => {
+                const reagId = safeId(reag.id);
+                const reagPrice = commoditiesMap[reagId];
+                if (!reagPrice) missingReagents = true;
+                craftCost += (reagPrice || 0) * reag.count;
+            });
+        }
 
+        // Рахуємо Lumber Price (основний показник для сортування)
+        let lumberPrice = -Infinity; // За замовчуванням дуже малий
+        if (item.craftQty > 0 && !missingReagents) {
+            lumberPrice = (bestListing.p - craftCost) / item.craftQty;
+        }
+
+        return {
+            valid: true,
+            item,
+            itemId,
+            listings,
+            bestListing,
+            craftCost,
+            missingReagents,
+            lumberPrice
+        };
+    });
+
+    // 2. Фільтруємо валідні та СОРТУЄМО за Lumber Price (від найбільшого)
+    const sortedItems = calculatedItems
+        .filter(data => data.valid)
+        .sort((a, b) => b.lumberPrice - a.lumberPrice);
+
+    // 3. Генеруємо HTML
+    const rows = sortedItems.map(data => {
+        const { item, itemId, listings, bestListing, craftCost, missingReagents, lumberPrice } = data;
+        const top3 = listings.slice(0, 3);
+
+        // Генерація HTML рецепта
+        let recipeHtml = '';
         if (item.recipe && item.recipe.length > 0) {
             recipeHtml = '<ul class="recipe-list">';
             item.recipe.forEach(reag => {
                 const reagId = safeId(reag.id);
                 const reagPrice = commoditiesMap[reagId];
-                if (!reagPrice) missingReagents = true;
-                const totalReagCost = (reagPrice || 0) * reag.count;
-                craftCost += totalReagCost;
                 const reagMeta = metaData[reagId] || { icon: '', name: '?' };
-
                 recipeHtml += `
                     <li>
                         <div class="reag-left">
@@ -187,7 +214,7 @@ async function generateHTML() {
                             <span class="reagent-name">${reagMeta.name}</span>
                         </div>
                         <div class="reag-right">
-                             ${reagPrice ? Math.round(reagPrice).toLocaleString() : '?'} <span class="gold-symbol">g</span>
+                             ${reagPrice ? Math.round(reagPrice).toLocaleString() : '?'} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
                         </div>
                     </li>`;
             });
@@ -196,13 +223,9 @@ async function generateHTML() {
             recipeHtml = '<div class="empty-state">No recipe</div>';
         }
 
-        let lumberPrice = 0;
         let lumberClass = "neutral";
-        if (item.craftQty > 0 && !missingReagents) {
-            lumberPrice = (bestListing.p - craftCost) / item.craftQty;
-            if (lumberPrice > 0) lumberClass = "positive";
-            else lumberClass = "negative";
-        }
+        if (lumberPrice > 0) lumberClass = "positive";
+        else if (lumberPrice < 0) lumberClass = "negative";
 
         const top3Html = top3.map(l => `
             <div class="server-row">
@@ -213,35 +236,40 @@ async function generateHTML() {
 
         const mainIcon = metaData[itemId]?.icon || '';
         const expLabel = item.Exp ? `<div class="col-exp">${item.Exp}</div>` : '<div class="col-exp"></div>';
-
-        // Екрануємо рецепт для передачі в data-attribute
         const recipeJson = JSON.stringify(item.recipe || []).replace(/"/g, '&quot;');
+        const displayLumber = lumberPrice === -Infinity ? 'N/A' : Math.floor(lumberPrice).toLocaleString();
 
         return `
-        <div class="item-card" onclick="toggleDetails(this)" data-recipe="${recipeJson}">
+        <div class="item-card" data-recipe="${recipeJson}">
             <div class="main-row">
-                <div class="col-icon"><img src="${mainIcon}" alt="${item.name}"></div>
-                <div class="col-name">
-                    <div class="name-text" onclick="copyName(event, '${item.name.replace(/'/g, "\\'")}')">
-                        ${item.name}
-                        <span class="copy-tooltip">Скопійовано!</span>
+                <div class="main-row-left">
+                    <div class="col-icon"><img src="${mainIcon}" alt="${item.name}"></div>
+                    <div class="col-name">
+                        <div class="name-text" onclick="copyName(event, '${item.name.replace(/'/g, "\\'")}')">
+                            ${item.name}
+                            <span class="copy-tooltip">Скопійовано!</span>
+                        </div>
+                    </div>
+                    ${expLabel}
+                </div>
+
+                <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
+                    <div class="col-lumber ${lumberClass}">
+                        <span class="lumber-label">1 Lumber = </span>
+                        <span class="lumber-value">${displayLumber}</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                    </div>
+                    <div class="col-price">
+                        <span class="gold-amount">${bestListing.p.toLocaleString()}</span>
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                    </div>
+                    <div class="col-inputs" onclick="event.stopPropagation()">
+                        <input type="number" class="qty-input" placeholder="0" min="0">
+                        <input type="checkbox" class="check-input">
                     </div>
                 </div>
-                ${expLabel}
-                <div class="col-lumber ${lumberClass}">
-                    <span class="lumber-label">1 Lumber = </span>
-                    <span class="lumber-value">${Math.floor(lumberPrice).toLocaleString()}</span>
-                    <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
-                </div>
-                <div class="col-price">
-                    <span class="gold-amount">${bestListing.p.toLocaleString()}</span>
-                    <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
-                </div>
-                <div class="col-inputs" onclick="event.stopPropagation()">
-                    <input type="number" class="qty-input" placeholder="0" min="0">
-                    <input type="checkbox" class="check-input">
-                </div>
             </div>
+
             <div class="details-row">
                 <div class="details-content">
                     <div class="reagents-block">
@@ -270,7 +298,7 @@ async function generateHTML() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>WoW Profit Scanner</title>
         <style>
-            body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; }
+            body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
             .container { max-width: 1100px; margin: 0 auto; }
             .header-container { position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 40px; padding-top: 10px; }
             h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; }
@@ -278,10 +306,12 @@ async function generateHTML() {
             .update-time { font-size: 0.85em; color: #666; }
             .btn-import { background: #a335ee; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9em; transition: background 0.2s; }
             .btn-import:hover { background: #8a2be2; }
-            .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; cursor: pointer; }
+            .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
             .item-card.active { border-color: #a335ee; box-shadow: 0 0 15px rgba(163, 53, 238, 0.1); }
-            .main-row { display: flex; align-items: center; padding: 12px 20px; height: 60px; position: relative; z-index: 2; }
+            .main-row { display: flex; height: 60px; position: relative; z-index: 2; }
+            .main-row-left { display: flex; align-items: center; flex-grow: 1; padding-left: 20px; }
+            .main-row-right { display: flex; align-items: center; padding-right: 20px; cursor: pointer; }
             .col-icon img { width: 42px; height: 42px; border-radius: 4px; border: 1px solid #333; display: block; }
             .col-name { flex-grow: 1; padding-left: 20px; display: flex; align-items: center; }
             .name-text { font-weight: 600; font-size: 1.1em; color: #a335ee; position: relative; cursor: copy; transition: color 0.2s; }
@@ -295,10 +325,12 @@ async function generateHTML() {
             .col-price { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; min-width: 100px; justify-content: flex-end; }
             .gold-icon { width: 18px; height: 18px; border-radius: 50%; }
             .coin-xs { width: 10px; height: 10px; vertical-align: middle; }
-            .col-inputs { display: flex; align-items: center; gap: 15px; margin-left: 25px; border-left: 1px solid #333; padding-left: 15px; height: 40px; }
+            .col-inputs { display: flex; align-items: center; gap: 15px; margin-left: 25px; border-left: 1px solid #333; padding-left: 15px; height: 40px; cursor: default; }
             .qty-input { background: #0f1011; border: 1px solid #333; color: #fff; width: 50px; padding: 6px; border-radius: 4px; text-align: center; font-weight: bold; }
             .qty-input:focus { outline: 1px solid #a335ee; }
             .check-input { width: 18px; height: 18px; accent-color: #a335ee; cursor: pointer; }
+            input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+            input[type=number] { -moz-appearance: textfield; }
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; pointer-events: none; transition: opacity 0.2s; white-space: nowrap; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
             .name-text.copied .copy-tooltip { opacity: 1; }
             .details-row { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; position: relative; z-index: 1; }
@@ -306,6 +338,7 @@ async function generateHTML() {
             .details-content { padding: 20px; display: flex; gap: 30px; }
             .reagents-block { flex: 1.2; padding-right: 20px; border-right: 1px solid #333; }
             .servers-block { flex: 0.8; }
+            .servers-block h4 { margin-bottom: 25px; }
             h4 { margin: 0; color: #888; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }
             .block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
             .total-craft-cost { font-weight: bold; color: #f44336; font-size: 0.95em; }
@@ -315,8 +348,7 @@ async function generateHTML() {
             .reag-icon { width: 24px; height: 24px; border-radius: 3px; border: 1px solid #444; }
             .reagent-count { color: #ffd700; font-weight: bold; min-width: 25px; }
             .reagent-name { color: #ccc; }
-            .reag-right { color: #888; font-size: 0.9em; }
-            .gold-symbol { color: #ffd700; font-size: 0.8em; }
+            .reag-right { color: #ccc; font-size: 0.9em; display: flex; align-items: center; gap: 4px; }
             .craft-qty-info { margin-top: 15px; font-size: 0.9em; color: #4caf50; font-weight: bold; background: rgba(76, 175, 80, 0.1); padding: 8px; border-radius: 4px; text-align: center; }
             .empty-state { color: #555; font-style: italic; font-size: 0.9em; }
             .server-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; font-size: 0.95em; }
