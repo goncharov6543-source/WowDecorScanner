@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Proudmoore Shipping Crate",
+        "id": 252389,
+        "craftQty": 8,
+        "recipe": [
+            { "name": "Aromatic Fish Oil", "id": 160711, "count": 5 },
+            { "name": "Ultramarine Ink", "id": 158187, "count": 5 }
+        ]
+    },
+    {
+        "name": "Aldor Stellar Console",
+        "id": 257093,
+        "craftQty": 40,
+        "recipe": [
+            { "name": "Void Crystal", "id": "22450", "count": 6},
+            { "name": "Large Prismatic Shard", "id": "22449", "count": 6},
+            { "name": "Greater Planar Essence", "id": "22446", "count": 8},
+            { "name": "Arcane Dust", "id": "22445", "count": 20}
+        ]
+    },
+    {
+        "name": "Arakkoa Decoy Scarecrow",
+        "id": "258191",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Cobra Scales", "id": "29539", "count": 4},
+            { "name": "Heavy Knothide Leather", "id": "23793", "count": 6},
+            { "name": "Rune Thread", "id": "14341", "count": 3}
+        ]
+    }
+  ]
