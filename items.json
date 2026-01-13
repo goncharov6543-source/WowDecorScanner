@@ -26,6 +26,7 @@
     {
         "name": "Arakkoa Decoy Scarecrow",
         "id": "258191",
+        "Prof": "Leatherworking",
         "Exp": "Burning Crusade",
         "craftQty": 20,
         "recipe": [
@@ -37,6 +38,7 @@
     {
         "name": "Draenei Crystal Chandelier",
         "id": "262347",
+        "Prof": "Jewelcrafting",
         "Exp": "Burning Crusade",
         "craftQty": 15,
         "recipe": [
@@ -47,6 +49,7 @@
     {
         "name": "Draenei Weaver's Loom",
         "id": "258195",
+        "Prof": "Tailoring",
         "Exp": "Burning Crusade",
         "craftQty": 35,
         "recipe": [
@@ -70,6 +73,7 @@
     {
         "name": "Grand Drape of the Exiles",
         "id": "258202",
+        "Prof": "Tailoring",
         "Exp": "Burning Crusade",
         "craftQty": 18,
         "recipe": [
@@ -92,6 +96,7 @@
     {
         "name": "Kirin Tor Glass Table",
         "id": "258211",
+        "Prof": "Jewelcrafting",
         "Exp": "Burning Crusade",
         "craftQty": 22,
         "recipe": [
@@ -102,6 +107,7 @@
     {
         "name": "Outland Mag'har Banner",
         "id": "258190",
+        "Prof": "Leatherworking",
         "Exp": "Burning Crusade",
         "craftQty": 12,
         "recipe": [
@@ -125,6 +131,7 @@
     {
         "name": "Shattrath Lamppost",
         "id": "258201",
+        "Prof": "Jewelcrafting",
         "Exp": "Burning Crusade",
         "craftQty": 20,
         "recipe": [
@@ -135,6 +142,7 @@
     {
         "name": "Shattrath Sconce",
         "id": "258200",
+        "Prof": "Jewelcrafting",
         "Exp": "Burning Crusade",
         "craftQty": 10,
         "recipe": [
@@ -167,6 +175,7 @@
     {
         "name": "Blackrock Lamppost",
         "id": "246413",
+        "Prof": "Jewelcrafting",
         "Exp": "Vanilla",
         "craftQty": 40,
         "recipe": [
@@ -202,6 +211,7 @@
     {
         "name": "Camp Narache Rug",
         "id": "257725",
+        "Prof": "Leatherworking",
         "Exp": "Vanilla",
         "craftQty": 18,
         "recipe": [
@@ -240,6 +250,7 @@
     {
         "name": "Dwarven District Banner",
         "id": "246685",
+        "Prof": "Tailoring",
         "Exp": "Vanilla",
         "craftQty": 25,
         "recipe": [
@@ -252,6 +263,7 @@
     {
         "name": "Elder Rise Rug",
         "id": "243336",
+        "Prof": "Tailoring",
         "Exp": "Vanilla",
         "craftQty": 18,
         "recipe": [
@@ -276,6 +288,7 @@
     {
         "name": "Ironforge Chandelier",
         "id": "246488",
+        "Prof": "Jewelcrafting",
         "Exp": "Vanilla",
         "craftQty": 30,
         "recipe": [
@@ -311,6 +324,7 @@
     {
         "name": "Snowfall Tribe Scare-Totem",
         "id": "257693",
+        "Prof": "Leatherworking",
         "Exp": "Vanilla",
         "craftQty": 12,
         "recipe": [
@@ -370,6 +384,7 @@
     {
         "name": "Wolvar Postbag",
         "id": "258205",
+        "Prof": "Leatherworking",
         "Exp": "Vanilla",
         "craftQty": 18,
         "recipe": [
@@ -394,6 +409,7 @@
     {
         "name": "Dalaran Post",
         "id": "258204",
+        "Prof": "Inscription",
         "Exp": "Wrath of the Lich King",
         "craftQty": 12,
         "recipe": [
@@ -416,6 +432,7 @@
     {
         "name": "Dalaran Scholar's Bookcase",
         "id": "258207",
+        "Prof": "Inscription",
         "Exp": "Wrath of the Lich King",
         "craftQty": 45,
         "recipe": [
@@ -440,6 +457,7 @@
     {
         "name": "Dalaran Street Sign",
         "id": "258210",
+        "Prof": "Inscription",
         "Exp": "Wrath of the Lich King",
         "craftQty": 10,
         "recipe": [
@@ -462,6 +480,7 @@
     {
         "name": "Gilded Dalaran Banner",
         "id": "258206",
+        "Prof": "Tailoring",
         "Exp": "Wrath of the Lich King",
         "craftQty": 10,
         "recipe": [
@@ -513,6 +532,7 @@
     {
         "name": "Kirin Tor Skyline Banner",
         "id": "258298",
+        "Prof": "Tailoring",
         "Exp": "Wrath of the Lich King",
         "craftQty": 40,
         "recipe": [
@@ -525,6 +545,7 @@
     {
         "name": "Kirin Tor Sun Chandelier",
         "id": "258208",
+        "Prof": "Jewelcrafting",
         "Exp": "Wrath of the Lich King",
         "craftQty": 8,
         "recipe": [
@@ -559,6 +580,7 @@
     {
         "name": "Silver Dalaran Bench",
         "id": "258203",
+        "Prof": "Inscription",
         "Exp": "Wrath of the Lich King",
         "craftQty": 18,
         "recipe": [
@@ -582,6 +604,7 @@
     {
         "name": "Ardenweald Hanging Baskets",
         "id": "258245",
+        "Prof": "Inscription",
         "Exp": "Shadowlands",
         "craftQty": 16,
         "recipe": [
@@ -617,6 +640,7 @@
     {
         "name": "Aspirant's Ringed Banner",
         "id": "264678",
+        "Prof": "Tailoring",
         "Exp": "Shadowlands",
         "craftQty": 16,
         "recipe": [
@@ -629,6 +653,7 @@
     {
         "name": "Aspiring Soul's Chair",
         "id": "258235",
+        "Prof": "Inscription",
         "Exp": "Shadowlands",
         "craftQty": 28,
         "recipe": [
@@ -652,6 +677,7 @@
     {
         "name": "Broker's Hex Table",
         "id": "258244",
+        "Prof": "Inscription",
         "Exp": "Shadowlands",
         "craftQty": 24,
         "recipe": [
@@ -676,6 +702,7 @@
     {
         "name": "Cartel Ta Bookcase",
         "id": "258250",
+        "Prof": "Inscription",
         "Exp": "Shadowlands",
         "craftQty": 35,
         "recipe": [
@@ -701,6 +728,7 @@
     {
         "name": "Heart of the Forest Banner",
         "id": "264713",
+        "Prof": "Tailoring",
         "Exp": "Shadowlands",
         "craftQty": 45,
         "recipe": [
@@ -713,6 +741,7 @@
     {
         "name": "Hollow Night Fae Shrine",
         "id": "258242",
+        "Prof": "Inscription",
         "Exp": "Shadowlands",
         "craftQty": 50,
         "recipe": [
@@ -739,6 +768,7 @@
     {
         "name": "Kyrian Aspirant's Rolled Cushion",
         "id": "258561",
+        "Prof": "Tailoring",
         "Exp": "Shadowlands",
         "craftQty": 14,
         "recipe": [
@@ -749,6 +779,7 @@
     {
         "name": "Kyrian Floating Lamp",
         "id": "262663",
+        "Prof": "Jewelcrafting",
         "Exp": "Shadowlands",
         "craftQty": 18,
         "recipe": [
@@ -760,6 +791,7 @@
     {
         "name": "Large Revendreth Storage Crate",
         "id": "258247",
+        "Prof": "Inscription",
         "Exp": "Shadowlands",
         "craftQty": 20,
         "recipe": [
@@ -770,6 +802,7 @@
     {
         "name": "Maldraxxian Crate",
         "id": "258238",
+        "Prof": "Leatherworking",
         "Exp": "Shadowlands",
         "craftQty": 18,
         "recipe": [
@@ -781,6 +814,7 @@
     {
         "name": "Maldraxxian Runic Tablet",
         "id": "260699",
+        "Prof": "Jewelcrafting",
         "Exp": "Shadowlands",
         "craftQty": 30,
         "recipe": [
@@ -792,6 +826,7 @@
     {
         "name": "Margrave's Stitched Leather Rug",
         "id": "258248",
+        "Prof": "Leatherworking",
         "Exp": "Shadowlands",
         "craftQty": 30,
         "recipe": [
@@ -815,6 +850,7 @@
     {
         "name": "Tome of Maldraxxian Rituals",
         "id": "258239",
+        "Prof": "Inscription",
         "Exp": "Shadowlands",
         "craftQty": 10,
         "recipe": [
@@ -863,6 +899,7 @@
     {
         "name": "Argussian Circular Rug",
         "id": "251546",
+        "Prof": "Tailoring",
         "Exp": "Warlords of Draenor",
         "craftQty": 30,
         "recipe": [
@@ -874,6 +911,7 @@
     {
         "name": "Beloved Elekk Plushie",
         "id": "258303",
+        "Prof": "Tailoring",
         "Exp": "Warlords of Draenor",
         "craftQty": 8,
         "recipe": [
@@ -885,6 +923,7 @@
     {
         "name": "Blackrock Bunkbed",
         "id": "245432",
+        "Prof": "Leatherworking",
         "Exp": "Warlords of Draenor",
         "craftQty": 40,
         "recipe": [
@@ -920,6 +959,7 @@
     {
         "name": "Draenethyst Sconce",
         "id": "251550",
+        "Prof": "Jewelcrafting",
         "Exp": "Warlords of Draenor",
         "craftQty": 8,
         "recipe": [
@@ -944,6 +984,7 @@
     {
         "name": "Draenic Basin",
         "id": "251495",
+        "Prof": "Jewelcrafting",
         "Exp": "Warlords of Draenor",
         "craftQty": 25,
         "recipe": [
@@ -968,6 +1009,7 @@
     {
         "name": "Frostwall Elevated Brazier",
         "id": "245534",
+        "Prof": "Inscription",
         "Exp": "Warlords of Draenor",
         "craftQty": 25,
         "recipe": [
@@ -1004,6 +1046,7 @@
     {
         "name": "Karabor Bed",
         "id": "245421",
+        "Prof": "Tailoring",
         "Exp": "Warlords of Draenor",
         "craftQty": 35,
         "recipe": [
@@ -1014,6 +1057,7 @@
     {
         "name": "Orcish Banded Barrel",
         "id": "244317",
+        "Prof": "Inscription",
         "Exp": "Warlords of Draenor",
         "craftQty": 6,
         "recipe": [
@@ -1037,6 +1081,7 @@
     {
         "name": "Orcish Fence",
         "id": "244313",
+        "Prof": "Inscription",
         "Exp": "Warlords of Draenor",
         "craftQty": 15,
         "recipe": [
@@ -1048,6 +1093,7 @@
     {
         "name": "Orcish Fencepost",
         "id": "245441",
+        "Prof": "Inscription",
         "Exp": "Warlords of Draenor",
         "craftQty": 10,
         "recipe": [
@@ -1058,6 +1104,7 @@
     {
         "name": "Orcish Sleeping Cot",
         "id": "244323",
+        "Prof": "Leatherworking",
         "Exp": "Warlords of Draenor",
         "craftQty": 22,
         "recipe": [
@@ -1080,6 +1127,7 @@
     {
         "name": "Wooden Shipping Crate",
         "id": "244319",
+        "Prof": "Inscription",
         "Exp": "Warlords of Draenor",
         "craftQty": 8,
         "recipe": [
@@ -1117,6 +1165,7 @@
     {
         "name": "Gilnean Map",
         "id": "257696",
+        "Prof": "Inscription",
         "Exp": "Cataclysm",
         "craftQty": 8,
         "recipe": [
@@ -1139,6 +1188,7 @@
     {
         "name": "Gilnean Postbox",
         "id": "257695",
+        "Prof": "Inscription",
         "Exp": "Cataclysm",
         "craftQty": 35,
         "recipe": [
@@ -1162,6 +1212,7 @@
     {
         "name": "Gilnean Rocking Chair",
         "id": "245623",
+        "Prof": "Inscription",
         "Exp": "Cataclysm",
         "craftQty": 25,
         "recipe": [
@@ -1173,6 +1224,7 @@
     {
         "name": "Gilnean Spare Saddle",
         "id": "264712",
+        "Prof": "Leatherworking",
         "Exp": "Cataclysm",
         "craftQty": 12,
         "recipe": [
@@ -1184,6 +1236,7 @@
     {
         "name": "Gilnean Wall Shelf",
         "id": "245622",
+        "Prof": "Inscription",
         "Exp": "Cataclysm",
         "craftQty": 10,
         "recipe": [
@@ -1194,6 +1247,7 @@
     {
         "name": "Gilnean Wooden Table",
         "id": "245621",
+        "Prof": "Inscription",
         "Exp": "Cataclysm",
         "craftQty": 25,
         "recipe": [
@@ -1217,6 +1271,7 @@
     {
         "name": "Rolled Scarab Rug",
         "id": "264677",
+        "Prof": "Leatherworking",
         "Exp": "Cataclysm",
         "craftQty": 14,
         "recipe": [
@@ -1228,6 +1283,7 @@
     {
         "name": "Scaled Twilight Mosaic",
         "id": "257806",
+        "Prof": "Leatherworking",
         "Exp": "Cataclysm",
         "craftQty": 40,
         "recipe": [
@@ -1253,6 +1309,7 @@
     {
         "name": "Smoke Lamp",
         "id": "257406",
+        "Prof": "Jewelcrafting",
         "Exp": "Cataclysm",
         "craftQty": 8,
         "recipe": [
@@ -1264,6 +1321,7 @@
     {
         "name": "Smoke Sconce",
         "id": "249143",
+        "Prof": "Jewelcrafting",
         "Exp": "Cataclysm",
         "craftQty": 12,
         "recipe": [
@@ -1288,6 +1346,7 @@
     {
         "name": "Surwich Expedition Tent",
         "id": "245618",
+        "Prof": "Tailoring",
         "Exp": "Cataclysm",
         "craftQty": 35,
         "recipe": [
@@ -1312,6 +1371,7 @@
     {
         "name": "Hanging Paper Lanterns",
         "id": "247731",
+        "Prof": "Inscription",
         "Exp": "Mists of Pandaria",
         "craftQty": 15,
         "recipe": [
@@ -1334,6 +1394,7 @@
     {
         "name": "Jade Temple Dragon Fountain",
         "id": "247736",
+        "Prof": "Jewelcrafting",
         "Exp": "Mists of Pandaria",
         "craftQty": 50,
         "recipe": [
@@ -1346,6 +1407,7 @@
     {
         "name": "Lorewalker's Bookcase",
         "id": "247669",
+        "Prof": "Inscription",
         "Exp": "Mists of Pandaria",
         "craftQty": 45,
         "recipe": [
@@ -1358,6 +1420,7 @@
     {
         "name": "Lucky Traveler's Bench",
         "id": "247735",
+        "Prof": "Inscription",
         "Exp": "Mists of Pandaria",
         "craftQty": 20,
         "recipe": [
@@ -1419,6 +1482,7 @@
     {
         "name": "Pandaren Fishing Net",
         "id": "258302",
+        "Prof": "Tailoring",
         "Exp": "Mists of Pandaria",
         "craftQty": 8,
         "recipe": [
@@ -1429,6 +1493,7 @@
     {
         "name": "Pandaren Meander Rug",
         "id": "247738",
+        "Prof": "Tailoring",
         "Exp": "Mists of Pandaria",
         "craftQty": 25,
         "recipe": [
@@ -1451,6 +1516,7 @@
     {
         "name": "Pandaren Stone Post",
         "id": "247728",
+        "Prof": "Jewelcrafting",
         "Exp": "Mists of Pandaria",
         "craftQty": 10,
         "recipe": [
@@ -1461,6 +1527,7 @@
     {
         "name": "Pandaren Stone Wall",
         "id": "245509",
+        "Prof": "Jewelcrafting",
         "Exp": "Mists of Pandaria",
         "craftQty": 15,
         "recipe": [
@@ -1483,6 +1550,7 @@
     {
         "name": "Pandaren Wooden Table",
         "id": "245514",
+        "Prof": "Inscription",
         "Exp": "Mists of Pandaria",
         "craftQty": 25,
         "recipe": [
@@ -1507,6 +1575,7 @@
     {
         "name": "Serenity Peak Tent",
         "id": "247856",
+        "Prof": "Leatherworking",
         "Exp": "Mists of Pandaria",
         "craftQty": 40,
         "recipe": [
@@ -1518,6 +1587,7 @@
     {
         "name": "Square Pandaren Table",
         "id": "245513",
+        "Prof": "Inscription",
         "Exp": "Mists of Pandaria",
         "craftQty": 20,
         "recipe": [
@@ -1528,6 +1598,7 @@
     {
         "name": "Wise Pandaren's Bed",
         "id": "247767",
+        "Prof": "Leatherworking",
         "Exp": "Mists of Pandaria",
         "craftQty": 30,
         "recipe": [
@@ -1552,6 +1623,7 @@
     {
         "name": "Beloved Raptor Plushie",
         "id": "258557",
+        "Prof": "Tailoring",
         "Exp": "Legion",
         "craftQty": 8,
         "recipe": [
@@ -1564,6 +1636,7 @@
     {
         "name": "Circular Shal'dorei Rug",
         "id": "247920",
+        "Prof": "Tailoring",
         "Exp": "Legion",
         "craftQty": 40,
         "recipe": [
@@ -1575,6 +1648,7 @@
     {
         "name": "Covered Square Suramar Table",
         "id": "247916",
+        "Prof": "Inscription",
         "Exp": "Legion",
         "craftQty": 35,
         "recipe": [
@@ -1597,6 +1671,7 @@
     {
         "name": "Dalaran Display Shelves",
         "id": "258224",
+        "Prof": "Inscription",
         "Exp": "Legion",
         "craftQty": 22,
         "recipe": [
@@ -1621,6 +1696,7 @@
     {
         "name": "Highmountain Tanner's Frame",
         "id": "257400",
+        "Prof": "Leatherworking",
         "Exp": "Legion",
         "craftQty": 34,
         "recipe": [
@@ -1632,6 +1708,7 @@
     {
         "name": "Nightborne Jeweler's Table",
         "id": "247918",
+        "Prof": "Inscription",
         "Exp": "Legion",
         "craftQty": 28,
         "recipe": [
@@ -1657,6 +1734,7 @@
     {
         "name": "Shaded Suramar Window",
         "id": "245557",
+        "Prof": "Jewelcrafting",
         "Exp": "Legion",
         "craftQty": 25,
         "recipe": [
@@ -1668,6 +1746,7 @@
     {
         "name": "Shal'dorei Open-Air Tent",
         "id": "248010",
+        "Prof": "Tailoring",
         "Exp": "Legion",
         "craftQty": 40,
         "recipe": [
@@ -1702,6 +1781,7 @@
     {
         "name": "Suramar Dresser",
         "id": "245396",
+        "Prof": "Inscription",
         "Exp": "Legion",
         "craftQty": 30,
         "recipe": [
@@ -1736,6 +1816,7 @@
     {
         "name": "Suramar Jeweler's Assortment",
         "id": "258227",
+        "Prof": "Jewelcrafting",
         "Exp": "Legion",
         "craftQty": 12,
         "recipe": [
@@ -1750,6 +1831,7 @@
     {
         "name": "Suramar Storage Crate",
         "id": "247925",
+        "Prof": "Inscription",
         "Exp": "Legion",
         "craftQty": 20,
         "recipe": [
@@ -1760,6 +1842,7 @@
     {
         "name": "Tauren Fencepost",
         "id": "245407",
+        "Prof": "Leatherworking",
         "Exp": "Legion",
         "craftQty": 15,
         "recipe": [
@@ -1770,6 +1853,7 @@
     {
         "name": "Tauren Leather Fence",
         "id": "245406",
+        "Prof": "Leatherworking",
         "Exp": "Legion",
         "craftQty": 20,
         "recipe": [
@@ -1805,6 +1889,7 @@
     {
         "name": "Boralus Barrel",
         "id": "252035",
+        "Prof": "Inscription",
         "Exp": "Battle for Azeroth",
         "craftQty": 6,
         "recipe": [
@@ -1815,6 +1900,7 @@
     {
         "name": "Boralus Bookshelf",
         "id": "252401",
+        "Prof": "Inscription",
         "Exp": "Battle for Azeroth",
         "craftQty": 8,
         "recipe": [
@@ -1886,6 +1972,7 @@
     {
         "name": "Gilded Zandalari Table",
         "id": "245499",
+        "Prof": "Inscription",
         "Exp": "Battle for Azeroth",
         "craftQty": 35,
         "recipe": [
@@ -1934,6 +2021,7 @@
     {
         "name": "Red Dazar'alor Rug",
         "id": "243101",
+        "Prof": "Tailoring",
         "Exp": "Battle for Azeroth",
         "craftQty": 30,
         "recipe": [
@@ -1945,6 +2033,7 @@
     {
         "name": "Sandfury Diplomat's Banner",
         "id": "258558",
+        "Prof": "Leatherworking",
         "Exp": "Battle for Azeroth",
         "craftQty": 22,
         "recipe": [
@@ -1956,6 +2045,7 @@
     {
         "name": "Small Mask of Bwonsamdi, Loa of Graves",
         "id": "245496",
+        "Prof": "Jewelcrafting",
         "Exp": "Battle for Azeroth",
         "craftQty": 20,
         "recipe": [
@@ -1991,6 +2081,7 @@
     {
         "name": "Zanchuli Tapestry",
         "id": "245418",
+        "Prof": "Tailoring",
         "Exp": "Battle for Azeroth",
         "craftQty": 35,
         "recipe": [
@@ -2013,6 +2104,7 @@
     {
         "name": "Zandalari Ritual Drum",
         "id": "245412",
+        "Prof": "Leatherworking",
         "Exp": "Battle for Azeroth",
         "craftQty": 40,
         "recipe": [
@@ -2024,6 +2116,7 @@
     {
         "name": "Zandalari Skullfire Lamp",
         "id": "245414",
+        "Prof": "Jewelcrafting",
         "Exp": "Battle for Azeroth",
         "craftQty": 40,
         "recipe": [
@@ -2035,6 +2128,7 @@
     {
         "name": "Zuldazar Fence",
         "id": "245415",
+        "Prof": "Inscription",
         "Exp": "Battle for Azeroth",
         "craftQty": 15,
         "recipe": [
@@ -2045,6 +2139,7 @@
     {
         "name": "Zuldazar Fencepost",
         "id": "245416",
+        "Prof": "Inscription",
         "Exp": "Battle for Azeroth",
         "craftQty": 10,
         "recipe": [
@@ -2069,6 +2164,7 @@
     {
         "name": "Draconic Circular Rug",
         "id": "248121",
+        "Prof": "Tailoring",
         "Exp": "Dragonflight",
         "craftQty": 35,
         "recipe": [
@@ -2081,6 +2177,7 @@
     {
         "name": "Draconic Nesting Bed",
         "id": "248114",
+        "Prof": "Leatherworking",
         "Exp": "Dragonflight",
         "craftQty": 45,
         "recipe": [
@@ -2132,6 +2229,7 @@
     {
         "name": "Literature of the Blue Dragonflight",
         "id": "248118",
+        "Prof": "Inscription",
         "Exp": "Dragonflight",
         "craftQty": 15,
         "recipe": [
@@ -2144,6 +2242,7 @@
     {
         "name": "Literature of the Green Dragonflight",
         "id": "248119",
+        "Prof": "Inscription",
         "Exp": "Dragonflight",
         "craftQty": 16,
         "recipe": [
@@ -2156,6 +2255,7 @@
     {
         "name": "Literature of the Red Dragonflight",
         "id": "248120",
+        "Prof": "Inscription",
         "Exp": "Dragonflight",
         "craftQty": 16,
         "recipe": [
@@ -2167,6 +2267,7 @@
     {
         "name": "Loch Modan Bearskin Rug",
         "id": "242948",
+        "Prof": "Leatherworking",
         "Exp": "Dragonflight",
         "craftQty": 15,
         "recipe": [
@@ -2178,6 +2279,7 @@
     {
         "name": "Long Valdrakken Storage Crate",
         "id": "248108",
+        "Prof": "Inscription",
         "Exp": "Dragonflight",
         "craftQty": 14,
         "recipe": [
@@ -2188,6 +2290,7 @@
     {
         "name": "Tapestry of the Five Flights",
         "id": "257053",
+        "Prof": "Tailoring",
         "Exp": "Dragonflight",
         "craftQty": 28,
         "recipe": [
@@ -2229,6 +2332,7 @@
     {
         "name": "Valdrakken Banded Barrel",
         "id": "248106",
+        "Prof": "Inscription",
         "Exp": "Dragonflight",
         "craftQty": 10,
         "recipe": [
@@ -2251,6 +2355,7 @@
     {
         "name": "Valdrakken Fence",
         "id": "248109",
+        "Prof": "Jewelcrafting",
         "Exp": "Dragonflight",
         "craftQty": 15,
         "recipe": [
@@ -2262,6 +2367,7 @@
     {
         "name": "Valdrakken Fencepost",
         "id": "248110",
+        "Prof": "Jewelcrafting",
         "Exp": "Dragonflight",
         "craftQty": 10,
         "recipe": [
@@ -2272,6 +2378,7 @@
     {
         "name": "Valdrakken Gilded Throne",
         "id": "248654",
+        "Prof": "Jewelcrafting",
         "Exp": "Dragonflight",
         "craftQty": 26,
         "recipe": [
@@ -2295,6 +2402,7 @@
     {
         "name": "Valdrakken Market Tent",
         "id": "248657",
+        "Prof": "Leatherworking",
         "Exp": "Dragonflight",
         "craftQty": 40,
         "recipe": [
@@ -2306,6 +2414,7 @@
     {
         "name": "Valdrakken Storage Crate",
         "id": "248107",
+        "Prof": "Inscription",
         "Exp": "Dragonflight",
         "craftQty": 10,
         "recipe": [
@@ -2316,6 +2425,7 @@
     {
         "name": "Valdrakken Wall Shelf",
         "id": "264679",
+        "Prof": "Inscription",
         "Exp": "Dragonflight",
         "craftQty": 18,
         "recipe": [
@@ -2355,6 +2465,7 @@
     {
         "name": "Algari Fence",
         "id": "253164",
+        "Prof": "Inscription",
         "Exp": "The War Within",
         "craftQty": 15,
         "recipe": [
@@ -2365,6 +2476,7 @@
     {
         "name": "Algari Fencepost",
         "id": "253165",
+        "Prof": "Inscription",
         "Exp": "The War Within",
         "craftQty": 10,
         "recipe": [
@@ -2416,6 +2528,7 @@
     {
         "name": "Dornogal Bookcase",
         "id": "253022",
+        "Prof": "Inscription",
         "Exp": "The War Within",
         "craftQty": 50,
         "recipe": [
@@ -2428,6 +2541,7 @@
     {
         "name": "Dornogal Framed Rug",
         "id": "252755",
+        "Prof": "Tailoring",
         "Exp": "The War Within",
         "craftQty": 30,
         "recipe": [
@@ -2463,6 +2577,7 @@
     {
         "name": "Forgeground Market Bins",
         "id": "253167",
+        "Prof": "Inscription",
         "Exp": "The War Within",
         "craftQty": 18,
         "recipe": [
@@ -2473,6 +2588,7 @@
     {
         "name": "Freywold Table",
         "id": "253036",
+        "Prof": "Inscription",
         "Exp": "The War Within",
         "craftQty": 35,
         "recipe": [
@@ -2484,6 +2600,7 @@
     {
         "name": "Gundargaz Candelabra",
         "id": "253253",
+        "Prof": "Jewelcrafting",
         "Exp": "The War Within",
         "craftQty": 25,
         "recipe": [
@@ -2510,6 +2627,7 @@
     {
         "name": "Meadery Storage Chest",
         "id": "253169",
+        "Prof": "Inscription",
         "Exp": "The War Within",
         "craftQty": 26,
         "recipe": [
@@ -2534,6 +2652,7 @@
     {
         "name": "Octagonal Ochre Window",
         "id": "245559",
+        "Prof": "Jewelcrafting",
         "Exp": "The War Within",
         "craftQty": 16,
         "recipe": [
@@ -2609,6 +2728,7 @@
     {
         "name": "Undermine Bean Bag Chair",
         "id": "245305",
+        "Prof": "Tailoring",
         "Exp": "The War Within",
         "craftQty": 20,
         "recipe": [
@@ -2620,6 +2740,7 @@
     {
         "name": "Well-Lit Incontinental Couch",
         "id": "239214",
+        "Prof": "Leatherworking",
         "Exp": "The War Within",
         "craftQty": 38,
         "recipe": [
@@ -2632,6 +2753,7 @@
     {
         "name": "Zhevra-Stripe Rug",
         "id": "243327",
+        "Prof": "Leatherworking",
         "Exp": "The War Within",
         "craftQty": 30,
         "recipe": [
@@ -2795,6 +2917,17 @@
             { "name": "Ethereal Ink", "id": "43124", "count": 10},
             { "name": "Scroll of Intellect VI", "id": "33458", "count": 50},
             { "name": "Primal Earth", "id": "22452", "count": 4}
+        ]
+    },
+    {
+        "name": "Kirin Tor Crate",
+        "id": "258209",
+        "Prof": "Inscription",
+        "Exp": "Wrath of the Lich King",
+        "craftQty": 6,
+        "recipe": [
+            { "name": "Snowfall Ink", "id": "43127", "count": 3},
+            { "name": "Ametrine", "id": "36931", "count": 2}
         ]
     }
   ]

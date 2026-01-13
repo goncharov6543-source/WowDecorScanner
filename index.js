@@ -187,7 +187,7 @@ async function generateHTML() {
             name: item.name,
             icon: metaData[itemId]?.icon || '',
             exp: item.Exp,
-            prof: item.Prof, // ПРАВКА 2: Додаємо професію в об'єкт
+            prof: item.Prof,
             recipeRaw: item.recipe || [],
             lumberPrice: lumberPrice,
             bestPrice: bestListing.p,
@@ -214,9 +214,47 @@ async function generateHTML() {
         <title>WoW Decor Scanner</title>
         <style>
             body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
-            .container { max-width: 1200px; margin: 0 auto; padding-bottom: 50px; } /* Трохи збільшив ширину для нових колонок */
-            .header-container { position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 40px; padding-top: 10px; }
+            .container { max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
+            
+            .header-container { 
+                position: relative; 
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                margin-bottom: 40px; 
+                padding-top: 10px; 
+            }
+
+            /* --- НОВІ СТИЛІ ДЛЯ ПОШУКУ --- */
+            .search-wrapper {
+                position: absolute;
+                left: 0;
+                top: 0;
+                display: flex;
+                align-items: center;
+            }
+            
+            #smartSearchInput {
+                background-color: #1a1a1a;
+                border: 1px solid #333;
+                color: #fff;
+                padding: 10px 15px;
+                border-radius: 6px;
+                width: 300px; 
+                font-size: 14px;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+            #smartSearchInput:focus {
+                border-color: #ffd700;
+            }
+            #smartSearchInput::placeholder {
+                color: #666;
+            }
+            /* ----------------------------- */
+
             h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; }
+            
             .header-right { position: absolute; right: 0; top: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
             .update-time { font-size: 0.85em; color: #666; }
             .btn-import { background: #a335ee; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9em; transition: background 0.2s; }
@@ -244,14 +282,13 @@ async function generateHTML() {
             .name-text { font-weight: 600; font-size: 1.1em; color: #a335ee; position: relative; cursor: copy; transition: color 0.2s; }
             .name-text:hover { color: #fff; text-decoration: underline; }
             
-            /* Єдиний стиль для плиток */
             .info-badge {
                 height: 34px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 border-radius: 4px;
-                font-size: 0.9em; /* Трохи більший шрифт для кращої читабельності */
+                font-size: 0.9em;
                 box-sizing: border-box;
                 white-space: nowrap;
             }
@@ -329,7 +366,12 @@ async function generateHTML() {
     <body>
         <div class="container">
             <div class="header-container">
-                <h1>💎 WoW Profit Scanner</h1>
+                <div class="search-wrapper">
+                    <input type="text" id="smartSearchInput" placeholder="Пошук: назва, патч або профа...">
+                </div>
+
+                <h1>💎 WoW Decor Scanner</h1>
+                
                 <div class="header-right">
                     <span class="update-time">Оновлено: ${updateTime}</span>
                     <button class="btn-import">Згенерувати Import</button>
@@ -345,10 +387,15 @@ async function generateHTML() {
         
         <script>
             const ALL_DATA = ${jsonPayload};
+            
+            // Змінні для роботи з фільтрацією та пагінацією
+            let activeData = ALL_DATA; // Список, який зараз відображається (відфільтрований)
             let currentIndex = 0;
             const ITEMS_PER_PAGE = 20;
 
+            // Функції інтерфейсу
             function toggleDetails(card) { card.classList.toggle('active'); }
+            
             function copyName(event, text) {
                 event.stopPropagation();
                 navigator.clipboard.writeText(text).then(() => {
@@ -358,11 +405,11 @@ async function generateHTML() {
                 });
             }
 
+            // Головна функція генерації рядка (повертає HTML string)
             function createItemHTML(item) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
                 
                 const expLabel = item.exp ? \`<div class="col-exp info-badge">\${item.exp}</div>\` : '<div class="col-exp info-badge"></div>';
-                // ПРАВКА 2: Генерація HTML для професії
                 const profLabel = item.prof ? \`<div class="col-prof info-badge">\${item.prof}</div>\` : '';
                 
                 let lumberClass = "neutral";
@@ -376,7 +423,6 @@ async function generateHTML() {
                 if (item.reagentsList && item.reagentsList.length > 0) {
                     recipeHtml = '<ul class="recipe-list">';
                     item.reagentsList.forEach(r => {
-                         // ПРАВКА 1: Прибрано Math.round() для реагентів, додано toLocaleString з дробами
                          recipeHtml += \`
                             <li>
                                 <div class="reag-left">
@@ -451,11 +497,13 @@ async function generateHTML() {
                 </div>\`;
             }
 
+            // Логіка пагінації (залежить від activeData)
             function loadMore() {
                 const list = document.getElementById('list');
                 const btn = document.getElementById('btnLoadMore');
                 
-                const nextItems = ALL_DATA.slice(currentIndex, currentIndex + ITEMS_PER_PAGE);
+                // Беремо шматок з відфільтрованого масиву
+                const nextItems = activeData.slice(currentIndex, currentIndex + ITEMS_PER_PAGE);
                 
                 if (nextItems.length > 0) {
                     const html = nextItems.map(item => createItemHTML(item)).join('');
@@ -463,14 +511,54 @@ async function generateHTML() {
                     currentIndex += nextItems.length;
                 }
 
-                if (currentIndex >= ALL_DATA.length) {
+                // Ховаємо кнопку, якщо дійшли до кінця списку
+                if (currentIndex >= activeData.length) {
                     btn.classList.add('hidden');
+                } else {
+                    btn.classList.remove('hidden');
                 }
             }
 
+            // Логіка ПОШУКУ
+            function handleSearch(e) {
+                const term = e.target.value.toLowerCase();
+                const list = document.getElementById('list');
+                const btn = document.getElementById('btnLoadMore');
+
+                // 1. Фільтруємо ВСІ дані (по назві, патчу або профі)
+                const filtered = ALL_DATA.filter(item => {
+                    const inName = item.name.toLowerCase().includes(term);
+                    const inExp = item.exp ? item.exp.toLowerCase().includes(term) : false;
+                    const inProf = item.prof ? item.prof.toLowerCase().includes(term) : false;
+                    
+                    return inName || inExp || inProf;
+                });
+
+                // 2. Сортуємо (найвигідніші зверху)
+                filtered.sort((a, b) => b.lumberPrice - a.lumberPrice);
+
+                // 3. Оновлюємо активні дані
+                activeData = filtered;
+                currentIndex = 0;
+                list.innerHTML = ''; // Очищаємо екран
+
+                // 4. Показуємо першу порцію
+                if (activeData.length === 0) {
+                    list.innerHTML = '<div style="text-align:center; padding:20px; color:#666;">Нічого не знайдено</div>';
+                    btn.classList.add('hidden');
+                } else {
+                    loadMore();
+                }
+            }
+
+            // Ініціалізація
             document.addEventListener('DOMContentLoaded', () => {
+                // Перший рендер
                 loadMore();
+                
+                // Слухачі
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
+                document.getElementById('smartSearchInput').addEventListener('input', handleSearch);
             });
         </script>
         <script src="import.js"></script>
