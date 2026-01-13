@@ -187,6 +187,7 @@ async function generateHTML() {
             name: item.name,
             icon: metaData[itemId]?.icon || '',
             exp: item.Exp,
+            prof: item.Prof, // ПРАВКА 2: Додаємо професію в об'єкт
             recipeRaw: item.recipe || [],
             lumberPrice: lumberPrice,
             bestPrice: bestListing.p,
@@ -210,10 +211,10 @@ async function generateHTML() {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>WoW Profit Scanner</title>
+        <title>WoW Decor Scanner</title>
         <style>
             body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
-            .container { max-width: 1100px; margin: 0 auto; padding-bottom: 50px; }
+            .container { max-width: 1200px; margin: 0 auto; padding-bottom: 50px; } /* Трохи збільшив ширину для нових колонок */
             .header-container { position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 40px; padding-top: 10px; }
             h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; }
             .header-right { position: absolute; right: 0; top: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
@@ -250,20 +251,18 @@ async function generateHTML() {
                 align-items: center;
                 justify-content: center;
                 border-radius: 4px;
-                font-size: 0.95em;
+                font-size: 0.9em; /* Трохи більший шрифт для кращої читабельності */
                 box-sizing: border-box;
+                white-space: nowrap;
             }
 
-            /* ЗМІНИ ТУТ: автоматична ширина, відступи, менший шрифт */
-            .col-exp { 
+            .col-exp, .col-prof { 
                 background: #252629; 
                 color: #888; 
-                width: auto;         /* Було фіксовано */
-                min-width: 100px;    /* Мінімальний розмір для краси */
-                padding: 0 15px;     /* Повітря по боках */
-                margin-right: 15px; 
-                white-space: nowrap; 
-                font-size: 0.85em;   /* Зменшений шрифт */
+                width: auto;
+                min-width: 100px;
+                padding: 0 15px;
+                margin-right: 10px;
             }
             
             .col-lumber { 
@@ -361,7 +360,10 @@ async function generateHTML() {
 
             function createItemHTML(item) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
+                
                 const expLabel = item.exp ? \`<div class="col-exp info-badge">\${item.exp}</div>\` : '<div class="col-exp info-badge"></div>';
+                // ПРАВКА 2: Генерація HTML для професії
+                const profLabel = item.prof ? \`<div class="col-prof info-badge">\${item.prof}</div>\` : '';
                 
                 let lumberClass = "neutral";
                 if (item.lumberPrice > 0) lumberClass = "positive";
@@ -374,6 +376,7 @@ async function generateHTML() {
                 if (item.reagentsList && item.reagentsList.length > 0) {
                     recipeHtml = '<ul class="recipe-list">';
                     item.reagentsList.forEach(r => {
+                         // ПРАВКА 1: Прибрано Math.round() для реагентів, додано toLocaleString з дробами
                          recipeHtml += \`
                             <li>
                                 <div class="reag-left">
@@ -382,7 +385,7 @@ async function generateHTML() {
                                     <span class="reagent-name">\${r.name}</span>
                                 </div>
                                 <div class="reag-right">
-                                     \${r.price ? Math.round(r.price).toLocaleString() : '?'} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                                     \${r.price ? r.price.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2}) : '?'} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
                                 </div>
                             </li>\`;
                     });
@@ -410,7 +413,7 @@ async function generateHTML() {
                                 </div>
                             </div>
                             \${expLabel}
-                        </div>
+                            \${profLabel} </div>
 
                         <div class="main-row-right">
                             <div class="col-lumber info-badge \${lumberClass}" onclick="toggleDetails(this.closest('.item-card'))">

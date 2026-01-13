@@ -2,6 +2,7 @@
     {
         "name": "Proudmoore Shipping Crate",
         "id": 252389,
+        "Prof": "Inscription",
         "Exp": "Battle for Azeroth",
         "craftQty": 8,
         "recipe": [
@@ -12,6 +13,7 @@
     {
         "name": "Aldor Stellar Console",
         "id": 257093,
+        "Prof": "Enchanting",
         "Exp": "Burning Crusade",
         "craftQty": 40,
         "recipe": [
@@ -56,6 +58,7 @@
     {
         "name": "Glazed Sin'dorei Vial",
         "id": "264705",
+        "Prof": "Alchemy",
         "Exp": "Burning Crusade",
         "craftQty": 6,
         "recipe": [
@@ -78,6 +81,7 @@
     {
         "name": "Halaa Bench",
         "id": "258215",
+        "Prof": "Inscription",
         "Exp": "Burning Crusade",
         "craftQty": 20,
         "recipe": [
@@ -109,6 +113,7 @@
     {
         "name": "Shadow Council Torch",
         "id": "264706",
+        "Prof": "Alchemy",
         "Exp": "Burning Crusade",
         "craftQty": 16,
         "recipe": [
@@ -140,6 +145,7 @@
     {
         "name": "Stranglekelp Sack",
         "id": "264709",
+        "Prof": "Alchemy",
         "Exp": "Burning Crusade",
         "craftQty": 8,
         "recipe": [
@@ -150,6 +156,7 @@
     {
         "name": "Talon King's Totem",
         "id": "258192",
+        "Prof": "Inscription",
         "Exp": "Burning Crusade",
         "craftQty": 10,
         "recipe": [
@@ -171,6 +178,7 @@
     {
         "name": "Brill Coffin",
         "id": "245502",
+        "Prof": "Inscription",
         "Exp": "Vanilla",
         "craftQty": 25,
         "recipe": [
@@ -182,6 +190,7 @@
     {
         "name": "Brill Coffin Lid",
         "id": "245503",
+        "Prof": "Inscription",
         "Exp": "Vanilla",
         "craftQty": 15,
         "recipe": [
@@ -205,6 +214,7 @@
     {
         "name": "Dark Iron Table Saw",
         "id": "246410",
+        "Prof": "Engineering",
         "Exp": "Vanilla",
         "craftQty": 40,
         "recipe": [
@@ -217,6 +227,7 @@
     {
         "name": "Darkmaster's Mystical Brazier",
         "id": "263027",
+        "Prof": "Enchanting",
         "Exp": "Vanilla",
         "craftQty": 30,
         "recipe": [
@@ -252,6 +263,7 @@
     {
         "name": "Gnomish Steam-Powered Bed",
         "id": "246700",
+        "Prof": "Engineering",
         "Exp": "Vanilla",
         "craftQty": 25,
         "recipe": [
@@ -275,6 +287,7 @@
     {
         "name": "Kharanos Bookcase",
         "id": "246420",
+        "Prof": "Inscription",
         "Exp": "Vanilla",
         "craftQty": 50,
         "recipe": [
@@ -286,6 +299,7 @@
     {
         "name": "Shadowforge Sconce",
         "id": "246111",
+        "Prof": "Blacksmithing",
         "Exp": "Vanilla",
         "craftQty": 10,
         "recipe": [
@@ -308,6 +322,7 @@
     {
         "name": "Steel Ironforge Emblem",
         "id": "246489",
+        "Prof": "Blacksmithing",
         "Exp": "Vanilla",
         "craftQty": 20,
         "recipe": [
@@ -319,6 +334,7 @@
     {
         "name": "Thunder Bluff Totem",
         "id": "258289",
+        "Prof": "Inscription",
         "Exp": "Vanilla",
         "craftQty": 30,
         "recipe": [
@@ -329,6 +345,7 @@
     {
         "name": "Tirisfal Hollow Campfire",
         "id": "253250",
+        "Prof": "Enchanting",
         "Exp": "Vanilla",
         "craftQty": 20,
         "recipe": [
@@ -340,7 +357,8 @@
     {
         "name": "Twilight Fire Canister",
         "id": "257095",
-        "Exp": "Vanilla",
+        "Prof": "Enchanting",
+        "Exp": "Cataclysm",
         "craftQty": 20,
         "recipe": [
             { "name": "Living Ember", "id": "69237", "count": 1},
@@ -363,6 +381,7 @@
     {
         "name": "Wooden Ironforge Table",
         "id": "246423",
+        "Prof": "Inscription",
         "Exp": "Vanilla",
         "craftQty": 45,
         "recipe": [
@@ -385,6 +404,7 @@
     {
         "name": "Dalaran Runic Anvil",
         "id": "257040",
+        "Prof": "Blacksmithing",
         "Exp": "Wrath of the Lich King",
         "craftQty": 40,
         "recipe": [
@@ -408,6 +428,7 @@
     {
         "name": "Dalaran Sewer Gate",
         "id": "264676",
+        "Prof": "Blacksmithing",
         "Exp": "Wrath of the Lich King",
         "craftQty": 30,
         "recipe": [
@@ -430,6 +451,7 @@
     {
         "name": "Dalaran Sun Sconce",
         "id": "264710",
+        "Prof": "Blacksmithing",
         "Exp": "Wrath of the Lich King",
         "craftQty": 8,
         "recipe": [
@@ -452,6 +474,7 @@
     {
         "name": "Home Defense Gadget",
         "id": "264708",
+        "Prof": "Engineering",
         "Exp": "Wrath of the Lich King",
         "craftQty": 28,
         "recipe": [
@@ -463,6 +486,7 @@
     {
         "name": "Icecrown Plague Canister",
         "id": "258213",
+        "Prof": "Alchemy",
         "Exp": "Wrath of the Lich King",
         "craftQty": 40,
         "recipe": [
@@ -476,6 +500,7 @@
     {
         "name": "Joybuzz's Joyful Wall of Trains",
         "id": "264711",
+        "Prof": "Engineering",
         "Exp": "Wrath of the Lich King",
         "craftQty": 46,
         "recipe": [
@@ -510,6 +535,7 @@
     {
         "name": "Resizable All-Purpose Gear",
         "id": "264707",
+        "Prof": "Engineering",
         "Exp": "Wrath of the Lich King",
         "craftQty": 20,
         "recipe": [
@@ -520,6 +546,7 @@
     {
         "name": "San'layn Blood Orb",
         "id": "258212",
+        "Prof": "Alchemy",
         "Exp": "Wrath of the Lich King",
         "craftQty": 20,
         "recipe": [
@@ -542,6 +569,7 @@
     {
         "name": "Stampwhistle's Postal Portal",
         "id": "257101",
+        "Prof": "Enchanting",
         "Exp": "Wrath of the Lich King",
         "craftQty": 20,
         "recipe": [
@@ -564,6 +592,7 @@
     {
         "name": "Ardenweald Lamppost",
         "id": "258237",
+        "Prof": "Enchanting",
         "Exp": "Shadowlands",
         "craftQty": 30,
         "recipe": [
@@ -575,6 +604,7 @@
     {
         "name": "Aspirant's Meditation Pool",
         "id": "257048",
+        "Prof": "Blacksmithing",
         "Exp": "Shadowlands",
         "craftQty": 45,
         "recipe": [
@@ -609,6 +639,7 @@
     {
         "name": "Bejeweled Venthyr Chalice",
         "id": "257049",
+        "Prof": "Blacksmithing",
         "Exp": "Shadowlands",
         "craftQty": 8,
         "recipe": [
@@ -632,6 +663,7 @@
     {
         "name": "Caramel Mint Noodle Dish",
         "id": "246705",
+        "Prof": "Cooking",
         "Exp": "Shadowlands",
         "craftQty": 8,
         "recipe": [
@@ -655,6 +687,7 @@
     {
         "name": "Cartel Xy Capture Crate",
         "id": "258252",
+        "Prof": "Engineering",
         "Exp": "Shadowlands",
         "craftQty": 42,
         "recipe": [
@@ -693,6 +726,7 @@
     {
         "name": "Kyrian Anima Barrel",
         "id": "258240",
+        "Prof": "Engineering",
         "Exp": "Shadowlands",
         "craftQty": 18,
         "recipe": [
@@ -769,6 +803,7 @@
     {
         "name": "Sintallow Candles",
         "id": "257051",
+        "Prof": "Alchemy",
         "Exp": "Shadowlands",
         "craftQty": 9,
         "recipe": [
@@ -793,6 +828,7 @@
     {
         "name": "Veil-Secured Animacone",
         "id": "257050",
+        "Prof": "Alchemy",
         "Exp": "Shadowlands",
         "craftQty": 12,
         "recipe": [
@@ -804,6 +840,7 @@
     {
         "name": "Venthyr Anima Bottle",
         "id": "257098",
+        "Prof": "Enchanting",
         "Exp": "Shadowlands",
         "craftQty": 6,
         "recipe": [
@@ -814,6 +851,7 @@
     {
         "name": "Ancestral Signal Brazier",
         "id": "245601",
+        "Prof": "Enchanting",
         "Exp": "Warlords of Draenor",
         "craftQty": 30,
         "recipe": [
@@ -858,6 +896,7 @@
     {
         "name": "Blackrock Weapon Rack",
         "id": "245436",
+        "Prof": "Blacksmithing",
         "Exp": "Warlords of Draenor",
         "craftQty": 40,
         "recipe": [
@@ -869,6 +908,7 @@
     {
         "name": "Draenei Stargazer's Telescope",
         "id": "251482",
+        "Prof": "Engineering",
         "Exp": "Warlords of Draenor",
         "craftQty": 20,
         "recipe": [
@@ -892,6 +932,7 @@
     {
         "name": "Draenethyst String Lights",
         "id": "251655",
+        "Prof": "Enchanting",
         "Exp": "Warlords of Draenor",
         "craftQty": 10,
         "recipe": [
@@ -914,6 +955,7 @@
     {
         "name": "Frostwall Architect's Table",
         "id": "244314",
+        "Prof": "Engineering",
         "Exp": "Warlords of Draenor",
         "craftQty": 25,
         "recipe": [
@@ -937,6 +979,7 @@
     {
         "name": "Frostwall Forge",
         "id": "245600",
+        "Prof": "Blacksmithing",
         "Exp": "Warlords of Draenor",
         "craftQty": 45,
         "recipe": [
@@ -948,6 +991,7 @@
     {
         "name": "Hungry Human's Platter",
         "id": "245428",
+        "Prof": "Cooking",
         "Exp": "Warlords of Draenor",
         "craftQty": 8,
         "recipe": [
@@ -981,6 +1025,7 @@
     {
         "name": "Orcish Felblood Cauldron",
         "id": "257044",
+        "Prof": "Alchemy",
         "Exp": "Warlords of Draenor",
         "craftQty": 25,
         "recipe": [
@@ -1023,6 +1068,7 @@
     {
         "name": "Wine Barrel",
         "id": "244318",
+        "Prof": "Alchemy",
         "Exp": "Warlords of Draenor",
         "craftQty": 16,
         "recipe": [
@@ -1045,6 +1091,7 @@
     {
         "name": "Gilnean Cauldron",
         "id": "245517",
+        "Prof": "Alchemy",
         "Exp": "Cataclysm",
         "craftQty": 30,
         "recipe": [
@@ -1057,6 +1104,7 @@
     {
         "name": "Gilnean Green Potion",
         "id": "257694",
+        "Prof": "Alchemy",
         "Exp": "Cataclysm",
         "craftQty": 10,
         "recipe": [
@@ -1080,6 +1128,7 @@
     {
         "name": "Gilnean Pitchfork",
         "id": "257042",
+        "Prof": "Blacksmithing",
         "Exp": "Cataclysm",
         "craftQty": 8,
         "recipe": [
@@ -1101,6 +1150,7 @@
     {
         "name": "Gilnean Problem Solver",
         "id": "245602",
+        "Prof": "Engineering",
         "Exp": "Cataclysm",
         "craftQty": 40,
         "recipe": [
@@ -1155,6 +1205,7 @@
     {
         "name": "Pyrewood Glass Bottle",
         "id": "257404",
+        "Prof": "Enchanting",
         "Exp": "Cataclysm",
         "craftQty": 8,
         "recipe": [
@@ -1189,6 +1240,7 @@
     {
         "name": "Small Gilnean Windmill",
         "id": "257689",
+        "Prof": "Engineering",
         "Exp": "Cataclysm",
         "craftQty": 50,
         "recipe": [
@@ -1224,6 +1276,7 @@
     {
         "name": "Standing Smoke Lamp",
         "id": "257409",
+        "Prof": "Blacksmithing",
         "Exp": "Cataclysm",
         "craftQty": 35,
         "recipe": [
@@ -1246,6 +1299,7 @@
     {
         "name": "Halfhill Cookpot",
         "id": "247733",
+        "Prof": "Engineering",
         "Exp": "Mists of Pandaria",
         "craftQty": 30,
         "recipe": [
@@ -1268,6 +1322,7 @@
     {
         "name": "Intense Mogu Brazier",
         "id": "257097",
+        "Prof": "Enchanting",
         "Exp": "Mists of Pandaria",
         "craftQty": 30,
         "recipe": [
@@ -1313,6 +1368,7 @@
     {
         "name": "Mushan Dumpling Stack",
         "id": "247220",
+        "Prof": "Cooking",
         "Exp": "Mists of Pandaria",
         "craftQty": 18,
         "recipe": [
@@ -1327,6 +1383,7 @@
     {
         "name": "Pandaren Alchemist's Kit",
         "id": "258214",
+        "Prof": "Alchemy",
         "Exp": "Mists of Pandaria",
         "craftQty": 16,
         "recipe": [
@@ -1339,6 +1396,7 @@
     {
         "name": "Pandaren Alchemist's Retort",
         "id": "257043",
+        "Prof": "Alchemy",
         "Exp": "Mists of Pandaria",
         "craftQty": 6,
         "recipe": [
@@ -1350,6 +1408,7 @@
     {
         "name": "Pandaren Fireplace",
         "id": "247752",
+        "Prof": "Blacksmithing",
         "Exp": "Mists of Pandaria",
         "craftQty": 40,
         "recipe": [
@@ -1380,6 +1439,7 @@
     {
         "name": "Pandaren Signal Brazier",
         "id": "247661",
+        "Prof": "Blacksmithing",
         "Exp": "Mists of Pandaria",
         "craftQty": 25,
         "recipe": [
@@ -1411,6 +1471,7 @@
     {
         "name": "Pandaren Table Lamp",
         "id": "257096",
+        "Prof": "Enchanting",
         "Exp": "Mists of Pandaria",
         "craftQty": 8,
         "recipe": [
@@ -1433,6 +1494,7 @@
     {
         "name": "Reconstructed Mogu Lightning Drill",
         "id": "258216",
+        "Prof": "Engineering",
         "Exp": "Mists of Pandaria",
         "craftQty": 50,
         "recipe": [
@@ -1477,6 +1539,7 @@
     {
         "name": "Arcan'dor Cutting Fountain",
         "id": "256680",
+        "Prof": "Alchemy",
         "Exp": "Legion",
         "craftQty": 50,
         "recipe": [
@@ -1523,6 +1586,7 @@
     {
         "name": "Dalaran Auto-Hammer",
         "id": "258226",
+        "Prof": "Engineering",
         "Exp": "Legion",
         "craftQty": 22,
         "recipe": [
@@ -1544,6 +1608,7 @@
     {
         "name": "Failed Failure Detection Pylon",
         "id": "258225",
+        "Prof": "Engineering",
         "Exp": "Legion",
         "craftQty": 28,
         "recipe": [
@@ -1580,6 +1645,7 @@
     {
         "name": "Nightspire Fountain",
         "id": "256681",
+        "Prof": "Enchanting",
         "Exp": "Legion",
         "craftQty": 48,
         "recipe": [
@@ -1613,6 +1679,7 @@
     {
         "name": "Starry Scrying Pool",
         "id": "257045",
+        "Prof": "Alchemy",
         "Exp": "Legion",
         "craftQty": 18,
         "recipe": [
@@ -1624,6 +1691,7 @@
     {
         "name": "Suramar Containment Cell",
         "id": "247923",
+        "Prof": "Enchanting",
         "Exp": "Legion",
         "craftQty": 34,
         "recipe": [
@@ -1646,6 +1714,7 @@
     {
         "name": "Suramar Fence",
         "id": "247922",
+        "Prof": "Blacksmithing",
         "Exp": "Legion",
         "craftQty": 15,
         "recipe": [
@@ -1656,6 +1725,7 @@
     {
         "name": "Suramar Fencepost",
         "id": "247909",
+        "Prof": "Blacksmithing",
         "Exp": "Legion",
         "craftQty": 10,
         "recipe": [
@@ -1710,6 +1780,7 @@
     {
         "name": "Tauren Soup Pot",
         "id": "245408",
+        "Prof": "Blacksmithing",
         "Exp": "Legion",
         "craftQty": 35,
         "recipe": [
@@ -1755,6 +1826,7 @@
     {
         "name": "Boralus Bottle Lamp",
         "id": "257046",
+        "Prof": "Alchemy",
         "Exp": "Battle for Azeroth",
         "craftQty": 5,
         "recipe": [
@@ -1766,6 +1838,7 @@
     {
         "name": "Boralus-Style Lobster Platter",
         "id": "245484",
+        "Prof": "Cooking",
         "Exp": "Battle for Azeroth",
         "craftQty": 8,
         "recipe": [
@@ -1778,6 +1851,7 @@
     {
         "name": "Brennadam Grinder",
         "id": "252397",
+        "Prof": "Blacksmithing",
         "Exp": "Battle for Azeroth",
         "craftQty": 18,
         "recipe": [
@@ -1788,6 +1862,7 @@
     {
         "name": "Deactivated Atomic Recalibrator",
         "id": "246604",
+        "Prof": "Engineering",
         "Exp": "Battle for Azeroth",
         "craftQty": 42,
         "recipe": [
@@ -1799,6 +1874,7 @@
     {
         "name": "Drust Enchanter's Rod",
         "id": "258560",
+        "Prof": "Enchanting",
         "Exp": "Battle for Azeroth",
         "craftQty": 6,
         "recipe": [
@@ -1832,6 +1908,7 @@
     {
         "name": "Gnomish Tesla Mega-Coil",
         "id": "246486",
+        "Prof": "Engineering",
         "Exp": "Battle for Azeroth",
         "craftQty": 45,
         "recipe": [
@@ -1844,6 +1921,7 @@
     {
         "name": "Mechagon Miniature Artificial Sun",
         "id": "246500",
+        "Prof": "Engineering",
         "Exp": "Battle for Azeroth",
         "craftQty": 16,
         "recipe": [
@@ -1889,6 +1967,7 @@
     {
         "name": "Stormsong Stove",
         "id": "252399",
+        "Prof": "Blacksmithing",
         "Exp": "Battle for Azeroth",
         "craftQty": 20,
         "recipe": [
@@ -1899,6 +1978,7 @@
     {
         "name": "Tidesage's Totem",
         "id": "258559",
+        "Prof": "Enchanting",
         "Exp": "Battle for Azeroth",
         "craftQty": 35,
         "recipe": [
@@ -1922,6 +2002,7 @@
     {
         "name": "Zandalari Bottle Shipment",
         "id": "257047",
+        "Prof": "Alchemy",
         "Exp": "Battle for Azeroth",
         "craftQty": 12,
         "recipe": [
@@ -1969,6 +2050,751 @@
         "recipe": [
             { "name": "Crimson Ink", "id": "158188", "count": 4},
             { "name": "Monelite Ore", "id": "152512", "count": 6}
+        ]
+    },
+    {
+        "name": "Bruffalon Rib Platter",
+        "id": "247225",
+        "Prof": "Cooking",
+        "Exp": "Dragonflight",
+        "craftQty": 25,
+        "recipe": [
+            { "name": "Perfect Preservatives", "id": "259894", "count": 15},
+            { "name": "Thrice-Spiced Mammoth Kabob", "id": "197996", "count": 4},
+            { "name": "Charred Hornswog Steaks", "id": "197774", "count": 3},
+            { "name": "Basilisk Eggs", "id": "197745", "count": 2},
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 4}
+        ]
+    },
+    {
+        "name": "Draconic Circular Rug",
+        "id": "248121",
+        "Exp": "Dragonflight",
+        "craftQty": 35,
+        "recipe": [
+            { "name": "Blazing Ink", "id": "194846", "count": 5},
+            { "name": "Wildercloth Bolt", "id": "193927", "count": 20},
+            { "name": "Spool of Wilderthread", "id": "192097", "count": 12},
+            { "name": "Serevite Ore", "id": "190396", "count": 16}
+        ]
+    },
+    {
+        "name": "Draconic Nesting Bed",
+        "id": "248114",
+        "Exp": "Dragonflight",
+        "craftQty": 45,
+        "recipe": [
+            { "name": "Mireslush Hide", "id": "193230", "count": 2},
+            { "name": "Dense Hide", "id": "193217", "count": 10},
+            { "name": "Illimited Diamond", "id": "192870", "count": 5},
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 10}
+        ]
+    },
+    {
+        "name": "Draconic Scribe's Basin",
+        "id": "256170",
+        "Prof": "Enchanting",
+        "Exp": "Dragonflight",
+        "craftQty": 50,
+        "recipe": [
+            { "name": "Five Flights' Grimoire", "id": "256171", "count": 1},
+            { "name": "Resonant Crystal", "id": "200113", "count": 5},
+            { "name": "Glittering Parchment", "id": "194784", "count": 9},
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 10}
+        ]
+    },
+    {
+        "name": "Drake Kebab Platter",
+        "id": "247222",
+        "Prof": "Cooking",
+        "Exp": "Dragonflight",
+        "craftQty": 28,
+        "recipe": [
+            { "name": "Perfect Preservatives", "id": "259894", "count": 15},
+            { "name": "Braised Bruffalon Brisket", "id": "197788", "count": 4},
+            { "name": "Salad on the Side", "id": "197764", "count": 5},
+            { "name": "Draconium Ore", "id": "189143", "count": 10}
+        ]
+    },
+    {
+        "name": "Five Flights' Grimoire",
+        "id": "256171",
+        "Prof": "Enchanting",
+        "Exp": "Dragonflight",
+        "craftQty": 16,
+        "recipe": [
+            { "name": "Glittering Parchment", "id": "194784", "count": 4},
+            { "name": "Vibrant Shard", "id": "194124", "count": 6},
+            { "name": "Wildercloth", "id": "193922", "count": 2},
+            { "name": "Awakened Air", "id": "190327", "count": 1}
+        ]
+    },
+    {
+        "name": "Literature of the Blue Dragonflight",
+        "id": "248118",
+        "Exp": "Dragonflight",
+        "craftQty": 15,
+        "recipe": [
+            { "name": "Serene Ink", "id": "194858", "count": 4},
+            { "name": "Flourishing Ink", "id": "194852", "count": 6},
+            { "name": "Glittering Parchment", "id": "194784", "count": 15},
+            { "name": "Blazing Ink", "id": "194846", "count": 3}
+        ]
+    },
+    {
+        "name": "Literature of the Green Dragonflight",
+        "id": "248119",
+        "Exp": "Dragonflight",
+        "craftQty": 16,
+        "recipe": [
+            { "name": "Serene Ink", "id": "194858", "count": 3},
+            { "name": "Flourishing Ink", "id": "194852", "count": 6},
+            { "name": "Glittering Parchment", "id": "194784", "count": 16},
+            { "name": "Blazing Ink", "id": "194846", "count": 2}
+        ]
+    },
+    {
+        "name": "Literature of the Red Dragonflight",
+        "id": "248120",
+        "Exp": "Dragonflight",
+        "craftQty": 16,
+        "recipe": [
+            { "name": "Serene Ink", "id": "194858", "count": 5},
+            { "name": "Glittering Parchment", "id": "194784", "count": 16},
+            { "name": "Blazing Ink", "id": "194846", "count": 7}
+        ]
+    },
+    {
+        "name": "Loch Modan Bearskin Rug",
+        "id": "242948",
+        "Exp": "Dragonflight",
+        "craftQty": 15,
+        "recipe": [
+            { "name": "Cured Rugged Hide", "id": "15407", "count": 2},
+            { "name": "Rune Thread", "id": "14341", "count": 2},
+            { "name": "Rugged Leather", "id": "8170", "count": 12}
+        ]
+    },
+    {
+        "name": "Long Valdrakken Storage Crate",
+        "id": "248108",
+        "Exp": "Dragonflight",
+        "craftQty": 14,
+        "recipe": [
+            { "name": "Blazing Ink", "id": "194846", "count": 6},
+            { "name": "Serevite Ore", "id": "190396", "count": 10}
+        ]
+    },
+    {
+        "name": "Tapestry of the Five Flights",
+        "id": "257053",
+        "Exp": "Dragonflight",
+        "craftQty": 28,
+        "recipe": [
+            { "name": "Frozen Spellthread", "id": "194012", "count": 2},
+            { "name": "Azureweave Bolt", "id": "193939", "count": 1},
+            { "name": "Chronocloth Bolt", "id": "193936", "count": 1},
+            { "name": "Fractured Glass", "id": "192872", "count": 3},
+            { "name": "Serevite Ore", "id": "190396", "count": 3}
+        ]
+    },
+    {
+        "name": "Thaldraszus Telescope",
+        "id": "248113",
+        "Prof": "Engineering",
+        "Exp": "Dragonflight",
+        "craftQty": 25,
+        "recipe": [
+            { "name": "Reinforced Machine Chassis", "id": "198200", "count": 4},
+            { "name": "Shock-Spring Coil", "id": "198188", "count": 4},
+            { "name": "Handful of Serevite Bolts", "id": "198185", "count": 4},
+            { "name": "Frameless Lens", "id": "192877", "count": 2}
+        ]
+    },
+    {
+        "name": "Titanic Tyrhold Fountain",
+        "id": "258253",
+        "Prof": "Engineering",
+        "Exp": "Dragonflight",
+        "craftQty": 50,
+        "recipe": [
+            { "name": "Glowing Titan Orb", "id": "201406", "count": 2},
+            { "name": "Iridescent Water", "id": "198487", "count": 20},
+            { "name": "Reinforced Machine Chassis", "id": "198200", "count": 9},
+            { "name": "Greased-Up Gears", "id": "198193", "count": 7},
+            { "name": "Handful of Serevite Bolts", "id": "198185", "count": 8},
+            { "name": "Awakened Order", "id": "190324", "count": 4}
+        ]
+    },
+    {
+        "name": "Valdrakken Banded Barrel",
+        "id": "248106",
+        "Exp": "Dragonflight",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Flourishing Ink", "id": "194852", "count": 3},
+            { "name": "Serevite Ore", "id": "190396", "count": 8}
+        ]
+    },
+    {
+        "name": "Valdrakken Blossomfruit Platter",
+        "id": "247224",
+        "Prof": "Cooking",
+        "Exp": "Dragonflight",
+        "craftQty": 22,
+        "recipe": [
+            { "name": "Perfect Preservatives", "id": "259894", "count": 15},
+            { "name": "Pebbled Rock Salts", "id": "197756", "count": 6},
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 4}
+        ]
+    },
+    {
+        "name": "Valdrakken Fence",
+        "id": "248109",
+        "Exp": "Dragonflight",
+        "craftQty": 15,
+        "recipe": [
+            { "name": "Glossy Stone", "id": "192885", "count": 4},
+            { "name": "Fractured Glass", "id": "192872", "count": 2},
+            { "name": "Serevite Ore", "id": "190396", "count": 18}
+        ]
+    },
+    {
+        "name": "Valdrakken Fencepost",
+        "id": "248110",
+        "Exp": "Dragonflight",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Glossy Stone", "id": "192885", "count": 4},
+            { "name": "Serevite Ore", "id": "190396", "count": 8}
+        ]
+    },
+    {
+        "name": "Valdrakken Gilded Throne",
+        "id": "248654",
+        "Exp": "Dragonflight",
+        "craftQty": 26,
+        "recipe": [
+            { "name": "Glossy Stone", "id": "192885", "count": 10},
+            { "name": "Illimited Diamond", "id": "192870", "count": 1},
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 6}
+        ]
+    },
+    {
+        "name": "Valdrakken Hanging Cauldron",
+        "id": "256430",
+        "Prof": "Blacksmithing",
+        "Exp": "Dragonflight",
+        "craftQty": 46,
+        "recipe": [
+            { "name": "Wildercloth", "id": "193922", "count": 4},
+            { "name": "Potion of Frozen Focus", "id": "191363", "count": 5},
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 9}
+        ]
+    },
+    {
+        "name": "Valdrakken Market Tent",
+        "id": "248657",
+        "Exp": "Dragonflight",
+        "craftQty": 40,
+        "recipe": [
+            { "name": "Wildercloth", "id": "193922", "count": 6},
+            { "name": "Resilient Leather", "id": "193210", "count": 5},
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 7}
+        ]
+    },
+    {
+        "name": "Valdrakken Storage Crate",
+        "id": "248107",
+        "Exp": "Dragonflight",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Blazing Ink", "id": "194846", "count": 4},
+            { "name": "Serevite Ore", "id": "190396", "count": 8}
+        ]
+    },
+    {
+        "name": "Valdrakken Wall Shelf",
+        "id": "264679",
+        "Exp": "Dragonflight",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Runed Writhebark", "id": "194863", "count": 2},
+            { "name": "Fractured Glass", "id": "192872", "count": 2},
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 2}
+        ]
+    },
+    {
+        "name": "Verdant Valdrakken Vase",
+        "id": "248111",
+        "Prof": "Alchemy",
+        "Exp": "Dragonflight",
+        "craftQty": 28,
+        "recipe": [
+            { "name": "Glossy Stone", "id": "192885", "count": 2},
+            { "name": "Omnium Draconis", "id": "191498", "count": 2},
+            { "name": "Awakened Earth", "id": "190316", "count": 2},
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 3}
+        ]
+    },
+    {
+        "name": "Wingrest Signal Brazier",
+        "id": "256427",
+        "Prof": "Blacksmithing",
+        "Exp": "Dragonflight",
+        "craftQty": 42,
+        "recipe": [
+            { "name": "Eternity Amber", "id": "192850", "count": 1},
+            { "name": "Sundered Onyx", "id": "192847", "count": 1},
+            { "name": "Vibrant Emerald", "id": "192844", "count": 1},
+            { "name": "Mystic Sapphire", "id": "192841", "count": 1},
+            { "name": "Queen's Ruby", "id": "192839", "count": 1},
+            { "name": "Primal Molten Alloy", "id": "190313", "count": 12}
+        ]
+    },
+    {
+        "name": "Algari Fence",
+        "id": "253164",
+        "Exp": "The War Within",
+        "craftQty": 15,
+        "recipe": [
+            { "name": "Shadow Ink", "id": "222610", "count": 2},
+            { "name": "Core Alloy", "id": "222418", "count": 1}
+        ]
+    },
+    {
+        "name": "Algari Fencepost",
+        "id": "253165",
+        "Exp": "The War Within",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Shadow Ink", "id": "222610", "count": 1},
+            { "name": "Core Alloy", "id": "222418", "count": 1}
+        ]
+    },
+    {
+        "name": "Boulder Springs Hot Tub",
+        "id": "252758",
+        "Prof": "Alchemy",
+        "Exp": "The War Within",
+        "craftQty": 34,
+        "recipe": [
+            { "name": "Distilled Algari Freshwater", "id": "226205", "count": 12},
+            { "name": "Profaned Tinderbox", "id": "221758", "count": 4},
+            { "name": "Crystalline Powder", "id": "213610", "count": 6},
+            { "name": "Harmonious Horticulture", "id": "212564", "count": 1}
+        ]
+    },
+    {
+        "name": "Dornic Mine and Cheese Platter",
+        "id": "239170",
+        "Prof": "Cooking",
+        "Exp": "The War Within",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Perfect Preservatives", "id": "259894", "count": 10},
+            { "name": "Chopped Mycobloom", "id": "222737", "count": 25},
+            { "name": "Stunning Sapphire", "id": "212508", "count": 2},
+            { "name": "Ironclaw Ore", "id": "210936", "count": 5},
+            { "name": "Aqirite", "id": "210933", "count": 5},
+            { "name": "Bismuth", "id": "210931", "count": 15}
+        ]
+    },
+    {
+        "name": "Dornic Sliced Mineloaf",
+        "id": "246708",
+        "Prof": "Cooking",
+        "Exp": "The War Within",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Perfect Preservatives", "id": "259894", "count": 10},
+            { "name": "Spiced Meat Stock", "id": "222739", "count": 10},
+            { "name": "Ironclaw Ore", "id": "210936", "count": 5},
+            { "name": "Bismuth", "id": "210931", "count": 10}
+        ]
+    },
+    {
+        "name": "Dornogal Bookcase",
+        "id": "253022",
+        "Exp": "The War Within",
+        "craftQty": 50,
+        "recipe": [
+            { "name": "Fresh Parchment", "id": "226204", "count": 30},
+            { "name": "Apricate Ink", "id": "222616", "count": 9},
+            { "name": "Codified Greenwood", "id": "222555", "count": 4},
+            { "name": "Stunning Sapphire", "id": "212508", "count": 2}
+        ]
+    },
+    {
+        "name": "Dornogal Framed Rug",
+        "id": "252755",
+        "Exp": "The War Within",
+        "craftQty": 30,
+        "recipe": [
+            { "name": "Duskweave", "id": "224824", "count": 6},
+            { "name": "Mosswool Thread", "id": "224764", "count": 12},
+            { "name": "Apricate Ink", "id": "222616", "count": 4}
+        ]
+    },
+    {
+        "name": "Dornogal Hanging Sconce",
+        "id": "253039",
+        "Prof": "Enchanting",
+        "Exp": "The War Within",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Oil of Beledar's Grace", "id": "224108", "count": 2},
+            { "name": "Core Alloy", "id": "222418", "count": 2},
+            { "name": "Gleaming Shard", "id": "219949", "count": 4}
+        ]
+    },
+    {
+        "name": "Earthen Hospitality Cheese-Like Brick",
+        "id": "246709",
+        "Prof": "Cooking",
+        "Exp": "The War Within",
+        "craftQty": 5,
+        "recipe": [
+            { "name": "Perfect Preservatives", "id": "259894", "count": 5},
+            { "name": "Chopped Mycobloom", "id": "222737", "count": 10},
+            { "name": "Bismuth", "id": "210931", "count": 8}
+        ]
+    },
+    {
+        "name": "Forgeground Market Bins",
+        "id": "253167",
+        "Exp": "The War Within",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Shadow Ink", "id": "222610", "count": 2},
+            { "name": "Core Alloy", "id": "222418", "count": 2}
+        ]
+    },
+    {
+        "name": "Freywold Table",
+        "id": "253036",
+        "Exp": "The War Within",
+        "craftQty": 35,
+        "recipe": [
+            { "name": "Boundless Cipher", "id": "222559", "count": 3},
+            { "name": "Codified Greenwood", "id": "222555", "count": 6},
+            { "name": "Ringing Deeps Ingot", "id": "221754", "count": 3}
+        ]
+    },
+    {
+        "name": "Gundargaz Candelabra",
+        "id": "253253",
+        "Exp": "The War Within",
+        "craftQty": 25,
+        "recipe": [
+            { "name": "Core Alloy", "id": "222418", "count": 2},
+            { "name": "Inverted Prism", "id": "213760", "count": 1},
+            { "name": "Crushed Gemstones", "id": "213220", "count": 14},
+            { "name": "Ambivalent Amber", "id": "212498", "count": 7}
+        ]
+    },
+    {
+        "name": "Kaheti Predator's Assortment",
+        "id": "245326",
+        "Prof": "Cooking",
+        "Exp": "The War Within",
+        "craftQty": 25,
+        "recipe": [
+            { "name": "Perfect Preservatives", "id": "259894", "count": 15},
+            { "name": "Azj-Kahet Special", "id": "223971", "count": 1},
+            { "name": "Outsider's Provisions", "id": "222731", "count": 2},
+            { "name": "Roasted Mycobloom", "id": "222705", "count": 2},
+            { "name": "Ringing Deeps Ingot", "id": "221754", "count": 4}
+        ]
+    },
+    {
+        "name": "Meadery Storage Chest",
+        "id": "253169",
+        "Exp": "The War Within",
+        "craftQty": 26,
+        "recipe": [
+            { "name": "Shadow Ink", "id": "222610", "count": 3},
+            { "name": "Coreforged Skeleton Key", "id": "222523", "count": 1},
+            { "name": "Core Alloy", "id": "222418", "count": 5},
+            { "name": "Stormcharged Leather", "id": "212664", "count": 2}
+        ]
+    },
+    {
+        "name": "Nerubian Alchemist's Retort",
+        "id": "257102",
+        "Prof": "Alchemy",
+        "Exp": "The War Within",
+        "craftQty": 8,
+        "recipe": [
+            { "name": "Viridian Charmcap", "id": "221763", "count": 2},
+            { "name": "Slumbering Soul Serum", "id": "212245", "count": 3},
+            { "name": "Gilded Vial", "id": "211806", "count": 1}
+        ]
+    },
+    {
+        "name": "Octagonal Ochre Window",
+        "id": "245559",
+        "Exp": "The War Within",
+        "craftQty": 16,
+        "recipe": [
+            { "name": "Ringing Deeps Ingot", "id": "221754", "count": 1},
+            { "name": "Marbled Stone", "id": "213757", "count": 5},
+            { "name": "Ambivalent Amber", "id": "212498", "count": 4}
+        ]
+    },
+    {
+        "name": "Replica Awakening Machine Stasis Pod",
+        "id": "253171",
+        "Prof": "Enchanting",
+        "Exp": "The War Within",
+        "craftQty": 40,
+        "recipe": [
+            { "name": "Gyrating Gear", "id": "221860", "count": 6},
+            { "name": "Ringing Deeps Ingot", "id": "221754", "count": 6},
+            { "name": "Refulgent Crystal", "id": "219952", "count": 8},
+            { "name": "Crystalline Powder", "id": "213610", "count": 5}
+        ]
+    },
+    {
+        "name": "Replica Rumbling Wastes Drill Pod",
+        "id": "253252",
+        "Prof": "Engineering",
+        "Exp": "The War Within",
+        "craftQty": 42,
+        "recipe": [
+            { "name": "Core Alloy", "id": "222418", "count": 15},
+            { "name": "Entropy Enhancer", "id": "221868", "count": 10},
+            { "name": "Gyrating Gear", "id": "221860", "count": 6},
+            { "name": "Handful of Bismuth Bolts", "id": "221854", "count": 18},
+            { "name": "Vial of Kaheti Oils", "id": "221756", "count": 1},
+            { "name": "Ambivalent Amber", "id": "212498", "count": 1}
+        ]
+    },
+    {
+        "name": "Rusting Bolted Bench",
+        "id": "245312",
+        "Prof": "Blacksmithing",
+        "Exp": "The War Within",
+        "craftQty": 15,
+        "recipe": [
+            { "name": "Core Alloy", "id": "222418", "count": 5},
+            { "name": "Handful of Bismuth Bolts", "id": "221854", "count": 4}
+        ]
+    },
+    {
+        "name": "Schmancy Goblin String Lights",
+        "id": "246066",
+        "Prof": "Engineering",
+        "Exp": "The War Within",
+        "craftQty": 12,
+        "recipe": [
+            { "name": "Chaos Circuit", "id": "221865", "count": 1},
+            { "name": "Whimsical Wiring", "id": "221857", "count": 6},
+            { "name": "Glittering Glass", "id": "213399", "count": 6}
+        ]
+    },
+    {
+        "name": "Shredderwheel Storage Chest",
+        "id": "245323",
+        "Prof": "Blacksmithing",
+        "Exp": "The War Within",
+        "craftQty": 30,
+        "recipe": [
+            { "name": "Coreforged Skeleton Key", "id": "222523", "count": 1},
+            { "name": "Charged Alloy", "id": "222421", "count": 1},
+            { "name": "Core Alloy", "id": "222418", "count": 5},
+            { "name": "Whimsical Wiring", "id": "221857", "count": 1}
+        ]
+    },
+    {
+        "name": "Undermine Bean Bag Chair",
+        "id": "245305",
+        "Exp": "The War Within",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Weavercloth", "id": "228231", "count": 2},
+            { "name": "Mosswool Thread", "id": "224764", "count": 20},
+            { "name": "Weavercloth Bolt", "id": "222804", "count": 6}
+        ]
+    },
+    {
+        "name": "Well-Lit Incontinental Couch",
+        "id": "239214",
+        "Exp": "The War Within",
+        "craftQty": 38,
+        "recipe": [
+            { "name": "Mosswool Thread", "id": "224764", "count": 10},
+            { "name": "Handful of Bismuth Bolts", "id": "221854", "count": 9},
+            { "name": "Carapace-Backed Hide", "id": "219881", "count": 6},
+            { "name": "Stormcharged Leather", "id": "212664", "count": 4}
+        ]
+    },
+    {
+        "name": "Zhevra-Stripe Rug",
+        "id": "243327",
+        "Exp": "The War Within",
+        "craftQty": 30,
+        "recipe": [
+            { "name": "Mosswool Thread", "id": "224764", "count": 10},
+            { "name": "Sporecoated Hide", "id": "219890", "count": 2},
+            { "name": "Thunderous Hide", "id": "212672", "count": 1}
+        ]
+    },
+    {
+        "name": "Apothecary's Worktable",
+        "id": "257100",
+        "Prof": "Alchemy",
+        "Exp": "Vanilla",
+        "craftQty": 40,
+        "recipe": [
+            { "name": "Essence of Undeath", "id": "12808", "count": 16},
+            { "name": "Arcanite Bar", "id": "12360", "count": 12},
+            { "name": "Black Lotus", "id": "13468", "count": 8},
+            { "name": "Crystal Vial", "id": "3371", "count": 6}
+        ]
+    },
+    {
+        "name": "Stoppered Black Potion",
+        "id": "257041",
+        "Prof": "Alchemy",
+        "Exp": "Vanilla",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Dark Rune", "id": "20520", "count": 2},
+            { "name": "Crystal Vial", "id": "3371", "count": 1},
+            { "name": "Black Dye", "id": "2325", "count": 2}
+        ]
+    },
+    {
+        "name": "Draenei Smith's Anvil",
+        "id": "257036",
+        "Prof": "Blacksmithing",
+        "Exp": "Burning Crusade",
+        "craftQty": 25,
+        "recipe": [
+            { "name": "Hardened Adamantite Bar", "id": "23573", "count": 4},
+            { "name": "Khorium Bar", "id": "23449", "count": 6},
+            { "name": "Primal Earth", "id": "22452", "count": 4}
+        ]
+    },
+    {
+        "name": "Draenei Crystal Forge",
+        "id": "257039",
+        "Prof": "Blacksmithing",
+        "Exp": "Burning Crusade",
+        "craftQty": 50,
+        "recipe": [
+            { "name": "Skyfire Diamond", "id": "25868", "count": 2},
+            { "name": "Hardened Adamantite Bar", "id": "23573", "count": 8},
+            { "name": "Khorium Bar", "id": "23449", "count": 10},
+            { "name": "Primal Fire", "id": "21884", "count": 10}
+        ]
+    },
+    {
+        "name": "Bronze Banner of the Exiled",
+        "id": "257035",
+        "Prof": "Blacksmithing",
+        "Exp": "Burning Crusade",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Khorium Bar", "id": "23449", "count": 8},
+            { "name": "Primal Earth", "id": "22452", "count": 4},
+            { "name": "Primal Mooncloth", "id": "21845", "count": 2}
+        ]
+    },
+    {
+        "name": "Draenei Holo-Dais",
+        "id": "257037",
+        "Prof": "Enchanting",
+        "Exp": "Burning Crusade",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Large Prismatic Shard", "id": "22449", "count": 4},
+            { "name": "Greater Planar Essence", "id": "22446", "count": 4},
+            { "name": "Arcane Dust", "id": "22445", "count": 12}
+        ]
+    },
+    {
+        "name": "Draenei Holo-Path",
+        "id": "257038",
+        "Prof": "Enchanting",
+        "Exp": "Burning Crusade",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Large Prismatic Shard", "id": "22449", "count": 4},
+            { "name": "Greater Planar Essence", "id": "22446", "count": 4},
+            { "name": "Arcane Dust", "id": "22445", "count": 12}
+        ]
+    },
+    {
+        "name": "Mark of the Mages' Eye",
+        "id": "257094",
+        "Prof": "Enchanting",
+        "Exp": "Wrath of the Lich King",
+        "craftQty": 12,
+        "recipe": [
+            { "name": "Abyss Crystal", "id": "34057", "count": 2},
+            { "name": "Greater Cosmic Essence", "id": "34055", "count": 6},
+            { "name": "Infinite Dust", "id": "34054", "count": 8}
+        ]
+    },
+    {
+        "name": "Draenei Transmitter",
+        "id": "258196",
+        "Prof": "Engineering",
+        "Exp": "Burning Crusade",
+        "craftQty": 15,
+        "recipe": [
+            { "name": "Handful of Fel Iron Bolts", "id": "23783", "count": 6},
+            { "name": "Fel Iron Casing", "id": "23782", "count": 4}
+        ]
+    },
+    {
+        "name": "Tempest Keep Cryo-Pod",
+        "id": "258194",
+        "Prof": "Engineering",
+        "Exp": "Burning Crusade",
+        "craftQty": 50,
+        "recipe": [
+            { "name": "Icy Blasting Primers", "id": "32423", "count": 50},
+            { "name": "Khorium Power Core", "id": "23786", "count": 4},
+            { "name": "Hardened Adamantite Tube", "id": "23785", "count": 3},
+            { "name": "Handful of Fel Iron Bolts", "id": "23783", "count": 12}
+        ]
+    },
+    {
+        "name": "Gilded Draenei Round Table",
+        "id": "258198",
+        "Prof": "Inscription",
+        "Exp": "Burning Crusade",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Heavy Knothide Leather", "id": "23793", "count": 3},
+            { "name": "Khorium Bar", "id": "234449", "count": 2}
+        ]
+    },
+    {
+        "name": "Crystal Signpost",
+        "id": "258197",
+        "Prof": "Inscription",
+        "Exp": "Burning Crusade",
+        "craftQty": 12,
+        "recipe": [
+            { "name": "Darkflame Ink", "id": "43125", "count": 3},
+            { "name": "Light Parchment", "id": "39354", "count": 1},
+            { "name": "Greater Planar Essence", "id": "22446", "count": 4}
+        ]
+    },
+    {
+        "name": "Aldor Bookcase",
+        "id": "258199",
+        "Prof": "Inscription",
+        "Exp": "Burning Crusade",
+        "craftQty": 25,
+        "recipe": [
+            { "name": "Ethereal Ink", "id": "43124", "count": 10},
+            { "name": "Scroll of Intellect VI", "id": "33458", "count": 50},
+            { "name": "Primal Earth", "id": "22452", "count": 4}
         ]
     }
   ]
