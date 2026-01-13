@@ -216,34 +216,46 @@ async function generateHTML() {
             body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
             .container { max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
             
+            /* --- ОНОВЛЕНИЙ ХЕДЕР --- */
             .header-container { 
-                position: relative; 
                 display: flex; 
-                justify-content: center; 
+                flex-direction: column;
                 align-items: center; 
-                margin-bottom: 40px; 
-                padding-top: 10px; 
+                margin-bottom: 30px; 
+                padding-top: 10px;
+                gap: 5px; /* Відступ між заголовком і датою */
             }
 
-            /* --- НОВІ СТИЛІ ДЛЯ ПОШУКУ --- */
-            .search-wrapper {
-                position: absolute;
-                left: 0;
-                top: 0;
-                display: flex;
-                align-items: center;
-            }
+            h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; font-size: 2.5em; }
             
+            .update-time { 
+                font-size: 0.9em; 
+                color: #666; 
+                margin-bottom: 15px; 
+            }
+
+            /* Рядок керування: Пошук зліва, Кнопка справа */
+            .controls-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            /* Стилі для поля пошуку */
             #smartSearchInput {
                 background-color: #1a1a1a;
                 border: 1px solid #333;
                 color: #fff;
-                padding: 10px 15px;
+                padding: 0 15px; /* Паддінг тільки збоку */
                 border-radius: 6px;
                 width: 300px; 
                 font-size: 14px;
                 outline: none;
                 transition: border-color 0.2s;
+                height: 42px; /* Фіксована висота */
+                box-sizing: border-box; /* Щоб бордер не ламав висоту */
             }
             #smartSearchInput:focus {
                 border-color: #ffd700;
@@ -251,15 +263,27 @@ async function generateHTML() {
             #smartSearchInput::placeholder {
                 color: #666;
             }
+
+            /* Стилі для кнопки імпорту */
+            .btn-import { 
+                background: #a335ee; 
+                color: white; 
+                border: none; 
+                padding: 0 20px; 
+                border-radius: 4px; 
+                cursor: pointer; 
+                font-weight: bold; 
+                font-size: 0.95em; 
+                transition: background 0.2s;
+                height: 42px; /* Така сама висота як у інпута */
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .btn-import:hover { background: #8a2be2; }
             /* ----------------------------- */
 
-            h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; }
-            
-            .header-right { position: absolute; right: 0; top: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
-            .update-time { font-size: 0.85em; color: #666; }
-            .btn-import { background: #a335ee; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9em; transition: background 0.2s; }
-            .btn-import:hover { background: #8a2be2; }
-            
             .load-more-container { text-align: center; margin-top: 30px; }
             .btn-load-more { 
                 background: #2a2b2e; color: #fff; border: 1px solid #444; 
@@ -366,14 +390,12 @@ async function generateHTML() {
     <body>
         <div class="container">
             <div class="header-container">
-                <div class="search-wrapper">
-                    <input type="text" id="smartSearchInput" placeholder="Пошук: назва, патч або профа...">
-                </div>
-
                 <h1>💎 WoW Decor Scanner</h1>
                 
-                <div class="header-right">
-                    <span class="update-time">Оновлено: ${updateTime}</span>
+                <div class="update-time">Оновлено: ${updateTime}</div>
+                
+                <div class="controls-row">
+                    <input type="text" id="smartSearchInput" placeholder="Пошук: назва, патч або профа...">
                     <button class="btn-import">Згенерувати Import</button>
                 </div>
             </div>
@@ -388,12 +410,10 @@ async function generateHTML() {
         <script>
             const ALL_DATA = ${jsonPayload};
             
-            // Змінні для роботи з фільтрацією та пагінацією
-            let activeData = ALL_DATA; // Список, який зараз відображається (відфільтрований)
+            let activeData = ALL_DATA; 
             let currentIndex = 0;
             const ITEMS_PER_PAGE = 20;
 
-            // Функції інтерфейсу
             function toggleDetails(card) { card.classList.toggle('active'); }
             
             function copyName(event, text) {
@@ -405,7 +425,6 @@ async function generateHTML() {
                 });
             }
 
-            // Головна функція генерації рядка (повертає HTML string)
             function createItemHTML(item) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
                 
@@ -497,12 +516,10 @@ async function generateHTML() {
                 </div>\`;
             }
 
-            // Логіка пагінації (залежить від activeData)
             function loadMore() {
                 const list = document.getElementById('list');
                 const btn = document.getElementById('btnLoadMore');
                 
-                // Беремо шматок з відфільтрованого масиву
                 const nextItems = activeData.slice(currentIndex, currentIndex + ITEMS_PER_PAGE);
                 
                 if (nextItems.length > 0) {
@@ -511,7 +528,6 @@ async function generateHTML() {
                     currentIndex += nextItems.length;
                 }
 
-                // Ховаємо кнопку, якщо дійшли до кінця списку
                 if (currentIndex >= activeData.length) {
                     btn.classList.add('hidden');
                 } else {
@@ -519,13 +535,11 @@ async function generateHTML() {
                 }
             }
 
-            // Логіка ПОШУКУ
             function handleSearch(e) {
                 const term = e.target.value.toLowerCase();
                 const list = document.getElementById('list');
                 const btn = document.getElementById('btnLoadMore');
 
-                // 1. Фільтруємо ВСІ дані (по назві, патчу або профі)
                 const filtered = ALL_DATA.filter(item => {
                     const inName = item.name.toLowerCase().includes(term);
                     const inExp = item.exp ? item.exp.toLowerCase().includes(term) : false;
@@ -534,15 +548,12 @@ async function generateHTML() {
                     return inName || inExp || inProf;
                 });
 
-                // 2. Сортуємо (найвигідніші зверху)
                 filtered.sort((a, b) => b.lumberPrice - a.lumberPrice);
 
-                // 3. Оновлюємо активні дані
                 activeData = filtered;
                 currentIndex = 0;
-                list.innerHTML = ''; // Очищаємо екран
+                list.innerHTML = ''; 
 
-                // 4. Показуємо першу порцію
                 if (activeData.length === 0) {
                     list.innerHTML = '<div style="text-align:center; padding:20px; color:#666;">Нічого не знайдено</div>';
                     btn.classList.add('hidden');
@@ -551,12 +562,8 @@ async function generateHTML() {
                 }
             }
 
-            // Ініціалізація
             document.addEventListener('DOMContentLoaded', () => {
-                // Перший рендер
                 loadMore();
-                
-                // Слухачі
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
                 document.getElementById('smartSearchInput').addEventListener('input', handleSearch);
             });
