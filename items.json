@@ -1730,5 +1730,245 @@
             { "name": "Roseate Pigment", "id": "129032", "count": 10},
             { "name": "Shal'dorei Silk", "id": "124437", "count": 8}
         ]
+    },
+    {
+        "name": "Boralus Barrel",
+        "id": "252035",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 6,
+        "recipe": [
+            { "name": "Aromatic Fish Oil", "id": "160711", "count": 5},
+            { "name": "Tidespray Linen", "id": "152576", "count": 10}
+        ]
+    },
+    {
+        "name": "Boralus Bookshelf",
+        "id": "252401",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 8,
+        "recipe": [
+            { "name": "Aromatic Fish Oil", "id": "160711", "count": 1},
+            { "name": "Tidespray Linen", "id": "152576", "count": 8},
+            { "name": "Monelite Ore", "id": "152512", "count": 8}
+        ]
+    },
+    {
+        "name": "Boralus Bottle Lamp",
+        "id": "257046",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 5,
+        "recipe": [
+            { "name": "Tidespray Linen", "id": "152576", "count": 4},
+            { "name": "Sea Stalk", "id": "152511", "count": 8},
+            { "name": "Crystal Vial", "id": "3371", "count": 1}
+        ]
+    },
+    {
+        "name": "Boralus-Style Lobster Platter",
+        "id": "245484",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 8,
+        "recipe": [
+            { "name": "Perfect Preservatives", "id": "259894", "count": 5},
+            { "name": "Aromatic Fish Oil", "id": "160711", "count": 2},
+            { "name": "Spiced Snapper", "id": "154886", "count": 5},
+            { "name": "Storm Silver Ore", "id": "152579", "count": 4}
+        ]
+    },
+    {
+        "name": "Brennadam Grinder",
+        "id": "252397",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Meaty Haunch", "id": "154898", "count": 15},
+            { "name": "Storm Silver Ore", "id": "152579", "count": 20}
+        ]
+    },
+    {
+        "name": "Deactivated Atomic Recalibrator",
+        "id": "246604",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 42,
+        "recipe": [
+            { "name": "Insulated Wiring", "id": "163569", "count": 20},
+            { "name": "Storm Silver Ore", "id": "152579", "count": 30},
+            { "name": "Monelite Ore", "id": "152512", "count": 35}
+        ]
+    },
+    {
+        "name": "Drust Enchanter's Rod",
+        "id": "258560",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 6,
+        "recipe": [
+            { "name": "Calcified Bone", "id": "154165", "count": 1},
+            { "name": "Umbra Shard", "id": "152876", "count": 4},
+            { "name": "Coarse Leather", "id": "152541", "count": 2}
+        ]
+    },
+    {
+        "name": "Gilded Zandalari Table",
+        "id": "245499",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 35,
+        "recipe": [
+            { "name": "Ultramarine Ink", "id": "158187", "count": 20},
+            { "name": "Monelite Ore", "id": "152512", "count": 24}
+        ]
+    },
+    {
+        "name": "Gnomish Steam-Powered Bed",
+        "id": "246700",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 25,
+        "recipe": [
+            { "name": "Delicate Arcanite Converter", "id": "16006", "count": 4},
+            { "name": "Thorium Tube", "id": "16000", "count": 4},
+            { "name": "Bolt of Runecloth", "id": "14048", "count": 8},
+            { "name": "Essence of Fire", "id": "7078", "count": 4}
+        ]
+    },
+    {
+        "name": "Gnomish Tesla Mega-Coil",
+        "id": "246486",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 45,
+        "recipe": [
+            { "name": "Insulated Wiring", "id": "163569", "count": 18},
+            { "name": "Chemical Blasting Cap", "id": "160502", "count": 15},
+            { "name": "Storm Silver Ore", "id": "152579", "count": 10},
+            { "name": "Monelite Ore", "id": "152512", "count": 20}
+        ]
+    },
+    {
+        "name": "Mechagon Miniature Artificial Sun",
+        "id": "246500",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 16,
+        "recipe": [
+            { "name": "Insulated Wiring", "id": "163569", "count": 6},
+            { "name": "Amberblaze", "id": "154123", "count": 1},
+            { "name": "Storm Silver Ore", "id": "152579", "count": 8},
+            { "name": "Monelite Ore", "id": "152512", "count": 8}
+        ]
+    },
+    {
+        "name": "Red Dazar'alor Rug",
+        "id": "243101",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 30,
+        "recipe": [
+            { "name": "Nylon Thread", "id": "159959", "count": 12},
+            { "name": "Crimson Ink", "id": "158188", "count": 5},
+            { "name": "Tidespray Linen", "id": "152576", "count": 30}
+        ]
+    },
+    {
+        "name": "Sandfury Diplomat's Banner",
+        "id": "258558",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 22,
+        "recipe": [
+            { "name": "Amber Tanning Oil", "id": "160059", "count": 4},
+            { "name": "Storm Silver Ore", "id": "152579", "count": 15},
+            { "name": "Coarse Leather", "id": "152541", "count": 20}
+        ]
+    },
+    {
+        "name": "Small Mask of Bwonsamdi, Loa of Graves",
+        "id": "245496",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Ultramarine Ink", "id": "158187", "count": 6},
+            { "name": "Owlseye", "id": "154120", "count": 2},
+            { "name": "Platinum Ore", "id": "152513", "count": 10}
+        ]
+    },
+    {
+        "name": "Stormsong Stove",
+        "id": "252399",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Durable Flux", "id": "160298", "count": 10},
+            { "name": "Storm Silver Ore", "id": "152579", "count": 25}
+        ]
+    },
+    {
+        "name": "Tidesage's Totem",
+        "id": "258559",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 35,
+        "recipe": [
+            { "name": "Osmenite Ore", "id": "168185", "count": 30},
+            { "name": "Distilled Water", "id": "158186", "count": 10},
+            { "name": "Veiled Crystal", "id": "152877", "count": 2},
+            { "name": "Gloom Dust", "id": "152875", "count": 15}
+        ]
+    },
+    {
+        "name": "Zanchuli Tapestry",
+        "id": "245418",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 35,
+        "recipe": [
+            { "name": "Nylon Thread", "id": "159959", "count": 20},
+            { "name": "Embroidered Deep Sea Satin", "id": "158378", "count": 16},
+            { "name": "Platinum Ore", "id": "152513", "count": 2}
+        ]
+    },
+    {
+        "name": "Zandalari Bottle Shipment",
+        "id": "257047",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 12,
+        "recipe": [
+            { "name": "Anchor Weed", "id": "152510", "count": 3},
+            { "name": "Crystal Vial", "id": "3371", "count": 3}
+        ]
+    },
+    {
+        "name": "Zandalari Ritual Drum",
+        "id": "245412",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 40,
+        "recipe": [
+            { "name": "Tempest Hide", "id": "154722", "count": 30},
+            { "name": "Blood-Stained Bone", "id": "154164", "count": 12},
+            { "name": "Platinum Ore", "id": "152513", "count": 5}
+        ]
+    },
+    {
+        "name": "Zandalari Skullfire Lamp",
+        "id": "245414",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 40,
+        "recipe": [
+            { "name": "Amberblaze", "id": "154123", "count": 3},
+            { "name": "Platinum Ore", "id": "152513", "count": 5},
+            { "name": "Monelite Ore", "id": "152512", "count": 30}
+        ]
+    },
+    {
+        "name": "Zuldazar Fence",
+        "id": "245415",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 15,
+        "recipe": [
+            { "name": "Crimson Ink", "id": "158188", "count": 8},
+            { "name": "Monelite Ore", "id": "152512", "count": 18}
+        ]
+    },
+    {
+        "name": "Zuldazar Fencepost",
+        "id": "245416",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Crimson Ink", "id": "158188", "count": 4},
+            { "name": "Monelite Ore", "id": "152512", "count": 6}
+        ]
     }
   ]

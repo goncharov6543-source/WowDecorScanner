@@ -136,7 +136,6 @@ async function generateHTML() {
         fs.copyFileSync('import.js', 'public/import.js');
     }
 
-    // 1. Підготовка даних
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
@@ -203,8 +202,6 @@ async function generateHTML() {
         .sort((a, b) => b.lumberPrice - a.lumberPrice);
 
     const jsonPayload = JSON.stringify(sortedItems);
-    
-    // ПРАВКА 3: Київський час
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
 
     const html = `
@@ -213,7 +210,7 @@ async function generateHTML() {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>WoW Decor Scanner</title>
+        <title>WoW Profit Scanner</title>
         <style>
             body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
             .container { max-width: 1100px; margin: 0 auto; padding-bottom: 50px; }
@@ -239,7 +236,6 @@ async function generateHTML() {
             
             .main-row { display: flex; height: 60px; position: relative; z-index: 2; }
             .main-row-left { display: flex; align-items: center; flex-grow: 1; padding-left: 20px; }
-            /* ПРАВКА 2: Прибрав cursor: pointer з загального контейнера */
             .main-row-right { display: flex; align-items: center; padding-right: 20px; cursor: default; }
             
             .col-icon img { width: 42px; height: 42px; border-radius: 4px; border: 1px solid #333; display: block; }
@@ -247,7 +243,7 @@ async function generateHTML() {
             .name-text { font-weight: 600; font-size: 1.1em; color: #a335ee; position: relative; cursor: copy; transition: color 0.2s; }
             .name-text:hover { color: #fff; text-decoration: underline; }
             
-            /* ПРАВКА 1: Єдиний стиль для блоків Exp та Lumber */
+            /* Єдиний стиль для плиток */
             .info-badge {
                 height: 34px;
                 display: flex;
@@ -258,22 +254,23 @@ async function generateHTML() {
                 box-sizing: border-box;
             }
 
+            /* ЗМІНИ ТУТ: автоматична ширина, відступи, менший шрифт */
             .col-exp { 
                 background: #252629; 
                 color: #888; 
-                width: 150px; 
+                width: auto;         /* Було фіксовано */
+                min-width: 100px;    /* Мінімальний розмір для краси */
+                padding: 0 15px;     /* Повітря по боках */
                 margin-right: 15px; 
                 white-space: nowrap; 
-                overflow: hidden; 
-                text-overflow: ellipsis;
-                padding: 0 10px;
+                font-size: 0.85em;   /* Зменшений шрифт */
             }
             
             .col-lumber { 
                 margin-right: 15px; 
                 background: rgba(255,255,255,0.05); 
                 padding: 0 15px;
-                cursor: pointer; /* ПРАВКА 2: Клікабельний тільки сам блок */
+                cursor: pointer;
                 transition: transform 0.1s;
                 user-select: none;
             }
@@ -288,7 +285,7 @@ async function generateHTML() {
             .col-price { 
                 display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; 
                 min-width: 140px; justify-content: flex-end; 
-                cursor: pointer; /* ПРАВКА 2: Клікабельна тільки ціна */
+                cursor: pointer;
                 user-select: none;
                 transition: transform 0.1s;
             }
@@ -364,7 +361,6 @@ async function generateHTML() {
 
             function createItemHTML(item) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
-                // ПРАВКА 1: Додано клас info-badge для уніфікації
                 const expLabel = item.exp ? \`<div class="col-exp info-badge">\${item.exp}</div>\` : '<div class="col-exp info-badge"></div>';
                 
                 let lumberClass = "neutral";
@@ -402,7 +398,6 @@ async function generateHTML() {
                     </div>
                 \`).join('');
 
-                // ПРАВКА 2: onclick="toggleDetails..." перенесено ТІЛЬКИ на конкретні блоки
                 return \`
                 <div class="item-card" data-recipe="\${recipeJson}">
                     <div class="main-row">
