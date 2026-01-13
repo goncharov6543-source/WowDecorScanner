@@ -136,7 +136,7 @@ async function generateHTML() {
         fs.copyFileSync('import.js', 'public/import.js');
     }
 
-    // 1. Підготовка даних (БЕЗ генерації HTML тут)
+    // 1. Підготовка даних
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
@@ -157,7 +157,7 @@ async function generateHTML() {
         
         let craftCost = 0;
         let missingReagents = false;
-        let reagentsList = []; // Для передачі на фронтенд
+        let reagentsList = [];
         
         if (item.recipe) {
             item.recipe.forEach(reag => {
@@ -168,7 +168,6 @@ async function generateHTML() {
                 
                 craftCost += (reagPrice || 0) * reag.count;
                 
-                // Зберігаємо дані для фронтенда
                 reagentsList.push({
                     name: reagMeta.name,
                     count: reag.count,
@@ -183,18 +182,15 @@ async function generateHTML() {
             lumberPrice = (bestListing.p - craftCost) / item.craftQty;
         }
 
-        // Всі дані, необхідні для малювання картки
         return {
             valid: true,
             itemId,
             name: item.name,
             icon: metaData[itemId]?.icon || '',
             exp: item.Exp,
-            recipeRaw: item.recipe || [], // Для import.js
-            
+            recipeRaw: item.recipe || [],
             lumberPrice: lumberPrice,
             bestPrice: bestListing.p,
-            
             craftCost: craftCost,
             craftQty: item.craftQty,
             reagentsList: reagentsList,
@@ -206,8 +202,10 @@ async function generateHTML() {
         .filter(data => data.valid)
         .sort((a, b) => b.lumberPrice - a.lumberPrice);
 
-    // Перетворюємо дані в JSON стрічку для вставки в HTML
     const jsonPayload = JSON.stringify(sortedItems);
+    
+    // ПРАВКА 3: Київський час
+    const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
 
     const html = `
     <!DOCTYPE html>
@@ -215,7 +213,7 @@ async function generateHTML() {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>WoW Profit Scanner</title>
+        <title>WoW Decor Scanner</title>
         <style>
             body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
             .container { max-width: 1100px; margin: 0 auto; padding-bottom: 50px; }
@@ -226,7 +224,6 @@ async function generateHTML() {
             .btn-import { background: #a335ee; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9em; transition: background 0.2s; }
             .btn-import:hover { background: #8a2be2; }
             
-            /* Load More Button */
             .load-more-container { text-align: center; margin-top: 30px; }
             .btn-load-more { 
                 background: #2a2b2e; color: #fff; border: 1px solid #444; 
@@ -236,30 +233,66 @@ async function generateHTML() {
             .btn-load-more:hover { background: #333; border-color: #666; }
             .hidden { display: none; }
 
-            /* CARD STYLES */
             .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
             .item-card.active { border-color: #a335ee; box-shadow: 0 0 15px rgba(163, 53, 238, 0.1); }
             
             .main-row { display: flex; height: 60px; position: relative; z-index: 2; }
             .main-row-left { display: flex; align-items: center; flex-grow: 1; padding-left: 20px; }
-            .main-row-right { display: flex; align-items: center; padding-right: 20px; cursor: pointer; }
+            /* ПРАВКА 2: Прибрав cursor: pointer з загального контейнера */
+            .main-row-right { display: flex; align-items: center; padding-right: 20px; cursor: default; }
             
             .col-icon img { width: 42px; height: 42px; border-radius: 4px; border: 1px solid #333; display: block; }
             .col-name { flex-grow: 1; padding-left: 20px; display: flex; align-items: center; }
             .name-text { font-weight: 600; font-size: 1.1em; color: #a335ee; position: relative; cursor: copy; transition: color 0.2s; }
             .name-text:hover { color: #fff; text-decoration: underline; }
             
-            .col-exp { width: 150px; text-align: center; color: #888; font-size: 0.85em; background: #252629; padding: 4px 8px; border-radius: 4px; margin-right: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            /* ПРАВКА 1: Єдиний стиль для блоків Exp та Lumber */
+            .info-badge {
+                height: 34px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 4px;
+                font-size: 0.95em;
+                box-sizing: border-box;
+            }
+
+            .col-exp { 
+                background: #252629; 
+                color: #888; 
+                width: 150px; 
+                margin-right: 15px; 
+                white-space: nowrap; 
+                overflow: hidden; 
+                text-overflow: ellipsis;
+                padding: 0 10px;
+            }
             
-            .col-lumber { margin-right: 15px; display: flex; align-items: center; gap: 5px; font-size: 0.95em; padding: 4px 10px; border-radius: 4px; background: rgba(255,255,255,0.05); }
+            .col-lumber { 
+                margin-right: 15px; 
+                background: rgba(255,255,255,0.05); 
+                padding: 0 15px;
+                cursor: pointer; /* ПРАВКА 2: Клікабельний тільки сам блок */
+                transition: transform 0.1s;
+                user-select: none;
+            }
+            .col-lumber:active { transform: scale(0.96); }
+
             .lumber-label { color: #888; font-size: 0.8em; text-transform: uppercase; margin-right: 5px; }
-            .lumber-value { font-weight: bold; font-size: 1.1em; }
+            .lumber-value { font-weight: bold; font-size: 1.1em; margin-right: 5px; }
             .col-lumber.positive .lumber-value { color: #4caf50; }
             .col-lumber.negative .lumber-value { color: #f44336; }
             .col-lumber.neutral .lumber-value { color: #aaa; }
             
-            .col-price { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; min-width: 140px; justify-content: flex-end; }
+            .col-price { 
+                display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; 
+                min-width: 140px; justify-content: flex-end; 
+                cursor: pointer; /* ПРАВКА 2: Клікабельна тільки ціна */
+                user-select: none;
+                transition: transform 0.1s;
+            }
+            .col-price:active { transform: scale(0.96); }
             
             .gold-icon { width: 18px; height: 18px; border-radius: 50%; }
             .coin-xs { width: 10px; height: 10px; vertical-align: middle; }
@@ -302,7 +335,7 @@ async function generateHTML() {
             <div class="header-container">
                 <h1>💎 WoW Profit Scanner</h1>
                 <div class="header-right">
-                    <span class="update-time">Оновлено: ${new Date().toLocaleString()}</span>
+                    <span class="update-time">Оновлено: ${updateTime}</span>
                     <button class="btn-import">Згенерувати Import</button>
                 </div>
             </div>
@@ -315,15 +348,9 @@ async function generateHTML() {
         </div>
         
         <script>
-            // Вставляємо дані прямо в HTML
             const ALL_DATA = ${jsonPayload};
             let currentIndex = 0;
             const ITEMS_PER_PAGE = 20;
-
-            function escapeHtml(text) {
-                if (!text) return text;
-                return text.replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-            }
 
             function toggleDetails(card) { card.classList.toggle('active'); }
             function copyName(event, text) {
@@ -335,10 +362,10 @@ async function generateHTML() {
                 });
             }
 
-            // Функція генерації HTML одного рядка
             function createItemHTML(item) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
-                const expLabel = item.exp ? \`<div class="col-exp">\${item.exp}</div>\` : '<div class="col-exp"></div>';
+                // ПРАВКА 1: Додано клас info-badge для уніфікації
+                const expLabel = item.exp ? \`<div class="col-exp info-badge">\${item.exp}</div>\` : '<div class="col-exp info-badge"></div>';
                 
                 let lumberClass = "neutral";
                 if (item.lumberPrice > 0) lumberClass = "positive";
@@ -347,7 +374,6 @@ async function generateHTML() {
                 const displayLumber = item.lumberPrice === -Infinity ? 'N/A' : Math.floor(item.lumberPrice).toLocaleString();
                 const displayPrice = Math.floor(item.bestPrice).toLocaleString();
 
-                // Рецепт HTML
                 let recipeHtml = '';
                 if (item.reagentsList && item.reagentsList.length > 0) {
                     recipeHtml = '<ul class="recipe-list">';
@@ -369,7 +395,6 @@ async function generateHTML() {
                     recipeHtml = '<div class="empty-state">No recipe</div>';
                 }
 
-                // Топ-3
                 const top3Html = item.top3.map(l => \`
                     <div class="server-row">
                         <span class="server-name">\${l.r}</span>
@@ -377,6 +402,7 @@ async function generateHTML() {
                     </div>
                 \`).join('');
 
+                // ПРАВКА 2: onclick="toggleDetails..." перенесено ТІЛЬКИ на конкретні блоки
                 return \`
                 <div class="item-card" data-recipe="\${recipeJson}">
                     <div class="main-row">
@@ -391,17 +417,17 @@ async function generateHTML() {
                             \${expLabel}
                         </div>
 
-                        <div class="main-row-right" onclick="toggleDetails(this.closest('.item-card'))">
-                            <div class="col-lumber \${lumberClass}">
+                        <div class="main-row-right">
+                            <div class="col-lumber info-badge \${lumberClass}" onclick="toggleDetails(this.closest('.item-card'))">
                                 <span class="lumber-label">1 Lumber = </span>
                                 <span class="lumber-value">\${displayLumber}</span>
                                 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
                             </div>
-                            <div class="col-price">
+                            <div class="col-price" onclick="toggleDetails(this.closest('.item-card'))">
                                 <span class="gold-amount">\${displayPrice}</span>
                                 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
                             </div>
-                            <div class="col-inputs" onclick="event.stopPropagation()">
+                            <div class="col-inputs">
                                 <input type="number" class="qty-input" placeholder="0" min="0">
                                 <input type="checkbox" class="check-input">
                             </div>
@@ -439,16 +465,13 @@ async function generateHTML() {
                     currentIndex += nextItems.length;
                 }
 
-                // Ховаємо кнопку, якщо дійшли до кінця
                 if (currentIndex >= ALL_DATA.length) {
                     btn.classList.add('hidden');
                 }
             }
 
-            // Init
             document.addEventListener('DOMContentLoaded', () => {
-                loadMore(); // Перше завантаження
-                
+                loadMore();
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
             });
         </script>

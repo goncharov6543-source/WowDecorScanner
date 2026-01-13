@@ -1466,11 +1466,269 @@
     {
         "name": "Wise Pandaren's Bed",
         "id": "247767",
+        "Exp": "Mists of Pandaria",
         "craftQty": 30,
         "recipe": [
             { "name": "Ink of Dreams", "id": "79254", "count": 5},
             { "name": "Spirit of Harmony", "id": "76061", "count": 3},
             { "name": "Magnificent Hide", "id": "72163", "count": 6}
+        ]
+    },
+    {
+        "name": "Arcan'dor Cutting Fountain",
+        "id": "256680",
+        "Exp": "Legion",
+        "craftQty": 50,
+        "recipe": [
+            { "name": "Sylvan Elixir", "id": "127838", "count": 20},
+            { "name": "Ancient Mana Potion", "id": "127835", "count": 15},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 25},
+            { "name": "Felwort", "id": "124106", "count": 5}
+        ]
+    },
+    {
+        "name": "Beloved Raptor Plushie",
+        "id": "258557",
+        "Exp": "Legion",
+        "craftQty": 8,
+        "recipe": [
+            { "name": "Chaotic Spinel", "id": "130175", "count": 2},
+            { "name": "Roseate Pigment", "id": "129032", "count": 5},
+            { "name": "Runic Catgut", "id": "127037", "count": 2},
+            { "name": "Shal'dorei Silk", "id": "124437", "count": 15}
+        ]
+    },
+    {
+        "name": "Circular Shal'dorei Rug",
+        "id": "247920",
+        "Exp": "Legion",
+        "craftQty": 40,
+        "recipe": [
+            { "name": "Roseate Pigment", "id": "129032", "count": 15},
+            { "name": "Runic Catgut", "id": "127037", "count": 8},
+            { "name": "Shal'dorei Silk", "id": "124437", "count": 40}
+        ]
+    },
+    {
+        "name": "Covered Square Suramar Table",
+        "id": "247916",
+        "Exp": "Legion",
+        "craftQty": 35,
+        "recipe": [
+            { "name": "Roseate Pigment", "id": "129032", "count": 25},
+            { "name": "Imbued Silkweave", "id": "127004", "count": 6},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 15}
+        ]
+    },
+    {
+        "name": "Dalaran Auto-Hammer",
+        "id": "258226",
+        "Exp": "Legion",
+        "craftQty": 22,
+        "recipe": [
+            { "name": "Auto-Hammer", "id": "132514", "count": 1},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 15}
+        ]
+    },
+    {
+        "name": "Dalaran Display Shelves",
+        "id": "258224",
+        "Exp": "Legion",
+        "craftQty": 22,
+        "recipe": [
+            { "name": "Astral Glory", "id": "151565", "count": 10},
+            { "name": "Straszan Mark", "id": "136693", "count": 1},
+            { "name": "Roseate Pigment", "id": "129032", "count": 15}
+        ]
+    },
+    {
+        "name": "Failed Failure Detection Pylon",
+        "id": "258225",
+        "Exp": "Legion",
+        "craftQty": 28,
+        "recipe": [
+            { "name": "Oversized Blasting Cap", "id": "136637", "count": 15},
+            { "name": "Loose Trigger", "id": "136633", "count": 10},
+            { "name": "Shadowruby", "id": "130183", "count": 3},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 20}
+        ]
+    },
+    {
+        "name": "Highmountain Tanner's Frame",
+        "id": "257400",
+        "Exp": "Legion",
+        "craftQty": 34,
+        "recipe": [
+            { "name": "Unbroken Claw", "id": "124438", "count": 10},
+            { "name": "Felhide", "id": "124116", "count": 5},
+            { "name": "Stonehide Leather", "id": "124113", "count": 25}
+        ]
+    },
+    {
+        "name": "Nightborne Jeweler's Table",
+        "id": "247918",
+        "Exp": "Legion",
+        "craftQty": 28,
+        "recipe": [
+            { "name": "Gem Chip", "id": "129100", "count": 5},
+            { "name": "Sallow Pigment", "id": "129034", "count": 20},
+            { "name": "Roseate Pigment", "id": "129032", "count": 10},
+            { "name": "Imbued Silkweave", "id": "127004", "count": 3},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 5}
+        ]
+    },
+    {
+        "name": "Nightspire Fountain",
+        "id": "256681",
+        "Exp": "Legion",
+        "craftQty": 48,
+        "recipe": [
+            { "name": "Ancient Mana Potion", "id": "127835", "count": 10},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 25},
+            { "name": "Leylight Shard", "id": "124441", "count": 25}
+        ]
+    },
+    {
+        "name": "Shaded Suramar Window",
+        "id": "245557",
+        "Exp": "Legion",
+        "craftQty": 25,
+        "recipe": [
+            { "name": "Gem Chip", "id": "129100", "count": 20},
+            { "name": "Imbued Silkweave", "id": "127004", "count": 3},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 10}
+        ]
+    },
+    {
+        "name": "Shal'dorei Open-Air Tent",
+        "id": "248010",
+        "Exp": "Legion",
+        "craftQty": 40,
+        "recipe": [
+            { "name": "Runic Catgut", "id": "127037", "count": 12},
+            { "name": "Imbued Silkweave", "id": "127004", "count": 20},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 12}
+        ]
+    },
+    {
+        "name": "Starry Scrying Pool",
+        "id": "257045",
+        "Exp": "Legion",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Ancient Mana Potion", "id": "127835", "count": 5},
+            { "name": "Arkhana", "id": "124440", "count": 12},
+            { "name": "Starlight Rose", "id": "124105", "count": 2}
+        ]
+    },
+    {
+        "name": "Suramar Containment Cell",
+        "id": "247923",
+        "Exp": "Legion",
+        "craftQty": 34,
+        "recipe": [
+            { "name": "Demonsteel Bar", "id": "124461", "count": 10},
+            { "name": "Chaos Crystal", "id": "124442", "count": 16}
+        ]
+    },
+    {
+        "name": "Suramar Dresser",
+        "id": "245396",
+        "Exp": "Legion",
+        "craftQty": 30,
+        "recipe": [
+            { "name": "Sallow Pigment", "id": "129034", "count": 25},
+            { "name": "Roseate Pigment", "id": "129032", "count": 10},
+            { "name": "Imbued Silkweave", "id": "127004", "count": 6},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 15}
+        ]
+    },
+    {
+        "name": "Suramar Fence",
+        "id": "247922",
+        "Exp": "Legion",
+        "craftQty": 15,
+        "recipe": [
+            { "name": "Demonsteel Bar", "id": "124461", "count": 10},
+            { "name": "Leylight Shard", "id": "124441", "count": 1}
+        ]
+    },
+    {
+        "name": "Suramar Fencepost",
+        "id": "247909",
+        "Exp": "Legion",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Demonsteel Bar", "id": "124461", "count": 5},
+            { "name": "Leylight Shard", "id": "124441", "count": 1}
+        ]
+    },
+    {
+        "name": "Suramar Jeweler's Assortment",
+        "id": "258227",
+        "Exp": "Legion",
+        "craftQty": 12,
+        "recipe": [
+            { "name": "Chemirine", "id": "151720", "count": 1},
+            { "name": "Argulite", "id": "151718", "count": 2},
+            { "name": "Maelstrom Sapphire", "id": "130182", "count": 1},
+            { "name": "Pandemonite", "id": "130181", "count": 2},
+            { "name": "Skystone", "id": "130176", "count": 4},
+            { "name": "Imbued Silkweave", "id": "127004", "count": 1}
+        ]
+    },
+    {
+        "name": "Suramar Storage Crate",
+        "id": "247925",
+        "Exp": "Legion",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Sallow Pigment", "id": "129034", "count": 20},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 12}
+        ]
+    },
+    {
+        "name": "Tauren Fencepost",
+        "id": "245407",
+        "Exp": "Legion",
+        "craftQty": 15,
+        "recipe": [
+            { "name": "Unbroken Claw", "id": "124438", "count": 5},
+            { "name": "Stonehide Leather", "id": "124113", "count": 10}
+        ]
+    },
+    {
+        "name": "Tauren Leather Fence",
+        "id": "245406",
+        "Exp": "Legion",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Unbroken Claw", "id": "124438", "count": 5},
+            { "name": "Stonehide Leather", "id": "124113", "count": 20}
+        ]
+    },
+    {
+        "name": "Tauren Soup Pot",
+        "id": "245408",
+        "Exp": "Legion",
+        "craftQty": 35,
+        "recipe": [
+            { "name": "River Onion", "id": "135591", "count": 3},
+            { "name": "Dalapeño Pepper", "id": "133589", "count": 3},
+            { "name": "Flaked Sea Salt", "id": "133588", "count": 3},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 20},
+            { "name": "Highmountain Salmon", "id": "124109", "count": 5}
+        ]
+    },
+    {
+        "name": "Tauren Storage Chest",
+        "id": "245459",
+        "Exp": "Legion",
+        "craftQty": 15,
+        "recipe": [
+            { "name": "Sallow Pigment", "id": "129034", "count": 15},
+            { "name": "Roseate Pigment", "id": "129032", "count": 10},
+            { "name": "Shal'dorei Silk", "id": "124437", "count": 8}
         ]
     }
   ]
