@@ -2396,6 +2396,7 @@
         "recipe": [
             { "name": "Wildercloth", "id": "193922", "count": 4},
             { "name": "Potion of Frozen Focus", "id": "191363", "count": 5},
+            { "name": "Rot Resistant Cauldron", "id": "204634", "count": 1, "fixPrice": 24000},
             { "name": "Khaz'gorite Ore", "id": "190313", "count": 9}
         ]
     },

@@ -161,7 +161,7 @@ async function generateHTML() {
         if (item.recipe) {
             item.recipe.forEach(reag => {
                 const reagId = safeId(reag.id);
-                const reagPrice = commoditiesMap[reagId];
+                const reagPrice = reag.fixPrice || commoditiesMap[reagId];
                 const reagMeta = metaData[reagId] || { icon: '', name: '?' };
                 if (!reagPrice) missingReagents = true;
                 
