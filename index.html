@@ -9,14 +9,14 @@
             body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
             .container { max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
             
-            /* --- ОНОВЛЕНИЙ ХЕДЕР --- */
+            /* --- ХЕДЕР --- */
             .header-container { 
                 display: flex; 
                 flex-direction: column;
                 align-items: center; 
                 margin-bottom: 30px; 
                 padding-top: 10px;
-                gap: 5px; /* Відступ між заголовком і датою */
+                gap: 5px;
             }
 
             h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; font-size: 2.5em; }
@@ -27,7 +27,7 @@
                 margin-bottom: 15px; 
             }
 
-            /* Рядок керування: Пошук зліва, Кнопка справа */
+            /* Рядок керування */
             .controls-row {
                 display: flex;
                 justify-content: space-between;
@@ -41,23 +41,25 @@
                 background-color: #1a1a1a;
                 border: 1px solid #333;
                 color: #fff;
-                padding: 0 15px; /* Паддінг тільки збоку */
+                padding: 0 15px;
                 border-radius: 6px;
                 width: 300px; 
                 font-size: 14px;
                 outline: none;
                 transition: border-color 0.2s;
-                height: 42px; /* Фіксована висота */
-                box-sizing: border-box; /* Щоб бордер не ламав висоту */
+                height: 42px;
+                box-sizing: border-box;
             }
-            #smartSearchInput:focus {
-                border-color: #ffd700;
-            }
-            #smartSearchInput::placeholder {
-                color: #666;
+            #smartSearchInput:focus { border-color: #ffd700; }
+            #smartSearchInput::placeholder { color: #666; }
+
+            /* Група кнопок справа */
+            .buttons-group {
+                display: flex;
+                gap: 15px;
             }
 
-            /* Стилі для кнопки імпорту */
+            /* Кнопка Reagents Import (Фіолетова) */
             .btn-import { 
                 background: #a335ee; 
                 color: white; 
@@ -68,13 +70,32 @@
                 font-weight: bold; 
                 font-size: 0.95em; 
                 transition: background 0.2s;
-                height: 42px; /* Така сама висота як у інпута */
+                height: 42px;
                 box-sizing: border-box;
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
             .btn-import:hover { background: #8a2be2; }
+
+            /* Кнопка Addon Import (Блакитна) - НОВА */
+            .btn-import-addon { 
+                background: #00bcd4; /* Голубий */
+                color: white; 
+                border: none; 
+                padding: 0 20px; 
+                border-radius: 4px; 
+                cursor: pointer; 
+                font-weight: bold; 
+                font-size: 0.95em; 
+                transition: background 0.2s;
+                height: 42px;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .btn-import-addon:hover { background: #00acc1; }
             /* ----------------------------- */
 
             .load-more-container { text-align: center; margin-top: 30px; }
@@ -185,11 +206,15 @@
             <div class="header-container">
                 <h1>💎 WoW Decor Scanner</h1>
                 
-                <div class="update-time">Оновлено: 14.01.2026, 15:53:57</div>
+                <div class="update-time">Оновлено: 14.01.2026, 15:57:12</div>
                 
                 <div class="controls-row">
                     <input type="text" id="smartSearchInput" placeholder="Пошук: назва, патч або профа...">
-                    <button class="btn-import">Згенерувати Import</button>
+                    
+                    <div class="buttons-group">
+                        <button class="btn-import-addon">Аддон Import (Lumber)</button>
+                        <button class="btn-import">Reagents Import</button>
+                    </div>
                 </div>
             </div>
             
@@ -259,8 +284,9 @@
                     </div>
                 `).join('');
 
+                // ТУТ Я ДОДАВ ДАТА-АТРИБУТИ для калькулятора (data-exp і data-lumber)
                 return `
-                <div class="item-card" data-recipe="${recipeJson}">
+                <div class="item-card" data-recipe="${recipeJson}" data-exp="${item.exp || ''}" data-lumber="${item.craftQty || 0}">
                     <div class="main-row">
                         <div class="main-row-left">
                             <div class="col-icon"><img src="${item.icon}" alt="${item.name}"></div>
@@ -355,10 +381,61 @@
                 }
             }
 
+            // --- НОВА ФУНКЦІЯ ДЛЯ ГОЛУБОЇ КНОПКИ ---
+            function handleAddonImport() {
+                const checkedBoxes = document.querySelectorAll('.check-input:checked');
+                
+                if (checkedBoxes.length === 0) {
+                    alert("Вибери предмети галочками!");
+                    return;
+                }
+
+                let summary = {}; // Тут будемо сумувати { "Dragonflight": 500, "Legion": 20 }
+
+                checkedBoxes.forEach(box => {
+                    const card = box.closest('.item-card');
+                    const qtyInput = card.querySelector('.qty-input');
+                    const count = parseInt(qtyInput.value) || 0;
+                    
+                    if (count > 0) {
+                        const exp = card.dataset.exp; 
+                        const lumberReq = parseInt(card.dataset.lumber) || 0;
+                        const totalLumber = count * lumberReq;
+
+                        if (exp && totalLumber > 0) {
+                            if (summary[exp]) {
+                                summary[exp] += totalLumber;
+                            } else {
+                                summary[exp] = totalLumber;
+                            }
+                        }
+                    }
+                });
+
+                // Перетворюємо об'єкт в масив для аддону
+                const payload = Object.keys(summary).map(exp => ({
+                    "Exp": exp,
+                    "craftQty": summary[exp]
+                }));
+
+                if (payload.length === 0) {
+                    alert("Перевір, чи введена кількість (цифра > 0) і чи є у предметів параметр Exp/Lumber.");
+                    return;
+                }
+
+                const jsonString = JSON.stringify(payload);
+                navigator.clipboard.writeText(jsonString).then(() => {
+                    alert("Скопійовано для аддону! Встав у грі: " + jsonString);
+                });
+            }
+
             document.addEventListener('DOMContentLoaded', () => {
                 loadMore();
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
                 document.getElementById('smartSearchInput').addEventListener('input', handleSearch);
+                
+                // Слухач для нової кнопки
+                document.querySelector('.btn-import-addon').addEventListener('click', handleAddonImport);
             });
         </script>
         <script src="import.js"></script>
