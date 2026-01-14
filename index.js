@@ -285,7 +285,7 @@ async function generateHTML() {
             }
             .btn-import:hover { background: #8a2be2; }
 
-            /* Кнопка Addon Import (Блакитна) - НОВА */
+            /* Кнопка Addon Import (Блакитна) */
             .btn-import-addon { 
                 background: #00bcd4; /* Голубий */
                 color: white; 
@@ -419,7 +419,7 @@ async function generateHTML() {
                     <input type="text" id="smartSearchInput" placeholder="Пошук: назва, патч або профа...">
                     
                     <div class="buttons-group">
-                        <button class="btn-import-addon">Аддон Import (Lumber)</button>
+                        <button class="btn-import-addon">Lumber Import</button>
                         <button class="btn-import">Reagents Import</button>
                     </div>
                 </div>
@@ -491,7 +491,6 @@ async function generateHTML() {
                     </div>
                 \`).join('');
 
-                // ТУТ Я ДОДАВ ДАТА-АТРИБУТИ для калькулятора (data-exp і data-lumber)
                 return \`
                 <div class="item-card" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}">
                     <div class="main-row">
@@ -588,8 +587,8 @@ async function generateHTML() {
                 }
             }
 
-            // --- НОВА ФУНКЦІЯ ДЛЯ ГОЛУБОЇ КНОПКИ ---
-            function handleAddonImport() {
+            function handleAddonImport(e) {
+                const btn = e.currentTarget; // Отримуємо саму кнопку
                 const checkedBoxes = document.querySelectorAll('.check-input:checked');
                 
                 if (checkedBoxes.length === 0) {
@@ -597,7 +596,7 @@ async function generateHTML() {
                     return;
                 }
 
-                let summary = {}; // Тут будемо сумувати { "Dragonflight": 500, "Legion": 20 }
+                let summary = {}; 
 
                 checkedBoxes.forEach(box => {
                     const card = box.closest('.item-card');
@@ -619,20 +618,30 @@ async function generateHTML() {
                     }
                 });
 
-                // Перетворюємо об'єкт в масив для аддону
                 const payload = Object.keys(summary).map(exp => ({
                     "Exp": exp,
                     "craftQty": summary[exp]
                 }));
 
                 if (payload.length === 0) {
-                    alert("Перевір, чи введена кількість (цифра > 0) і чи є у предметів параметр Exp/Lumber.");
+                    alert("Перевір кількість (> 0) або наявність параметрів дерева.");
                     return;
                 }
 
                 const jsonString = JSON.stringify(payload);
+                
                 navigator.clipboard.writeText(jsonString).then(() => {
-                    alert("Скопійовано для аддону! Встав у грі: " + jsonString);
+                    // ВІЗУАЛЬНИЙ ЕФЕКТ (замість alert)
+                    const originalText = btn.innerText;
+                    
+                    btn.style.backgroundColor = "#4caf50"; // Зелений
+                    btn.innerText = "Скопійовано!";
+                    
+                    // Повертаємо назад через 2 секунди
+                    setTimeout(() => {
+                        btn.style.backgroundColor = ""; // Скидаємо до стилю з CSS
+                        btn.innerText = originalText;
+                    }, 2000);
                 });
             }
 
@@ -640,8 +649,6 @@ async function generateHTML() {
                 loadMore();
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
                 document.getElementById('smartSearchInput').addEventListener('input', handleSearch);
-                
-                // Слухач для нової кнопки
                 document.querySelector('.btn-import-addon').addEventListener('click', handleAddonImport);
             });
         </script>
