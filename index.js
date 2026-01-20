@@ -264,14 +264,27 @@ async function generateHTML() {
         }
     });
 
+    // Формуємо масив, сортуємо його за ціною (descending) і генеруємо HTML
     let expTooltipHtml = '';
-    Object.keys(expStats).sort().forEach(exp => {
-        const avg = expStats[exp].sum / expStats[exp].count;
-        const colorClass = avg > 0 ? '#4caf50' : '#f44336';
+    
+    // 1. Перетворюємо об'єкт в масив
+    const sortedStats = Object.keys(expStats).map(exp => {
+        return {
+            name: exp,
+            avg: expStats[exp].sum / expStats[exp].count
+        };
+    });
+
+    // 2. Сортуємо масив: від найбільшого середнього до найменшого
+    sortedStats.sort((a, b) => b.avg - a.avg);
+
+    // 3. Генеруємо HTML
+    sortedStats.forEach(stat => {
+        const colorClass = stat.avg > 0 ? '#4caf50' : '#f44336';
         expTooltipHtml += `
             <div class="stat-row">
-                <span class="stat-name">${exp}</span>
-                <span class="stat-val" style="color:${colorClass}">${Math.floor(avg).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span>
+                <span class="stat-name">${stat.name}</span>
+                <span class="stat-val" style="color:${colorClass}">${Math.floor(stat.avg).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span>
             </div>`;
     });
 
