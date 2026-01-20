@@ -13,7 +13,8 @@ const REGION = 'eu';
 
 const CONCURRENCY = 20; 
 const HISTORY_FILE = 'price_history.json';
-const HISTORY_LIMIT = 8760; // 1 рік історії (годин)
+// 365 днів * 24 години = 8760 записів
+const HISTORY_LIMIT = 8760; 
 
 const api = axios.create({ timeout: 60000 });
 
@@ -26,61 +27,42 @@ let historyDB = {};
 // --- АВТОРИЗАЦІЯ ---
 async function getAccessToken() {
     console.log("🔑 Отримую токен...");
-    try {
-        const auth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
-        const res = await api.post('https://oauth.battle.net/token', 'grant_type=client_credentials', {
-            headers: { 'Authorization': `Basic ${auth}`, 'Content-Type': 'application/x-www-form-urlencoded' }
-        });
-        return res.data.access_token;
-    } catch (e) {
-        console.error("❌ Помилка авторизації! Перевір Secret/ID.");
-        process.exit(1);
-    }
+    const auth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
+    const res = await api.post('https://oauth.battle.net/token', 'grant_type=client_credentials', {
+        headers: { 'Authorization': `Basic ${auth}`, 'Content-Type': 'application/x-www-form-urlencoded' }
+    });
+    return res.data.access_token;
 }
 
-// --- ІСТОРІЯ ЦІН (ВАЖЛИВО) ---
+// --- ІСТОРІЯ ЦІН ---
 function loadHistory() {
     if (fs.existsSync(HISTORY_FILE)) {
         try {
-            const raw = fs.readFileSync(HISTORY_FILE, 'utf8');
-            historyDB = JSON.parse(raw);
-            console.log(`📂 Історію завантажено: ${Object.keys(historyDB).length} предметів.`);
+            historyDB = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8'));
+            console.log(`📂 Завантажено історію цін для ${Object.keys(historyDB).length} предметів.`);
         } catch (e) {
-            console.error("⚠️ Помилка читання історії, створюю нову базу.");
+            console.error("Помилка читання історії, створюю нову.");
             historyDB = {};
         }
-    } else {
-        console.log("⚠️ Файлу історії немає, створюю новий.");
-        historyDB = {};
     }
 }
 
 function updateHistory(itemId, price) {
     if (!price) return;
-    // Ініціалізація масиву, якщо його немає
     if (!historyDB[itemId]) historyDB[itemId] = [];
     
     const timestamp = Date.now();
-    
-    // Додаємо нову точку
     historyDB[itemId].push({ t: timestamp, p: price });
     
-    // Сортуємо по часу (про всяк випадок)
-    historyDB[itemId].sort((a, b) => a.t - b.t);
-
-    // Видаляємо старі записи, якщо їх забагато
+    // Обрізаємо зайве (річний ліміт)
     if (historyDB[itemId].length > HISTORY_LIMIT) {
         historyDB[itemId] = historyDB[itemId].slice(-HISTORY_LIMIT);
     }
 }
 
 function saveHistory() {
-    try {
-        fs.writeFileSync(HISTORY_FILE, JSON.stringify(historyDB, null, 2)); // null, 2 для форматування
-        console.log("💾 Історію успішно збережено у файл.");
-    } catch (e) {
-        console.error("❌ Помилка збереження історії:", e);
-    }
+    fs.writeFileSync(HISTORY_FILE, JSON.stringify(historyDB));
+    console.log("💾 Історію цін збережено.");
 }
 
 // --- HELPER FUNCTIONS ---
@@ -185,13 +167,19 @@ async function scanServer(realmId, realmName, token, mainItemIdsSet) {
 async function generateHTML() {
     console.log("📝 Генерую звіт...");
     
+    // Іконка сайту
     const FAVICON_NAME = 'homestone.jpg'; 
 
     if (!fs.existsSync('public')) fs.mkdirSync('public');
+    
+    // Копіюємо import.js
     if (fs.existsSync('import.js')) fs.copyFileSync('import.js', 'public/import.js');
 
+    // Копіюємо іконку
     if (fs.existsSync(FAVICON_NAME)) {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
+    } else {
+        console.warn(`⚠️ Іконку ${FAVICON_NAME} не знайдено!`);
     }
 
     const calculatedItems = itemsData.map(item => {
@@ -212,7 +200,6 @@ async function generateHTML() {
         listings.sort((a, b) => a.p - b.p);
         const bestListing = listings[0];
         
-        // --- ОНОВЛЕННЯ ІСТОРІЇ ---
         updateHistory(itemId, bestListing.p);
 
         let craftCost = 0;
@@ -256,18 +243,17 @@ async function generateHTML() {
             craftQty: item.craftQty,
             reagentsList: reagentsList,
             top10: listings.slice(0, 10),
-            // Передаємо історію в HTML
             history: historyDB[itemId] || []
         };
     });
 
-    // --- ЗБЕРІГАЄМО ІСТОРІЮ ПІСЛЯ ОБРОБКИ ВСІХ ПРЕДМЕТІВ ---
     saveHistory();
 
     const sortedItems = calculatedItems
         .filter(data => data.valid)
         .sort((a, b) => b.lumberPrice - a.lumberPrice);
 
+    // --- РОЗРАХУНОК СЕРЕДНЬОГО ПО ЕКСПАНШЕНАХ ---
     const expStats = {};
     sortedItems.forEach(item => {
         if (item.lumberPrice > -999999) {
@@ -278,6 +264,7 @@ async function generateHTML() {
         }
     });
 
+    // Сортування від найбільшого до найменшого
     let expTooltipHtml = '';
     const sortedStats = Object.keys(expStats).map(exp => {
         return {
@@ -311,36 +298,61 @@ async function generateHTML() {
         <style>
             body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
             .container { max-width: 1300px; margin: 0 auto; padding-bottom: 50px; }
+            
             .header-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; gap: 5px; }
             h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; font-size: 2.5em; }
             .update-time { font-size: 0.9em; color: #666; margin-bottom: 15px; }
             .controls-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 10px; }
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
+            
             .buttons-group { display: flex; gap: 15px; align-items: center; }
             button { border: none; padding: 0 20px; border-radius: 4px; cursor: pointer; font-weight: bold; height: 42px; color: white; transition: 0.2s; }
             .btn-import { background: #a335ee; }
             .btn-import:hover { background: #8a2be2; }
             .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
+            
             .stats-wrapper { position: relative; display: flex; align-items: center; }
-            .stats-icon { width: 30px; height: 30px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: serif; font-weight: bold; font-style: italic; font-size: 18px; cursor: help; transition: 0.2s; }
+            .stats-icon {
+                width: 30px; height: 30px;
+                background: #333; border: 1px solid #555;
+                color: #fff; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                font-family: serif; font-weight: bold; font-style: italic; font-size: 18px;
+                cursor: help; transition: 0.2s;
+            }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
-            .stats-tooltip { visibility: hidden; opacity: 0; position: absolute; top: 120%; right: 0; width: 250px; background: #1a1b1d; border: 1px solid #444; border-radius: 8px; padding: 15px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transition: 0.2s; transform: translateY(-5px); }
+            
+            .stats-tooltip {
+                visibility: hidden; opacity: 0;
+                position: absolute; top: 120%; right: 0;
+                width: 250px; background: #1a1b1d;
+                border: 1px solid #444; border-radius: 8px;
+                padding: 15px; z-index: 100;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+                transition: 0.2s; transform: translateY(-5px);
+            }
             .stats-wrapper:hover .stats-tooltip { visibility: visible; opacity: 1; transform: translateY(0); }
+            
             .stats-title { font-size: 14px; color: #888; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; text-align: center; }
             .stat-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
             .stat-name { color: #ccc; }
             .stat-val { font-weight: bold; }
-            input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
             input[type=number] { -moz-appearance: textfield; }
+
             .load-more-container { text-align: center; margin-top: 30px; }
             .btn-load-more { background: #2a2b2e; border: 1px solid #444; color: #fff; }
             .btn-load-more:hover { background: #333; }
             .hidden { display: none; }
+
             .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
             .item-card.active { border-color: #a335ee; box-shadow: 0 0 15px rgba(163, 53, 238, 0.1); }
+            
             .main-row { display: flex; height: 60px; position: relative; z-index: 2; }
             .main-row-left { display: flex; align-items: center; flex-grow: 1; padding-left: 20px; }
             .main-row-right { display: flex; align-items: center; padding-right: 20px; }
@@ -348,32 +360,48 @@ async function generateHTML() {
             .col-name { flex-grow: 1; padding-left: 20px; display: flex; align-items: center; }
             .name-text { font-weight: 600; font-size: 1.1em; color: #a335ee; cursor: pointer; position: relative; }
             .info-badge { height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.9em; padding: 0 15px; margin-right: 10px; background: #252629; color: #888; }
+            
             .col-lumber { cursor: pointer; background: rgba(255,255,255,0.05); user-select: none; display: flex; align-items: center; }
             .col-lumber.positive span.val { color: #4caf50; font-weight: bold; }
             .col-lumber.negative span.val { color: #f44336; font-weight: bold; }
             .col-price { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; min-width: 140px; justify-content: flex-end; cursor: pointer; }
+            
             .col-inputs { display: flex; align-items: center; gap: 15px; margin-left: 25px; border-left: 1px solid #333; padding-left: 15px; height: 40px; }
             .qty-input { background: #0f1011; border: 1px solid #333; color: #fff; width: 50px; padding: 6px; border-radius: 4px; text-align: center; font-weight:bold; }
             .check-input { width: 18px; height: 18px; accent-color: #a335ee; cursor: pointer; }
+
             .details-row { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; }
             .item-card.active .details-row { max-height: 800px; } 
+            
             .details-content { display: flex; padding: 20px; gap: 20px; }
             .details-left { flex: 2; display: flex; flex-direction: column; gap: 20px; }
             .details-right { flex: 1; border-left: 1px solid #333; padding-left: 20px; max-height: 500px; overflow-y: auto; }
+            
             .reagents-block { padding: 15px; background: #111; border-radius: 6px; border: 1px solid #333; }
-            .chart-wrapper { background: #111; border: 1px solid #2a2b2e; border-radius: 8px; padding: 10px; height: 250px; position: relative; }
+            
+            .chart-wrapper {
+                background: #111;
+                border: 1px solid #2a2b2e;
+                border-radius: 8px;
+                padding: 10px;
+                height: 250px;
+                position: relative;
+            }
             .chart-controls { position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; gap: 5px; }
             .chart-btn { background: #222; border: 1px solid #333; color: #888; padding: 2px 8px; border-radius: 3px; font-size: 11px; cursor: pointer; height: auto; }
             .chart-btn:hover { color: #fff; background: #333; }
             .chart-btn.active { background: #0070dd; color: #fff; border-color: #0070dd; }
+
             h4 { margin: 0 0 15px 0; color: #888; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }
             .recipe-list { list-style: none; padding: 0; margin: 0; }
             .recipe-list li { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #222; font-size: 0.9em; }
             .reag-left { display: flex; align-items: center; gap: 8px; }
             .reag-icon { width: 24px; height: 24px; border-radius: 3px; border: 1px solid #444; }
             .coin-xs { width: 12px; height: 12px; vertical-align: middle; }
+            
             .server-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.9em; border-bottom: 1px solid #222; }
             .server-price { color: #ffd700; font-weight: bold; }
+            
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
             .name-text.copied .copy-tooltip { opacity: 1; }
         </style>
@@ -393,6 +421,7 @@ async function generateHTML() {
                                 ${expTooltipHtml}
                             </div>
                         </div>
+                        
                         <button class="btn-import-addon">Lumber Import</button>
                         <button class="btn-import">Reagents Import</button>
                     </div>
@@ -568,7 +597,7 @@ async function generateHTML() {
 
             function createItemHTML(item) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
-                let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${Math.floor(r.price)} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
+                let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
                 const top10Html = item.top10.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
