@@ -1,6 +1,7 @@
 const axios = require('axios');
 const fs = require('fs');
 const pLimit = require('p-limit');
+const path = require('path');
 
 // --- ЗАВАНТАЖУЄМО БАЗУ ПРЕДМЕТІВ ---
 const itemsData = require('./items.json');
@@ -11,12 +12,16 @@ const CLIENT_SECRET = process.env.BLIZZARD_CLIENT_SECRET;
 const REGION = 'eu';
 
 const CONCURRENCY = 20; 
+const HISTORY_FILE = 'price_history.json';
+const HISTORY_LIMIT = 30; // Зберігати останні 30 записів (днів/сканувань)
+
 const api = axios.create({ timeout: 60000 });
 
 // Змінні для даних
 let metaData = {};
 let marketData = {};
 let commoditiesMap = {};
+let historyDB = {};
 
 // --- АВТОРИЗАЦІЯ ---
 async function getAccessToken() {
@@ -28,7 +33,40 @@ async function getAccessToken() {
     return res.data.access_token;
 }
 
-// --- ID HELPER FUNCTIONS ---
+// --- ІСТОРІЯ ЦІН ---
+function loadHistory() {
+    if (fs.existsSync(HISTORY_FILE)) {
+        try {
+            historyDB = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8'));
+            console.log(`📂 Завантажено історію цін для ${Object.keys(historyDB).length} предметів.`);
+        } catch (e) {
+            console.error("Помилка читання історії, створюю нову.");
+            historyDB = {};
+        }
+    }
+}
+
+function updateHistory(itemId, price) {
+    if (!price) return;
+    if (!historyDB[itemId]) historyDB[itemId] = [];
+    
+    const timestamp = Date.now();
+    
+    // Додаємо запис
+    historyDB[itemId].push({ t: timestamp, p: price });
+    
+    // Обрізаємо зайве
+    if (historyDB[itemId].length > HISTORY_LIMIT) {
+        historyDB[itemId] = historyDB[itemId].slice(-HISTORY_LIMIT);
+    }
+}
+
+function saveHistory() {
+    fs.writeFileSync(HISTORY_FILE, JSON.stringify(historyDB));
+    console.log("💾 Історію цін збережено.");
+}
+
+// --- HELPER FUNCTIONS ---
 function safeId(value) { return parseInt(value, 10); }
 function getMainItemIds() { return new Set(itemsData.map(i => safeId(i.id))); }
 function getReagentIds() {
@@ -84,7 +122,6 @@ async function scanCommodities(token, allTargetIdsSet) {
                 if (!commoditiesMap[id] || price < commoditiesMap[id]) commoditiesMap[id] = price;
             }
         });
-        console.log(`✅ Commodities: знайдено ціни для ${Object.keys(commoditiesMap).length} предметів.`);
     } catch (e) { console.error("❌ Помилка Commodities:", e.message); }
 }
 
@@ -129,18 +166,12 @@ async function scanServer(realmId, realmName, token, mainItemIdsSet) {
 
 // --- GENERATE HTML ---
 async function generateHTML() {
-    console.log("📝 Прораховую прибутковість та генерую звіт...");
-    
-    // Створюємо папку public, якщо її немає
+    console.log("📝 Генерую звіт...");
     if (!fs.existsSync('public')) fs.mkdirSync('public');
     
-    // === ЛОГІКА З IMPORT.JS (Збережена) ===
-    // Якщо файл існує в корені, копіюємо його в public
+    // Копіюємо import.js якщо є
     if (fs.existsSync('import.js')) {
         fs.copyFileSync('import.js', 'public/import.js');
-        console.log("✅ import.js скопійовано в public/");
-    } else {
-        console.warn("⚠️ import.js не знайдено, функціонал кнопок може не працювати.");
     }
 
     const calculatedItems = itemsData.map(item => {
@@ -161,6 +192,9 @@ async function generateHTML() {
         listings.sort((a, b) => a.p - b.p);
         const bestListing = listings[0];
         
+        // ОНОВЛЮЄМО ІСТОРІЮ ДЛЯ ЦЬОГО ПРЕДМЕТА
+        updateHistory(itemId, bestListing.p);
+
         let craftCost = 0;
         let missingReagents = false;
         let reagentsList = [];
@@ -201,9 +235,13 @@ async function generateHTML() {
             craftCost: craftCost,
             craftQty: item.craftQty,
             reagentsList: reagentsList,
-            top3: listings.slice(0, 3)
+            top3: listings.slice(0, 3),
+            history: historyDB[itemId] || [] // Передаємо історію в HTML
         };
     });
+
+    // Зберігаємо файл історії після оновлення всіх предметів
+    saveHistory();
 
     const sortedItems = calculatedItems
         .filter(data => data.valid)
@@ -217,110 +255,30 @@ async function generateHTML() {
     <html lang="uk">
     <head>
         <meta charset="UTF-8">
-        <title>WoW Analyzer</title>
-        <link rel="icon" type="image/png" href="homestone.jpg">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>WoW Decor Scanner</title>
+        <link rel="icon" type="image/jpg" href="homestone.jpg">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
             body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
             .container { max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
             
-            /* --- ХЕДЕР --- */
-            .header-container { 
-                display: flex; 
-                flex-direction: column;
-                align-items: center; 
-                margin-bottom: 30px; 
-                padding-top: 10px;
-                gap: 5px;
-            }
-
+            .header-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; gap: 5px; }
             h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; font-size: 2.5em; }
-            
-            .update-time { 
-                font-size: 0.9em; 
-                color: #666; 
-                margin-bottom: 15px; 
-            }
-
-            /* Рядок керування */
-            .controls-row {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-                margin-top: 10px;
-            }
-
-            /* Стилі для поля пошуку */
-            #smartSearchInput {
-                background-color: #1a1a1a;
-                border: 1px solid #333;
-                color: #fff;
-                padding: 0 15px;
-                border-radius: 6px;
-                width: 300px; 
-                font-size: 14px;
-                outline: none;
-                transition: border-color 0.2s;
-                height: 42px;
-                box-sizing: border-box;
-            }
+            .update-time { font-size: 0.9em; color: #666; margin-bottom: 15px; }
+            .controls-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 10px; }
+            #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
-            #smartSearchInput::placeholder { color: #666; }
-
-            /* Група кнопок справа */
-            .buttons-group {
-                display: flex;
-                gap: 15px;
-            }
-
-            /* Кнопка Reagents Import (Фіолетова) */
-            .btn-import { 
-                background: #a335ee; 
-                color: white; 
-                border: none; 
-                padding: 0 20px; 
-                border-radius: 4px; 
-                cursor: pointer; 
-                font-weight: bold; 
-                font-size: 0.95em; 
-                transition: background 0.2s;
-                height: 42px;
-                box-sizing: border-box;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+            .buttons-group { display: flex; gap: 15px; }
+            button { border: none; padding: 0 20px; border-radius: 4px; cursor: pointer; font-weight: bold; height: 42px; color: white; transition: 0.2s; }
+            .btn-import { background: #a335ee; }
             .btn-import:hover { background: #8a2be2; }
-
-            /* Кнопка Addon Import (Блакитна) */
-            .btn-import-addon { 
-                background: #00bcd4; /* Голубий */
-                color: white; 
-                border: none; 
-                padding: 0 20px; 
-                border-radius: 4px; 
-                cursor: pointer; 
-                font-weight: bold; 
-                font-size: 0.95em; 
-                transition: background 0.2s;
-                height: 42px;
-                box-sizing: border-box;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+            .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
-            /* ----------------------------- */
-
+            
             .load-more-container { text-align: center; margin-top: 30px; }
-            .btn-load-more { 
-                background: #2a2b2e; color: #fff; border: 1px solid #444; 
-                padding: 10px 30px; border-radius: 4px; cursor: pointer; 
-                font-size: 1em; transition: all 0.2s; 
-            }
-            .btn-load-more:hover { background: #333; border-color: #666; }
+            .btn-load-more { background: #2a2b2e; border: 1px solid #444; color: #fff; }
+            .btn-load-more:hover { background: #333; }
             .hidden { display: none; }
 
             .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
@@ -329,127 +287,136 @@ async function generateHTML() {
             
             .main-row { display: flex; height: 60px; position: relative; z-index: 2; }
             .main-row-left { display: flex; align-items: center; flex-grow: 1; padding-left: 20px; }
-            .main-row-right { display: flex; align-items: center; padding-right: 20px; cursor: default; }
-            
+            .main-row-right { display: flex; align-items: center; padding-right: 20px; }
             .col-icon img { width: 42px; height: 42px; border-radius: 4px; border: 1px solid #333; display: block; }
             .col-name { flex-grow: 1; padding-left: 20px; display: flex; align-items: center; }
-            .name-text { font-weight: 600; font-size: 1.1em; color: #a335ee; position: relative; cursor: copy; transition: color 0.2s; }
-            .name-text:hover { color: #fff; text-decoration: underline; }
+            .name-text { font-weight: 600; font-size: 1.1em; color: #a335ee; cursor: pointer; position: relative; }
+            .info-badge { height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.9em; padding: 0 15px; margin-right: 10px; background: #252629; color: #888; }
             
-            .info-badge {
-                height: 34px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 4px;
-                font-size: 0.9em;
-                box-sizing: border-box;
-                white-space: nowrap;
-            }
-
-            .col-exp, .col-prof { 
-                background: #252629; 
-                color: #888; 
-                width: auto;
-                min-width: 100px;
-                padding: 0 15px;
-                margin-right: 10px;
-            }
+            .col-lumber { cursor: pointer; background: rgba(255,255,255,0.05); user-select: none; }
+            .col-lumber.positive span { color: #4caf50; font-weight: bold; }
+            .col-lumber.negative span { color: #f44336; font-weight: bold; }
+            .col-price { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; min-width: 140px; justify-content: flex-end; cursor: pointer; }
             
-            .col-lumber { 
-                margin-right: 15px; 
-                background: rgba(255,255,255,0.05); 
-                padding: 0 15px;
-                cursor: pointer;
-                transition: transform 0.1s;
-                user-select: none;
-            }
-            .col-lumber:active { transform: scale(0.96); }
-
-            .lumber-label { color: #888; font-size: 0.8em; text-transform: uppercase; margin-right: 5px; }
-            .lumber-value { font-weight: bold; font-size: 1.1em; margin-right: 5px; }
-            .col-lumber.positive .lumber-value { color: #4caf50; }
-            .col-lumber.negative .lumber-value { color: #f44336; }
-            .col-lumber.neutral .lumber-value { color: #aaa; }
-            
-            .col-price { 
-                display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; 
-                min-width: 140px; justify-content: flex-end; 
-                cursor: pointer;
-                user-select: none;
-                transition: transform 0.1s;
-            }
-            .col-price:active { transform: scale(0.96); }
-            
-            .gold-icon { width: 18px; height: 18px; border-radius: 50%; }
-            .coin-xs { width: 10px; height: 10px; vertical-align: middle; }
-            .col-inputs { display: flex; align-items: center; gap: 15px; margin-left: 25px; border-left: 1px solid #333; padding-left: 15px; height: 40px; cursor: default; }
-            .qty-input { background: #0f1011; border: 1px solid #333; color: #fff; width: 50px; padding: 6px; border-radius: 4px; text-align: center; font-weight: bold; }
-            .qty-input:focus { outline: 1px solid #a335ee; }
+            .col-inputs { display: flex; align-items: center; gap: 15px; margin-left: 25px; border-left: 1px solid #333; padding-left: 15px; height: 40px; }
+            .qty-input { background: #0f1011; border: 1px solid #333; color: #fff; width: 50px; padding: 6px; border-radius: 4px; text-align: center; }
             .check-input { width: 18px; height: 18px; accent-color: #a335ee; cursor: pointer; }
-            input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-            input[type=number] { -moz-appearance: textfield; }
-            
-            .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; pointer-events: none; transition: opacity 0.2s; white-space: nowrap; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-            .name-text.copied .copy-tooltip { opacity: 1; }
-            
-            .details-row { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; position: relative; z-index: 1; }
-            .item-card.active .details-row { max-height: 500px; } 
+
+            .details-row { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; }
+            .item-card.active .details-row { max-height: 600px; } 
             .details-content { padding: 20px; display: flex; gap: 30px; }
-            .reagents-block { flex: 1.2; padding-right: 20px; border-right: 1px solid #333; }
-            .servers-block { flex: 0.8; }
-            .servers-block h4 { margin-bottom: 25px; }
-            h4 { margin: 0; color: #888; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }
-            .block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-            .total-craft-cost { font-weight: bold; color: #f44336; font-size: 0.95em; }
+            
+            .reagents-block { flex: 1; padding-right: 20px; border-right: 1px solid #333; }
+            .chart-block { flex: 1; display: flex; flex-direction: column; }
+            
+            h4 { margin: 0 0 15px 0; color: #888; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }
             .recipe-list { list-style: none; padding: 0; margin: 0; }
             .recipe-list li { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #222; font-size: 0.9em; }
             .reag-left { display: flex; align-items: center; gap: 8px; }
             .reag-icon { width: 24px; height: 24px; border-radius: 3px; border: 1px solid #444; }
-            .reagent-count { color: #ffd700; font-weight: bold; min-width: 25px; }
-            .reagent-name { color: #ccc; }
-            .reag-right { color: #ccc; font-size: 0.9em; display: flex; align-items: center; gap: 4px; }
-            .craft-qty-info { margin-top: 15px; font-size: 0.9em; color: #4caf50; font-weight: bold; background: rgba(76, 175, 80, 0.1); padding: 8px; border-radius: 4px; text-align: center; }
-            .empty-state { color: #555; font-style: italic; font-size: 0.9em; }
-            .server-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; font-size: 0.95em; }
-            .server-name { color: #ccc; }
-            .server-price { color: #ffd700; font-weight: bold; display: flex; align-items: center; gap: 4px; }
-            .coin-sm { width: 12px; height: 12px; }
+            .coin-xs { width: 10px; height: 10px; vertical-align: middle; }
+            
+            /* СТИЛІ ДЛЯ ГРАФІКА */
+            .chart-wrapper {
+                background: #111;
+                border: 1px solid #2a2b2e;
+                border-radius: 8px;
+                padding: 10px;
+                height: 200px;
+                position: relative;
+            }
+            .servers-list { margin-top: 15px; }
+            .server-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.9em; border-bottom: 1px solid #222; }
+            .server-price { color: #ffd700; font-weight: bold; }
+            
+            .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+            .name-text.copied .copy-tooltip { opacity: 1; }
         </style>
     </head>
     <body>
         <div class="container">
             <div class="header-container">
                 <h1>💎 WoW Decor Scanner</h1>
-                
                 <div class="update-time">Оновлено: ${updateTime}</div>
-                
                 <div class="controls-row">
-                    <input type="text" id="smartSearchInput" placeholder="Пошук: назва, патч або профа...">
-                    
+                    <input type="text" id="smartSearchInput" placeholder="Пошук...">
                     <div class="buttons-group">
                         <button class="btn-import-addon">Lumber Import</button>
                         <button class="btn-import">Reagents Import</button>
                     </div>
                 </div>
             </div>
-            
             <div id="list"></div>
-            
-            <div class="load-more-container">
-                <button id="btnLoadMore" class="btn-load-more">Показати ще (20)</button>
-            </div>
+            <div class="load-more-container"><button id="btnLoadMore" class="btn-load-more">Показати ще</button></div>
         </div>
         
         <script>
             const ALL_DATA = ${jsonPayload};
-            
             let activeData = ALL_DATA; 
             let currentIndex = 0;
             const ITEMS_PER_PAGE = 20;
+            let activeCharts = {}; // Зберігаємо інстанси графіків
 
-            function toggleDetails(card) { card.classList.toggle('active'); }
+            function toggleDetails(card, itemId) {
+                card.classList.toggle('active');
+                if (card.classList.contains('active')) {
+                    // Якщо відкрили, малюємо графік
+                    setTimeout(() => drawChart(itemId), 50);
+                }
+            }
             
+            function drawChart(itemId) {
+                const canvas = document.getElementById('chart-' + itemId);
+                if (!canvas) return;
+                
+                // Якщо графік вже є, не перемальовуємо
+                if (activeCharts[itemId]) return;
+
+                // Знаходимо дані
+                const itemData = ALL_DATA.find(i => i.itemId === itemId);
+                if (!itemData || !itemData.history || itemData.history.length === 0) return;
+
+                const ctx = canvas.getContext('2d');
+                
+                // Градієнт
+                const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+                gradient.addColorStop(0, 'rgba(0, 112, 221, 0.5)');
+                gradient.addColorStop(1, 'rgba(0, 112, 221, 0.0)');
+
+                const labels = itemData.history.map(h => new Date(h.t).toLocaleDateString());
+                const dataPoints = itemData.history.map(h => h.p);
+
+                activeCharts[itemId] = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Price',
+                            data: dataPoints,
+                            borderColor: '#0070dd',
+                            backgroundColor: gradient,
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 0,
+                            pointHoverRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { display: false },
+                            y: { 
+                                grid: { color: '#222' },
+                                ticks: { color: '#666', callback: (val) => val + 'g' }
+                            }
+                        }
+                    }
+                });
+            }
+
             function copyName(event, text) {
                 event.stopPropagation();
                 navigator.clipboard.writeText(text).then(() => {
@@ -462,67 +429,37 @@ async function generateHTML() {
             function createItemHTML(item) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
                 
-                const expLabel = item.exp ? \`<div class="col-exp info-badge">\${item.exp}</div>\` : '<div class="col-exp info-badge"></div>';
-                const profLabel = item.prof ? \`<div class="col-prof info-badge">\${item.prof}</div>\` : '';
-                
-                let lumberClass = "neutral";
-                if (item.lumberPrice > 0) lumberClass = "positive";
-                else if (item.lumberPrice < 0 && item.lumberPrice !== -Infinity) lumberClass = "negative";
-
-                const displayLumber = item.lumberPrice === -Infinity ? 'N/A' : Math.floor(item.lumberPrice).toLocaleString();
-                const displayPrice = Math.floor(item.bestPrice).toLocaleString();
-
+                // Формування HTML рецепту
                 let recipeHtml = '';
                 if (item.reagentsList && item.reagentsList.length > 0) {
                     recipeHtml = '<ul class="recipe-list">';
                     item.reagentsList.forEach(r => {
-                            recipeHtml += \`
-                            <li>
-                                <div class="reag-left">
-                                    <span class="reagent-count">\${r.count}x</span>
-                                    <img src="\${r.icon}" class="reag-icon">
-                                    <span class="reagent-name">\${r.name}</span>
-                                </div>
-                                <div class="reag-right">
-                                    \${r.price ? r.price.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2}) : '?'} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
-                                </div>
-                            </li>\`;
+                        recipeHtml += \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${Math.floor(r.price)} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`;
                     });
                     recipeHtml += '</ul>';
-                } else {
-                    recipeHtml = '<div class="empty-state">No recipe</div>';
-                }
+                } else { recipeHtml = '<div style="color:#555">No recipe</div>'; }
 
-                const top3Html = item.top3.map(l => \`
-                    <div class="server-row">
-                        <span class="server-name">\${l.r}</span>
-                        <span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-sm"></span>
-                    </div>
-                \`).join('');
+                // Топ-3
+                const top3Html = item.top3.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
+
+                let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
+                const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
 
                 return \`
                 <div class="item-card" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}">
                     <div class="main-row">
                         <div class="main-row-left">
-                            <div class="col-icon"><img src="\${item.icon}" alt="\${item.name}"></div>
-                            <div class="col-name">
-                                <div class="name-text" onclick="copyName(event, '\${item.name.replace(/'/g, "\\\\'")}')">
-                                    \${item.name}
-                                    <span class="copy-tooltip">Скопійовано!</span>
-                                </div>
-                            </div>
-                            \${expLabel}
-                            \${profLabel} </div>
-
+                            <div class="col-icon"><img src="\${item.icon}"></div>
+                            <div class="col-name"><div class="name-text" onclick="copyName(event, '\${item.name.replace(/'/g, "\\\\'")}')">\${item.name}<span class="copy-tooltip">Скопійовано!</span></div></div>
+                            \${item.exp ? \`<div class="info-badge">\${item.exp}</div>\` : ''}
+                            \${item.prof ? \`<div class="info-badge">\${item.prof}</div>\` : ''}
+                        </div>
                         <div class="main-row-right">
-                            <div class="col-lumber info-badge \${lumberClass}" onclick="toggleDetails(this.closest('.item-card'))">
-                                <span class="lumber-label">1 Lumber = </span>
-                                <span class="lumber-value">\${displayLumber}</span>
-                                <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                            <div class="col-lumber info-badge \${lumberClass}" onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})">
+                                <span style="margin-right:5px;text-transform:uppercase;font-size:0.8em">1 Lumber = </span><span>\${dispLumber}</span>
                             </div>
-                            <div class="col-price" onclick="toggleDetails(this.closest('.item-card'))">
-                                <span class="gold-amount">\${displayPrice}</span>
-                                <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="gold-icon">
+                            <div class="col-price" onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})">
+                                <span>\${Math.floor(item.bestPrice).toLocaleString()}</span><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" style="width:18px;border-radius:50%">
                             </div>
                             <div class="col-inputs">
                                 <input type="number" class="qty-input" placeholder="0" min="0">
@@ -530,20 +467,25 @@ async function generateHTML() {
                             </div>
                         </div>
                     </div>
-
                     <div class="details-row">
                         <div class="details-content">
                             <div class="reagents-block">
-                                <div class="block-header">
-                                    <h4>🛠️ Recipe Cost (Region)</h4>
-                                    <span class="total-craft-cost text-red">Total: -\${Math.floor(item.craftCost).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span>
+                                <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+                                    <h4>Recipe Cost</h4>
+                                    <span style="color:#f44336;font-weight:bold">Total: -\${Math.floor(item.craftCost).toLocaleString()}</span>
                                 </div>
                                 \${recipeHtml}
-                                \${item.craftQty > 0 ? \`<div class="craft-qty-info">Requires: <b>\${item.craftQty}</b> Lumber</div>\` : ''}
+                                \${item.craftQty > 0 ? \`<div style="margin-top:10px;color:#4caf50;text-align:center;background:#1a3b1a;padding:5px;border-radius:4px">Requires: <b>\${item.craftQty}</b> Lumber</div>\` : ''}
                             </div>
-                            <div class="servers-block">
-                                <h4>🏆 Топ-3 (Найдешевші)</h4>
-                                \${top3Html}
+                            <div class="chart-block">
+                                <h4>Market History (30 Days)</h4>
+                                <div class="chart-wrapper">
+                                    <canvas id="chart-\${item.itemId}"></canvas>
+                                </div>
+                                <div class="servers-list">
+                                    <h4 style="margin-top:15px;font-size:0.8em">Cheapest Realms</h4>
+                                    \${top3Html}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -553,47 +495,22 @@ async function generateHTML() {
             function loadMore() {
                 const list = document.getElementById('list');
                 const btn = document.getElementById('btnLoadMore');
-                
                 const nextItems = activeData.slice(currentIndex, currentIndex + ITEMS_PER_PAGE);
-                
                 if (nextItems.length > 0) {
-                    const html = nextItems.map(item => createItemHTML(item)).join('');
-                    list.insertAdjacentHTML('beforeend', html);
+                    list.insertAdjacentHTML('beforeend', nextItems.map(createItemHTML).join(''));
                     currentIndex += nextItems.length;
                 }
-
-                if (currentIndex >= activeData.length) {
-                    btn.classList.add('hidden');
-                } else {
-                    btn.classList.remove('hidden');
-                }
+                if (currentIndex >= activeData.length) btn.classList.add('hidden'); else btn.classList.remove('hidden');
             }
 
             function handleSearch(e) {
                 const term = e.target.value.toLowerCase();
-                const list = document.getElementById('list');
-                const btn = document.getElementById('btnLoadMore');
-
-                const filtered = ALL_DATA.filter(item => {
-                    const inName = item.name.toLowerCase().includes(term);
-                    const inExp = item.exp ? item.exp.toLowerCase().includes(term) : false;
-                    const inProf = item.prof ? item.prof.toLowerCase().includes(term) : false;
-                    
-                    return inName || inExp || inProf;
-                });
-
+                const filtered = ALL_DATA.filter(i => i.name.toLowerCase().includes(term) || (i.exp && i.exp.toLowerCase().includes(term)));
                 filtered.sort((a, b) => b.lumberPrice - a.lumberPrice);
-
                 activeData = filtered;
                 currentIndex = 0;
-                list.innerHTML = ''; 
-
-                if (activeData.length === 0) {
-                    list.innerHTML = '<div style="text-align:center; padding:20px; color:#666;">Нічого не знайдено</div>';
-                    btn.classList.add('hidden');
-                } else {
-                    loadMore();
-                }
+                document.getElementById('list').innerHTML = '';
+                loadMore();
             }
 
             document.addEventListener('DOMContentLoaded', () => {
@@ -611,6 +528,8 @@ async function generateHTML() {
 
 // --- MAIN ---
 async function main() {
+    loadHistory(); // 1. Завантажуємо стару історію
+    
     const token = await getAccessToken();
     const mainItemIdsSet = getMainItemIds();
     const allIdsArray = getAllIdsArray();
@@ -633,9 +552,9 @@ async function main() {
     }));
 
     await Promise.all(scanTasks);
+    console.log("\n✅ Сканування завершено.");
     
-    console.log("\n✅ Готово.");
-    await generateHTML();
+    await generateHTML(); // 2. Генеруємо HTML і зберігаємо історію
 }
 
 main();
