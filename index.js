@@ -13,7 +13,7 @@ const REGION = 'eu';
 
 const CONCURRENCY = 20; 
 const HISTORY_FILE = 'price_history.json';
-const HISTORY_LIMIT = 8760; 
+const HISTORY_LIMIT = 8760; // 1 рік історії
 
 const api = axios.create({ timeout: 60000 });
 
@@ -430,9 +430,12 @@ async function generateHTML() {
                 });
                 const dataPoints = filteredHistory.map(h => h.p);
 
-                // --- ФІКС ДЛЯ МАЛОЇ КІЛЬКОСТІ ТОЧОК ---
-                // Якщо точок менше 2, робимо їх видимими, інакше ховаємо
-                const pointRadius = dataPoints.length < 2 ? 4 : 0; 
+                // --- ВИПРАВЛЕННЯ ВІДОБРАЖЕННЯ 1 ТОЧКИ ---
+                const isSinglePoint = dataPoints.length < 2;
+                // Якщо точок мало, показуємо їх, якщо багато - ховаємо для краси
+                const pointRadius = isSinglePoint ? 5 : 0;
+                // Якщо точка одна, заливку робити не треба (бо це буде квадрат)
+                const shouldFill = !isSinglePoint;
 
                 activeCharts[itemId] = new Chart(ctx, {
                     type: 'line',
@@ -445,8 +448,8 @@ async function generateHTML() {
                             backgroundColor: gradient,
                             borderWidth: 2,
                             tension: 0.4,
-                            fill: true,
-                            pointRadius: pointRadius, // <--- ОСЬ ТУТ ЗМІНА
+                            fill: shouldFill, // <-- Динамічна заливка
+                            pointRadius: pointRadius, // <-- Динамічний розмір точок
                             pointHoverRadius: 6,
                             pointBackgroundColor: '#fff'
                         }]
@@ -545,7 +548,11 @@ async function generateHTML() {
 
             function createItemHTML(item) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
-                let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
+                
+                let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => 
+                    \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`
+                ).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
+                
                 const top10Html = item.top10.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
