@@ -2,7 +2,7 @@ name: WoW Decor Scanner
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # Запускати кожні 6 годин
+    - cron: '0 */1 * * *' # Запускати кожні 6 годин
   workflow_dispatch: # Кнопка для ручного запуску
 
 permissions:

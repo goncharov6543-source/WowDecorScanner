@@ -131,9 +131,16 @@ async function scanServer(realmId, realmName, token, mainItemIdsSet) {
 async function generateHTML() {
     console.log("📝 Прораховую прибутковість та генерую звіт...");
     
+    // Створюємо папку public, якщо її немає
     if (!fs.existsSync('public')) fs.mkdirSync('public');
+    
+    // === ЛОГІКА З IMPORT.JS (Збережена) ===
+    // Якщо файл існує в корені, копіюємо його в public
     if (fs.existsSync('import.js')) {
         fs.copyFileSync('import.js', 'public/import.js');
+        console.log("✅ import.js скопійовано в public/");
+    } else {
+        console.warn("⚠️ import.js не знайдено, функціонал кнопок може не працювати.");
     }
 
     const calculatedItems = itemsData.map(item => {
@@ -210,6 +217,8 @@ async function generateHTML() {
     <html lang="uk">
     <head>
         <meta charset="UTF-8">
+        <title>WoW Analyzer</title>
+        <link rel="icon" type="image/png" href="homestone.jpg">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>WoW Decor Scanner</title>
         <style>
@@ -467,7 +476,7 @@ async function generateHTML() {
                 if (item.reagentsList && item.reagentsList.length > 0) {
                     recipeHtml = '<ul class="recipe-list">';
                     item.reagentsList.forEach(r => {
-                         recipeHtml += \`
+                            recipeHtml += \`
                             <li>
                                 <div class="reag-left">
                                     <span class="reagent-count">\${r.count}x</span>
@@ -475,7 +484,7 @@ async function generateHTML() {
                                     <span class="reagent-name">\${r.name}</span>
                                 </div>
                                 <div class="reag-right">
-                                     \${r.price ? r.price.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2}) : '?'} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
+                                    \${r.price ? r.price.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2}) : '?'} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs">
                                 </div>
                             </li>\`;
                     });
@@ -587,69 +596,10 @@ async function generateHTML() {
                 }
             }
 
-            function handleAddonImport(e) {
-                const btn = e.currentTarget; // Отримуємо саму кнопку
-                const checkedBoxes = document.querySelectorAll('.check-input:checked');
-                
-                if (checkedBoxes.length === 0) {
-                    alert("Вибери предмети галочками!");
-                    return;
-                }
-
-                let summary = {}; 
-
-                checkedBoxes.forEach(box => {
-                    const card = box.closest('.item-card');
-                    const qtyInput = card.querySelector('.qty-input');
-                    const count = parseInt(qtyInput.value) || 0;
-                    
-                    if (count > 0) {
-                        const exp = card.dataset.exp; 
-                        const lumberReq = parseInt(card.dataset.lumber) || 0;
-                        const totalLumber = count * lumberReq;
-
-                        if (exp && totalLumber > 0) {
-                            if (summary[exp]) {
-                                summary[exp] += totalLumber;
-                            } else {
-                                summary[exp] = totalLumber;
-                            }
-                        }
-                    }
-                });
-
-                const payload = Object.keys(summary).map(exp => ({
-                    "Exp": exp,
-                    "craftQty": summary[exp]
-                }));
-
-                if (payload.length === 0) {
-                    alert("Перевір кількість (> 0) або наявність параметрів дерева.");
-                    return;
-                }
-
-                const jsonString = JSON.stringify(payload);
-                
-                navigator.clipboard.writeText(jsonString).then(() => {
-                    // ВІЗУАЛЬНИЙ ЕФЕКТ (замість alert)
-                    const originalText = btn.innerText;
-                    
-                    btn.style.backgroundColor = "#4caf50"; // Зелений
-                    btn.innerText = "Скопійовано!";
-                    
-                    // Повертаємо назад через 2 секунди
-                    setTimeout(() => {
-                        btn.style.backgroundColor = ""; // Скидаємо до стилю з CSS
-                        btn.innerText = originalText;
-                    }, 2000);
-                });
-            }
-
             document.addEventListener('DOMContentLoaded', () => {
                 loadMore();
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
                 document.getElementById('smartSearchInput').addEventListener('input', handleSearch);
-                document.querySelector('.btn-import-addon').addEventListener('click', handleAddonImport);
             });
         </script>
         <script src="import.js"></script>
