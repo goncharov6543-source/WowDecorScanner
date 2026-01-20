@@ -1,36 +1,48 @@
-name: WoW Decor Scanner
+name: Update Prices
 
 on:
   schedule:
-    - cron: '0 */1 * * *' # Запускати кожні 6 годин
+    - cron: '0 */1 * * *' # Запуск щогодини
   workflow_dispatch: # Кнопка для ручного запуску
 
 permissions:
-  contents: write
+  contents: write # ДОЗВІЛ НА ЗАПИС ФАЙЛІВ
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
 
-      - name: Install dependencies
-        run: npm install
+    - name: Install Dependencies
+      run: npm install
 
-      - name: Run Scanner Script
-        env:
-          BLIZZARD_CLIENT_ID: ${{ secrets.BLIZZARD_CLIENT_ID }}
-          BLIZZARD_CLIENT_SECRET: ${{ secrets.BLIZZARD_CLIENT_SECRET }}
-        run: node index.js
+    - name: Run Script
+      env:
+        BLIZZARD_CLIENT_ID: ${{ secrets.BLIZZARD_CLIENT_ID }}
+        BLIZZARD_CLIENT_SECRET: ${{ secrets.BLIZZARD_CLIENT_SECRET }}
+      run: node index.js
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "actions@github.com"
+        
+        # Додаємо файли, які змінилися
+        git add public/index.html
+        git add price_history.json
+        
+        # Перевіряємо, чи є зміни, перед комітом
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Update prices and history [skip ci]"
+          git push
+        fi
