@@ -13,7 +13,7 @@ const REGION = 'eu';
 
 const CONCURRENCY = 20; 
 const HISTORY_FILE = 'price_history.json';
-const HISTORY_LIMIT = 30; // Зберігати останні 30 записів (днів/сканувань)
+const HISTORY_LIMIT = 30; // 30 записів історії
 
 const api = axios.create({ timeout: 60000 });
 
@@ -52,7 +52,8 @@ function updateHistory(itemId, price) {
     
     const timestamp = Date.now();
     
-    // Додаємо запис
+    // Додаємо запис, якщо ціна змінилась або пройшло багато часу (опціонально)
+    // Тут просто додаємо кожен скан
     historyDB[itemId].push({ t: timestamp, p: price });
     
     // Обрізаємо зайве
@@ -168,11 +169,7 @@ async function scanServer(realmId, realmName, token, mainItemIdsSet) {
 async function generateHTML() {
     console.log("📝 Генерую звіт...");
     if (!fs.existsSync('public')) fs.mkdirSync('public');
-    
-    // Копіюємо import.js якщо є
-    if (fs.existsSync('import.js')) {
-        fs.copyFileSync('import.js', 'public/import.js');
-    }
+    if (fs.existsSync('import.js')) fs.copyFileSync('import.js', 'public/import.js');
 
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
@@ -192,7 +189,7 @@ async function generateHTML() {
         listings.sort((a, b) => a.p - b.p);
         const bestListing = listings[0];
         
-        // ОНОВЛЮЄМО ІСТОРІЮ ДЛЯ ЦЬОГО ПРЕДМЕТА
+        // ОНОВЛЮЄМО ІСТОРІЮ
         updateHistory(itemId, bestListing.p);
 
         let craftCost = 0;
@@ -235,12 +232,12 @@ async function generateHTML() {
             craftCost: craftCost,
             craftQty: item.craftQty,
             reagentsList: reagentsList,
-            top3: listings.slice(0, 3),
-            history: historyDB[itemId] || [] // Передаємо історію в HTML
+            // БЕРЕМО ТОП 10 ДЛЯ ВІДОБРАЖЕННЯ
+            top10: listings.slice(0, 10),
+            history: historyDB[itemId] || []
         };
     });
 
-    // Зберігаємо файл історії після оновлення всіх предметів
     saveHistory();
 
     const sortedItems = calculatedItems
@@ -256,12 +253,12 @@ async function generateHTML() {
     <head>
         <meta charset="UTF-8">
         <title>WoW Decor Scanner</title>
-        <link rel="icon" type="image/jpg" href="homestone.jpg">
+        <link rel="icon" type="image/png" href="homestone.jpg">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
             body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
-            .container { max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
+            .container { max-width: 1300px; margin: 0 auto; padding-bottom: 50px; }
             
             .header-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; gap: 5px; }
             h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; font-size: 2.5em; }
@@ -276,6 +273,11 @@ async function generateHTML() {
             .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
             
+            /* ПРИХОВУЄМО СТРІЛКИ В INPUT NUMBER */
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+            input[type=number] { -moz-appearance: textfield; }
+
             .load-more-container { text-align: center; margin-top: 30px; }
             .btn-load-more { background: #2a2b2e; border: 1px solid #444; color: #fff; }
             .btn-load-more:hover { background: #333; }
@@ -293,40 +295,42 @@ async function generateHTML() {
             .name-text { font-weight: 600; font-size: 1.1em; color: #a335ee; cursor: pointer; position: relative; }
             .info-badge { height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.9em; padding: 0 15px; margin-right: 10px; background: #252629; color: #888; }
             
-            .col-lumber { cursor: pointer; background: rgba(255,255,255,0.05); user-select: none; }
-            .col-lumber.positive span { color: #4caf50; font-weight: bold; }
-            .col-lumber.negative span { color: #f44336; font-weight: bold; }
+            .col-lumber { cursor: pointer; background: rgba(255,255,255,0.05); user-select: none; display: flex; align-items: center; }
+            .col-lumber.positive span.val { color: #4caf50; font-weight: bold; }
+            .col-lumber.negative span.val { color: #f44336; font-weight: bold; }
             .col-price { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; min-width: 140px; justify-content: flex-end; cursor: pointer; }
             
             .col-inputs { display: flex; align-items: center; gap: 15px; margin-left: 25px; border-left: 1px solid #333; padding-left: 15px; height: 40px; }
-            .qty-input { background: #0f1011; border: 1px solid #333; color: #fff; width: 50px; padding: 6px; border-radius: 4px; text-align: center; }
+            .qty-input { background: #0f1011; border: 1px solid #333; color: #fff; width: 50px; padding: 6px; border-radius: 4px; text-align: center; font-weight:bold; }
             .check-input { width: 18px; height: 18px; accent-color: #a335ee; cursor: pointer; }
 
             .details-row { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; }
-            .item-card.active .details-row { max-height: 600px; } 
-            .details-content { padding: 20px; display: flex; gap: 30px; }
+            .item-card.active .details-row { max-height: 800px; } 
             
-            .reagents-block { flex: 1; padding-right: 20px; border-right: 1px solid #333; }
-            .chart-block { flex: 1; display: flex; flex-direction: column; }
+            /* НОВИЙ ЛЕЯУТ ДЕТАЛЕЙ */
+            .details-content { display: flex; padding: 20px; gap: 20px; }
+            .details-left { flex: 2; display: flex; flex-direction: column; gap: 20px; }
+            .details-right { flex: 1; border-left: 1px solid #333; padding-left: 20px; max-height: 500px; overflow-y: auto; }
+            
+            .reagents-block { padding: 15px; background: #111; border-radius: 6px; border: 1px solid #333; }
+            
+            .chart-wrapper {
+                background: #111;
+                border: 1px solid #2a2b2e;
+                border-radius: 8px;
+                padding: 10px;
+                height: 250px;
+                position: relative;
+            }
             
             h4 { margin: 0 0 15px 0; color: #888; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }
             .recipe-list { list-style: none; padding: 0; margin: 0; }
             .recipe-list li { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #222; font-size: 0.9em; }
             .reag-left { display: flex; align-items: center; gap: 8px; }
             .reag-icon { width: 24px; height: 24px; border-radius: 3px; border: 1px solid #444; }
-            .coin-xs { width: 10px; height: 10px; vertical-align: middle; }
+            .coin-xs { width: 12px; height: 12px; vertical-align: middle; }
             
-            /* СТИЛІ ДЛЯ ГРАФІКА */
-            .chart-wrapper {
-                background: #111;
-                border: 1px solid #2a2b2e;
-                border-radius: 8px;
-                padding: 10px;
-                height: 200px;
-                position: relative;
-            }
-            .servers-list { margin-top: 15px; }
-            .server-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.9em; border-bottom: 1px solid #222; }
+            .server-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.9em; border-bottom: 1px solid #222; }
             .server-price { color: #ffd700; font-weight: bold; }
             
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
@@ -339,7 +343,7 @@ async function generateHTML() {
                 <h1>💎 WoW Decor Scanner</h1>
                 <div class="update-time">Оновлено: ${updateTime}</div>
                 <div class="controls-row">
-                    <input type="text" id="smartSearchInput" placeholder="Пошук...">
+                    <input type="text" id="smartSearchInput" placeholder="Назва, професія або патч...">
                     <div class="buttons-group">
                         <button class="btn-import-addon">Lumber Import</button>
                         <button class="btn-import">Reagents Import</button>
@@ -355,35 +359,28 @@ async function generateHTML() {
             let activeData = ALL_DATA; 
             let currentIndex = 0;
             const ITEMS_PER_PAGE = 20;
-            let activeCharts = {}; // Зберігаємо інстанси графіків
+            let activeCharts = {};
 
             function toggleDetails(card, itemId) {
                 card.classList.toggle('active');
                 if (card.classList.contains('active')) {
-                    // Якщо відкрили, малюємо графік
                     setTimeout(() => drawChart(itemId), 50);
                 }
             }
             
             function drawChart(itemId) {
                 const canvas = document.getElementById('chart-' + itemId);
-                if (!canvas) return;
-                
-                // Якщо графік вже є, не перемальовуємо
-                if (activeCharts[itemId]) return;
+                if (!canvas || activeCharts[itemId]) return;
 
-                // Знаходимо дані
                 const itemData = ALL_DATA.find(i => i.itemId === itemId);
                 if (!itemData || !itemData.history || itemData.history.length === 0) return;
 
                 const ctx = canvas.getContext('2d');
-                
-                // Градієнт
-                const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-                gradient.addColorStop(0, 'rgba(0, 112, 221, 0.5)');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                gradient.addColorStop(0, 'rgba(0, 112, 221, 0.6)');
                 gradient.addColorStop(1, 'rgba(0, 112, 221, 0.0)');
 
-                const labels = itemData.history.map(h => new Date(h.t).toLocaleDateString());
+                const labels = itemData.history.map(h => new Date(h.t).toLocaleDateString() + ' ' + new Date(h.t).getHours() + ':00');
                 const dataPoints = itemData.history.map(h => h.p);
 
                 activeCharts[itemId] = new Chart(ctx, {
@@ -399,17 +396,28 @@ async function generateHTML() {
                             tension: 0.4,
                             fill: true,
                             pointRadius: 0,
-                            pointHoverRadius: 5
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#fff'
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(0,0,0,0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#0070dd',
+                                displayColors: false,
+                                callbacks: { label: (c) => c.parsed.y.toLocaleString() + ' g' }
+                            }
+                        },
                         scales: {
                             x: { display: false },
                             y: { 
-                                grid: { color: '#222' },
+                                grid: { color: '#222', borderDash: [5, 5] },
                                 ticks: { color: '#666', callback: (val) => val + 'g' }
                             }
                         }
@@ -426,10 +434,92 @@ async function generateHTML() {
                 });
             }
 
+            // --- ФУНКЦІЯ 1: IMPORT LUMBER (ВИПРАВЛЕНО) ---
+            function handleAddonImport(e) {
+                const btn = e.currentTarget;
+                const checkedBoxes = document.querySelectorAll('.check-input:checked');
+                
+                if (checkedBoxes.length === 0) return alert("Вибери предмети галочками!");
+
+                let summary = {}; 
+
+                checkedBoxes.forEach(box => {
+                    const card = box.closest('.item-card');
+                    const qtyInput = card.querySelector('.qty-input');
+                    const count = parseInt(qtyInput.value) || 0;
+                    
+                    if (count > 0) {
+                        const exp = card.dataset.exp; 
+                        // Зчитуємо потребу в дереві з атрибута
+                        const lumberReq = parseInt(card.dataset.lumber) || 0;
+                        const totalLumber = count * lumberReq;
+
+                        if (exp && totalLumber > 0) {
+                            if (summary[exp]) summary[exp] += totalLumber;
+                            else summary[exp] = totalLumber;
+                        }
+                    }
+                });
+
+                const payload = Object.keys(summary).map(exp => ({
+                    "Exp": exp,
+                    "craftQty": summary[exp]
+                }));
+
+                if (payload.length === 0) return alert("Перевір кількість (> 0) або наявність параметрів дерева.");
+
+                const jsonString = JSON.stringify(payload);
+                visualCopy(btn, jsonString);
+            }
+
+            // --- ФУНКЦІЯ 2: IMPORT REAGENTS ---
+            function handleReagentsImport(e) {
+                const btn = e.currentTarget;
+                const checkedBoxes = document.querySelectorAll('.check-input:checked');
+                if (checkedBoxes.length === 0) return alert("Вибери предмети галочками!");
+                
+                let reagentsMap = {};
+                let hasItems = false;
+
+                checkedBoxes.forEach(box => {
+                    const card = box.closest('.item-card');
+                    const qtyInput = card.querySelector('.qty-input');
+                    const count = parseInt(qtyInput.value) || 0;
+                    
+                    if (count > 0) {
+                        hasItems = true;
+                        try {
+                            const recipe = JSON.parse(card.dataset.recipe);
+                            if (Array.isArray(recipe)) {
+                                recipe.forEach(r => {
+                                    if (!reagentsMap[r.name]) reagentsMap[r.name] = 0;
+                                    reagentsMap[r.name] += (r.count * count);
+                                });
+                            }
+                        } catch(e) {}
+                    }
+                });
+
+                if (!hasItems) return alert("Введи кількість предметів!");
+                const listString = Object.entries(reagentsMap).map(([n, q]) => \`\${n} x\${q}\`).join('\\n');
+                visualCopy(btn, listString);
+            }
+
+            function visualCopy(btn, text) {
+                navigator.clipboard.writeText(text);
+                const originalText = btn.innerText;
+                const originalColor = btn.style.backgroundColor;
+                btn.style.backgroundColor = "#4caf50";
+                btn.innerText = "Скопійовано!";
+                setTimeout(() => {
+                    btn.style.backgroundColor = originalColor;
+                    btn.innerText = originalText;
+                }, 2000);
+            }
+
             function createItemHTML(item) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
                 
-                // Формування HTML рецепту
                 let recipeHtml = '';
                 if (item.reagentsList && item.reagentsList.length > 0) {
                     recipeHtml = '<ul class="recipe-list">';
@@ -439,8 +529,8 @@ async function generateHTML() {
                     recipeHtml += '</ul>';
                 } else { recipeHtml = '<div style="color:#555">No recipe</div>'; }
 
-                // Топ-3
-                const top3Html = item.top3.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
+                // TOP 10 SERVERS
+                const top10Html = item.top10.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
 
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
@@ -456,7 +546,8 @@ async function generateHTML() {
                         </div>
                         <div class="main-row-right">
                             <div class="col-lumber info-badge \${lumberClass}" onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})">
-                                <span style="margin-right:5px;text-transform:uppercase;font-size:0.8em">1 Lumber = </span><span>\${dispLumber}</span>
+                                <span style="margin-right:5px;text-transform:uppercase;font-size:0.8em">1 Lumber = </span><span class="val">\${dispLumber}</span>
+                                <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs" style="margin-left:4px">
                             </div>
                             <div class="col-price" onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})">
                                 <span>\${Math.floor(item.bestPrice).toLocaleString()}</span><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" style="width:18px;border-radius:50%">
@@ -469,23 +560,23 @@ async function generateHTML() {
                     </div>
                     <div class="details-row">
                         <div class="details-content">
-                            <div class="reagents-block">
-                                <div style="display:flex;justify-content:space-between;margin-bottom:10px">
-                                    <h4>Recipe Cost</h4>
-                                    <span style="color:#f44336;font-weight:bold">Total: -\${Math.floor(item.craftCost).toLocaleString()}</span>
-                                </div>
-                                \${recipeHtml}
-                                \${item.craftQty > 0 ? \`<div style="margin-top:10px;color:#4caf50;text-align:center;background:#1a3b1a;padding:5px;border-radius:4px">Requires: <b>\${item.craftQty}</b> Lumber</div>\` : ''}
-                            </div>
-                            <div class="chart-block">
-                                <h4>Market History (30 Days)</h4>
+                            <div class="details-left">
                                 <div class="chart-wrapper">
+                                    <h4 style="position:absolute;top:10px;left:10px;z-index:10;font-size:10px">MARKET HISTORY (14 DAYS)</h4>
                                     <canvas id="chart-\${item.itemId}"></canvas>
                                 </div>
-                                <div class="servers-list">
-                                    <h4 style="margin-top:15px;font-size:0.8em">Cheapest Realms</h4>
-                                    \${top3Html}
+                                <div class="reagents-block">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+                                        <h4>Recipe Cost</h4>
+                                        <span style="color:#f44336;font-weight:bold">Total: -\${Math.floor(item.craftCost).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span>
+                                    </div>
+                                    \${recipeHtml}
+                                    \${item.craftQty > 0 ? \`<div style="margin-top:10px;color:#4caf50;text-align:center;background:#1a3b1a;padding:5px;border-radius:4px">Requires: <b>\${item.craftQty}</b> Lumber</div>\` : ''}
                                 </div>
+                            </div>
+                            <div class="details-right">
+                                <h4>Cheapest Realms (Top 10)</h4>
+                                \${top10Html}
                             </div>
                         </div>
                     </div>
@@ -505,7 +596,12 @@ async function generateHTML() {
 
             function handleSearch(e) {
                 const term = e.target.value.toLowerCase();
-                const filtered = ALL_DATA.filter(i => i.name.toLowerCase().includes(term) || (i.exp && i.exp.toLowerCase().includes(term)));
+                const filtered = ALL_DATA.filter(i => {
+                    const inName = i.name.toLowerCase().includes(term);
+                    const inExp = i.exp && i.exp.toLowerCase().includes(term);
+                    const inProf = i.prof && i.prof.toLowerCase().includes(term);
+                    return inName || inExp || inProf;
+                });
                 filtered.sort((a, b) => b.lumberPrice - a.lumberPrice);
                 activeData = filtered;
                 currentIndex = 0;
@@ -517,6 +613,8 @@ async function generateHTML() {
                 loadMore();
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
                 document.getElementById('smartSearchInput').addEventListener('input', handleSearch);
+                document.querySelector('.btn-import-addon').addEventListener('click', handleAddonImport);
+                document.querySelector('.btn-import').addEventListener('click', handleReagentsImport);
             });
         </script>
         <script src="import.js"></script>
@@ -528,7 +626,7 @@ async function generateHTML() {
 
 // --- MAIN ---
 async function main() {
-    loadHistory(); // 1. Завантажуємо стару історію
+    loadHistory(); 
     
     const token = await getAccessToken();
     const mainItemIdsSet = getMainItemIds();
@@ -554,7 +652,7 @@ async function main() {
     await Promise.all(scanTasks);
     console.log("\n✅ Сканування завершено.");
     
-    await generateHTML(); // 2. Генеруємо HTML і зберігаємо історію
+    await generateHTML(); 
 }
 
 main();
