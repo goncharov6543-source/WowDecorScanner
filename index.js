@@ -13,7 +13,8 @@ const REGION = 'eu';
 
 const CONCURRENCY = 20; 
 const HISTORY_FILE = 'price_history.json';
-const HISTORY_LIMIT = 30; // 30 записів історії
+// 365 днів * 24 години = 8760 записів
+const HISTORY_LIMIT = 8760; 
 
 const api = axios.create({ timeout: 60000 });
 
@@ -51,12 +52,9 @@ function updateHistory(itemId, price) {
     if (!historyDB[itemId]) historyDB[itemId] = [];
     
     const timestamp = Date.now();
-    
-    // Додаємо запис, якщо ціна змінилась або пройшло багато часу (опціонально)
-    // Тут просто додаємо кожен скан
     historyDB[itemId].push({ t: timestamp, p: price });
     
-    // Обрізаємо зайве
+    // Обрізаємо зайве (річний ліміт)
     if (historyDB[itemId].length > HISTORY_LIMIT) {
         historyDB[itemId] = historyDB[itemId].slice(-HISTORY_LIMIT);
     }
@@ -232,7 +230,6 @@ async function generateHTML() {
             craftCost: craftCost,
             craftQty: item.craftQty,
             reagentsList: reagentsList,
-            // БЕРЕМО ТОП 10 ДЛЯ ВІДОБРАЖЕННЯ
             top10: listings.slice(0, 10),
             history: historyDB[itemId] || []
         };
@@ -273,7 +270,6 @@ async function generateHTML() {
             .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
             
-            /* ПРИХОВУЄМО СТРІЛКИ В INPUT NUMBER */
             input::-webkit-outer-spin-button,
             input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
             input[type=number] { -moz-appearance: textfield; }
@@ -307,7 +303,6 @@ async function generateHTML() {
             .details-row { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; }
             .item-card.active .details-row { max-height: 800px; } 
             
-            /* НОВИЙ ЛЕЯУТ ДЕТАЛЕЙ */
             .details-content { display: flex; padding: 20px; gap: 20px; }
             .details-left { flex: 2; display: flex; flex-direction: column; gap: 20px; }
             .details-right { flex: 1; border-left: 1px solid #333; padding-left: 20px; max-height: 500px; overflow-y: auto; }
@@ -323,6 +318,15 @@ async function generateHTML() {
                 position: relative;
             }
             
+            /* СТИЛІ ДЛЯ КНОПОК ГРАФІКА */
+            .chart-controls { position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; gap: 5px; }
+            .chart-btn {
+                background: #222; border: 1px solid #333; color: #888;
+                padding: 2px 8px; border-radius: 3px; font-size: 11px; cursor: pointer; height: auto;
+            }
+            .chart-btn:hover { color: #fff; background: #333; }
+            .chart-btn.active { background: #0070dd; color: #fff; border-color: #0070dd; }
+
             h4 { margin: 0 0 15px 0; color: #888; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }
             .recipe-list { list-style: none; padding: 0; margin: 0; }
             .recipe-list li { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #222; font-size: 0.9em; }
@@ -360,6 +364,8 @@ async function generateHTML() {
             let currentIndex = 0;
             const ITEMS_PER_PAGE = 20;
             let activeCharts = {};
+            // Зберігаємо поточний вибір періоду для кожного графіку
+            let chartRanges = {}; 
 
             function toggleDetails(card, itemId) {
                 card.classList.toggle('active');
@@ -368,6 +374,25 @@ async function generateHTML() {
                 }
             }
             
+            function setChartRange(btn, itemId, range) {
+                // Оновлення стилів кнопок
+                const parent = btn.parentElement;
+                parent.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Збереження вибору
+                chartRanges[itemId] = range;
+                
+                // Видалення старого графіку
+                if (activeCharts[itemId]) {
+                    activeCharts[itemId].destroy();
+                    delete activeCharts[itemId];
+                }
+                
+                // Перемальовування
+                drawChart(itemId);
+            }
+
             function drawChart(itemId) {
                 const canvas = document.getElementById('chart-' + itemId);
                 if (!canvas || activeCharts[itemId]) return;
@@ -380,8 +405,27 @@ async function generateHTML() {
                 gradient.addColorStop(0, 'rgba(0, 112, 221, 0.6)');
                 gradient.addColorStop(1, 'rgba(0, 112, 221, 0.0)');
 
-                const labels = itemData.history.map(h => new Date(h.t).toLocaleDateString() + ' ' + new Date(h.t).getHours() + ':00');
-                const dataPoints = itemData.history.map(h => h.p);
+                // Фільтрація даних на основі вибраного діапазону
+                const range = chartRanges[itemId] || '1m'; // За замовчуванням 1 місяць
+                const now = Date.now();
+                let cutoff = 0;
+
+                switch(range) {
+                    case '1w': cutoff = now - (7 * 24 * 60 * 60 * 1000); break;
+                    case '1m': cutoff = now - (30 * 24 * 60 * 60 * 1000); break;
+                    case '6m': cutoff = now - (180 * 24 * 60 * 60 * 1000); break;
+                    case '1y': cutoff = now - (365 * 24 * 60 * 60 * 1000); break;
+                    default: cutoff = 0;
+                }
+
+                // Відфільтровуємо історію
+                const filteredHistory = itemData.history.filter(h => h.t >= cutoff);
+
+                const labels = filteredHistory.map(h => {
+                    const d = new Date(h.t);
+                    return d.toLocaleDateString() + ' ' + d.getHours() + ':00';
+                });
+                const dataPoints = filteredHistory.map(h => h.p);
 
                 activeCharts[itemId] = new Chart(ctx, {
                     type: 'line',
@@ -416,10 +460,7 @@ async function generateHTML() {
                         },
                         scales: {
                             x: { display: false },
-                            y: { 
-                                grid: { color: '#222', borderDash: [5, 5] },
-                                ticks: { color: '#666', callback: (val) => val + 'g' }
-                            }
+                            y: { display: false } // ПРИБРАНО ГОРИЗОНТАЛЬНІ ЛІНІЇ І ПІДПИСИ
                         }
                     }
                 });
@@ -434,7 +475,7 @@ async function generateHTML() {
                 });
             }
 
-            // --- ФУНКЦІЯ 1: IMPORT LUMBER (ВИПРАВЛЕНО) ---
+            // --- IMPORT LUMBER ---
             function handleAddonImport(e) {
                 const btn = e.currentTarget;
                 const checkedBoxes = document.querySelectorAll('.check-input:checked');
@@ -450,7 +491,6 @@ async function generateHTML() {
                     
                     if (count > 0) {
                         const exp = card.dataset.exp; 
-                        // Зчитуємо потребу в дереві з атрибута
                         const lumberReq = parseInt(card.dataset.lumber) || 0;
                         const totalLumber = count * lumberReq;
 
@@ -472,7 +512,7 @@ async function generateHTML() {
                 visualCopy(btn, jsonString);
             }
 
-            // --- ФУНКЦІЯ 2: IMPORT REAGENTS ---
+            // --- IMPORT REAGENTS ---
             function handleReagentsImport(e) {
                 const btn = e.currentTarget;
                 const checkedBoxes = document.querySelectorAll('.check-input:checked');
@@ -529,7 +569,6 @@ async function generateHTML() {
                     recipeHtml += '</ul>';
                 } else { recipeHtml = '<div style="color:#555">No recipe</div>'; }
 
-                // TOP 10 SERVERS
                 const top10Html = item.top10.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
 
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
@@ -562,7 +601,12 @@ async function generateHTML() {
                         <div class="details-content">
                             <div class="details-left">
                                 <div class="chart-wrapper">
-                                    <h4 style="position:absolute;top:10px;left:10px;z-index:10;font-size:10px">MARKET HISTORY (14 DAYS)</h4>
+                                    <div class="chart-controls">
+                                        <button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1w')">1W</button>
+                                        <button class="chart-btn active" onclick="setChartRange(this, '\${item.itemId}', '1m')">1M</button>
+                                        <button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '6m')">6M</button>
+                                        <button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1y')">1Y</button>
+                                    </div>
                                     <canvas id="chart-\${item.itemId}"></canvas>
                                 </div>
                                 <div class="reagents-block">
