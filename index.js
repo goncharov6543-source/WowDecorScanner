@@ -13,6 +13,7 @@ const REGION = 'eu';
 
 const CONCURRENCY = 20; 
 const HISTORY_FILE = 'price_history.json';
+// 365 днів * 24 години = 8760 записів
 const HISTORY_LIMIT = 8760; 
 
 const api = axios.create({ timeout: 60000 });
@@ -53,6 +54,7 @@ function updateHistory(itemId, price) {
     const timestamp = Date.now();
     historyDB[itemId].push({ t: timestamp, p: price });
     
+    // Обрізаємо зайве (річний ліміт)
     if (historyDB[itemId].length > HISTORY_LIMIT) {
         historyDB[itemId] = historyDB[itemId].slice(-HISTORY_LIMIT);
     }
@@ -164,8 +166,21 @@ async function scanServer(realmId, realmName, token, mainItemIdsSet) {
 // --- GENERATE HTML ---
 async function generateHTML() {
     console.log("📝 Генерую звіт...");
+    
+    // Іконка сайту
+    const FAVICON_NAME = 'homestone.jpg'; 
+
     if (!fs.existsSync('public')) fs.mkdirSync('public');
+    
+    // Копіюємо import.js
     if (fs.existsSync('import.js')) fs.copyFileSync('import.js', 'public/import.js');
+
+    // Копіюємо іконку
+    if (fs.existsSync(FAVICON_NAME)) {
+        fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
+    } else {
+        console.warn(`⚠️ Іконку ${FAVICON_NAME} не знайдено!`);
+    }
 
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
@@ -219,7 +234,7 @@ async function generateHTML() {
             itemId,
             name: item.name,
             icon: metaData[itemId]?.icon || '',
-            exp: item.Exp || 'Unknown', // Гарантуємо наявність поля
+            exp: item.Exp || 'Unknown',
             prof: item.Prof,
             recipeRaw: item.recipe || [],
             lumberPrice: lumberPrice,
@@ -241,9 +256,6 @@ async function generateHTML() {
     // --- РОЗРАХУНОК СЕРЕДНЬОГО ПО ЕКСПАНШЕНАХ ---
     const expStats = {};
     sortedItems.forEach(item => {
-        // Враховуємо тільки валідні ціни (ігноруємо -Infinity або дуже малі значення помилок)
-        // Також можна фільтрувати тільки позитивні значення, якщо вас цікавить тільки прибуток,
-        // але "ціна за ламбер" може бути від'ємною (збиток), тому беремо все, що > -999999
         if (item.lumberPrice > -999999) {
             const exp = item.exp;
             if (!expStats[exp]) expStats[exp] = { sum: 0, count: 0 };
@@ -252,7 +264,6 @@ async function generateHTML() {
         }
     });
 
-    // Формуємо HTML список для тултіпа
     let expTooltipHtml = '';
     Object.keys(expStats).sort().forEach(exp => {
         const avg = expStats[exp].sum / expStats[exp].count;
@@ -263,7 +274,6 @@ async function generateHTML() {
                 <span class="stat-val" style="color:${colorClass}">${Math.floor(avg).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span>
             </div>`;
     });
-    // ---------------------------------------------
 
     const jsonPayload = JSON.stringify(sortedItems);
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
@@ -274,7 +284,9 @@ async function generateHTML() {
     <head>
         <meta charset="UTF-8">
         <title>WoW Decor Scanner</title>
-        <link rel="icon" type="image/png" href="homestone.jpg">
+        
+        <link rel="icon" type="image/jpeg" href="${FAVICON_NAME}">
+        
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
@@ -295,7 +307,7 @@ async function generateHTML() {
             .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
             
-            /* --- INFO ICON & TOOLTIP --- */
+            /* ІКОНКА INFO */
             .stats-wrapper { position: relative; display: flex; align-items: center; }
             .stats-icon {
                 width: 30px; height: 30px;
@@ -322,8 +334,8 @@ async function generateHTML() {
             .stat-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
             .stat-name { color: #ccc; }
             .stat-val { font-weight: bold; }
-            /* --------------------------- */
 
+            /* ПРИХОВУВАННЯ СТРІЛОЧОК INPUT */
             input::-webkit-outer-spin-button,
             input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
             input[type=number] { -moz-appearance: textfield; }
@@ -398,9 +410,6 @@ async function generateHTML() {
                 <div class="controls-row">
                     <input type="text" id="smartSearchInput" placeholder="Назва, професія або патч...">
                     <div class="buttons-group">
-                        <button class="btn-import-addon">Lumber Import</button>
-                        <button class="btn-import">Reagents Import</button>
-                        
                         <div class="stats-wrapper">
                             <div class="stats-icon">i</div>
                             <div class="stats-tooltip">
@@ -408,6 +417,9 @@ async function generateHTML() {
                                 ${expTooltipHtml}
                             </div>
                         </div>
+                        
+                        <button class="btn-import-addon">Lumber Import</button>
+                        <button class="btn-import">Reagents Import</button>
                     </div>
                 </div>
             </div>
