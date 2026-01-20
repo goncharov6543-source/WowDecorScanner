@@ -2,10 +2,10 @@ name: Update Prices & Deploy
 
 on:
   schedule:
-    - cron: '0 */1 * * *' # Запускати щогодини (0 хвилина кожної години)
+    - cron: '0 */1 * * *' # Запускати щогодини
   workflow_dispatch: # Кнопка для ручного запуску
 
-# Дозволи, які потрібні для запису файлів ТА публікації сайту
+# Дозволи
 permissions:
   contents: write
   pages: write
@@ -17,6 +17,11 @@ concurrency:
 
 jobs:
   build-and-deploy:
+    # 👇 ОСЬ ЦЕЙ БЛОК МИ ДОДАЛИ, ЩОБ ВИПРАВИТИ ПОМИЛКУ
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     runs-on: ubuntu-latest
     
     steps:
@@ -34,23 +39,21 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
-    # 4. Запускаємо твій скрипт (він оновить price_history.json і index.html)
+    # 4. Запускаємо твій скрипт
     - name: Run Scanner Script
       env:
         BLIZZARD_CLIENT_ID: ${{ secrets.BLIZZARD_CLIENT_ID }}
         BLIZZARD_CLIENT_SECRET: ${{ secrets.BLIZZARD_CLIENT_SECRET }}
       run: node index.js
 
-    # 5. Зберігаємо оновлену історію цін назад у репозиторій
+    # 5. Зберігаємо історію цін
     - name: Commit and Push History
       run: |
         git config --global user.name "WoW Decor Bot"
         git config --global user.email "actions@github.com"
         
-        # Додаємо лише історію цін (index.html не треба комітити, ми його задеплоїмо з папки public)
         git add price_history.json
         
-        # Якщо є зміни - комітимо
         if git diff --staged --quiet; then
           echo "No changes in price history"
         else
@@ -62,7 +65,7 @@ jobs:
     - name: Setup Pages
       uses: actions/configure-pages@v4
 
-    # 7. Завантажуємо папку public як сайт
+    # 7. Завантажуємо папку public
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
