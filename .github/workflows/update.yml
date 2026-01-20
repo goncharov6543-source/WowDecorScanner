@@ -1,48 +1,74 @@
-name: Update Prices
+name: Update Prices & Deploy
 
 on:
   schedule:
-    - cron: '0 */1 * * *' # Запуск щогодини
+    - cron: '0 */1 * * *' # Запускати щогодини (0 хвилина кожної години)
   workflow_dispatch: # Кнопка для ручного запуску
 
+# Дозволи, які потрібні для запису файлів ТА публікації сайту
 permissions:
-  contents: write # ДОЗВІЛ НА ЗАПИС ФАЙЛІВ
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
+    # 1. Скачуємо код
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
+    # 2. Налаштовуємо Node.js
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: 18
 
+    # 3. Встановлюємо бібліотеки
     - name: Install Dependencies
       run: npm install
 
-    - name: Run Script
+    # 4. Запускаємо твій скрипт (він оновить price_history.json і index.html)
+    - name: Run Scanner Script
       env:
         BLIZZARD_CLIENT_ID: ${{ secrets.BLIZZARD_CLIENT_ID }}
         BLIZZARD_CLIENT_SECRET: ${{ secrets.BLIZZARD_CLIENT_SECRET }}
       run: node index.js
 
-    - name: Commit and Push Changes
+    # 5. Зберігаємо оновлену історію цін назад у репозиторій
+    - name: Commit and Push History
       run: |
-        git config --global user.name "GitHub Actions Bot"
+        git config --global user.name "WoW Decor Bot"
         git config --global user.email "actions@github.com"
         
-        # Додаємо файли, які змінилися
-        git add public/index.html
+        # Додаємо лише історію цін (index.html не треба комітити, ми його задеплоїмо з папки public)
         git add price_history.json
         
-        # Перевіряємо, чи є зміни, перед комітом
+        # Якщо є зміни - комітимо
         if git diff --staged --quiet; then
-          echo "No changes to commit"
+          echo "No changes in price history"
         else
-          git commit -m "Update prices and history [skip ci]"
+          git commit -m "Update price history [skip ci]"
           git push
         fi
+
+    # 6. Налаштування Pages
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    # 7. Завантажуємо папку public як сайт
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: 'public'
+
+    # 8. Публікуємо сайт
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
