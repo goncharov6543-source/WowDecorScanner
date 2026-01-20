@@ -13,7 +13,6 @@ const REGION = 'eu';
 
 const CONCURRENCY = 20; 
 const HISTORY_FILE = 'price_history.json';
-// 365 днів * 24 години = 8760 записів
 const HISTORY_LIMIT = 8760; 
 
 const api = axios.create({ timeout: 60000 });
@@ -54,7 +53,6 @@ function updateHistory(itemId, price) {
     const timestamp = Date.now();
     historyDB[itemId].push({ t: timestamp, p: price });
     
-    // Обрізаємо зайве (річний ліміт)
     if (historyDB[itemId].length > HISTORY_LIMIT) {
         historyDB[itemId] = historyDB[itemId].slice(-HISTORY_LIMIT);
     }
@@ -187,7 +185,6 @@ async function generateHTML() {
         listings.sort((a, b) => a.p - b.p);
         const bestListing = listings[0];
         
-        // ОНОВЛЮЄМО ІСТОРІЮ
         updateHistory(itemId, bestListing.p);
 
         let craftCost = 0;
@@ -222,7 +219,7 @@ async function generateHTML() {
             itemId,
             name: item.name,
             icon: metaData[itemId]?.icon || '',
-            exp: item.Exp,
+            exp: item.Exp || 'Unknown', // Гарантуємо наявність поля
             prof: item.Prof,
             recipeRaw: item.recipe || [],
             lumberPrice: lumberPrice,
@@ -240,6 +237,33 @@ async function generateHTML() {
     const sortedItems = calculatedItems
         .filter(data => data.valid)
         .sort((a, b) => b.lumberPrice - a.lumberPrice);
+
+    // --- РОЗРАХУНОК СЕРЕДНЬОГО ПО ЕКСПАНШЕНАХ ---
+    const expStats = {};
+    sortedItems.forEach(item => {
+        // Враховуємо тільки валідні ціни (ігноруємо -Infinity або дуже малі значення помилок)
+        // Також можна фільтрувати тільки позитивні значення, якщо вас цікавить тільки прибуток,
+        // але "ціна за ламбер" може бути від'ємною (збиток), тому беремо все, що > -999999
+        if (item.lumberPrice > -999999) {
+            const exp = item.exp;
+            if (!expStats[exp]) expStats[exp] = { sum: 0, count: 0 };
+            expStats[exp].sum += item.lumberPrice;
+            expStats[exp].count += 1;
+        }
+    });
+
+    // Формуємо HTML список для тултіпа
+    let expTooltipHtml = '';
+    Object.keys(expStats).sort().forEach(exp => {
+        const avg = expStats[exp].sum / expStats[exp].count;
+        const colorClass = avg > 0 ? '#4caf50' : '#f44336';
+        expTooltipHtml += `
+            <div class="stat-row">
+                <span class="stat-name">${exp}</span>
+                <span class="stat-val" style="color:${colorClass}">${Math.floor(avg).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span>
+            </div>`;
+    });
+    // ---------------------------------------------
 
     const jsonPayload = JSON.stringify(sortedItems);
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
@@ -263,13 +287,43 @@ async function generateHTML() {
             .controls-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 10px; }
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
-            .buttons-group { display: flex; gap: 15px; }
+            
+            .buttons-group { display: flex; gap: 15px; align-items: center; }
             button { border: none; padding: 0 20px; border-radius: 4px; cursor: pointer; font-weight: bold; height: 42px; color: white; transition: 0.2s; }
             .btn-import { background: #a335ee; }
             .btn-import:hover { background: #8a2be2; }
             .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
             
+            /* --- INFO ICON & TOOLTIP --- */
+            .stats-wrapper { position: relative; display: flex; align-items: center; }
+            .stats-icon {
+                width: 30px; height: 30px;
+                background: #333; border: 1px solid #555;
+                color: #fff; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                font-family: serif; font-weight: bold; font-style: italic; font-size: 18px;
+                cursor: help; transition: 0.2s;
+            }
+            .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
+            
+            .stats-tooltip {
+                visibility: hidden; opacity: 0;
+                position: absolute; top: 120%; right: 0;
+                width: 250px; background: #1a1b1d;
+                border: 1px solid #444; border-radius: 8px;
+                padding: 15px; z-index: 100;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+                transition: 0.2s; transform: translateY(-5px);
+            }
+            .stats-wrapper:hover .stats-tooltip { visibility: visible; opacity: 1; transform: translateY(0); }
+            
+            .stats-title { font-size: 14px; color: #888; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; text-align: center; }
+            .stat-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
+            .stat-name { color: #ccc; }
+            .stat-val { font-weight: bold; }
+            /* --------------------------- */
+
             input::-webkit-outer-spin-button,
             input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
             input[type=number] { -moz-appearance: textfield; }
@@ -317,13 +371,8 @@ async function generateHTML() {
                 height: 250px;
                 position: relative;
             }
-            
-            /* СТИЛІ ДЛЯ КНОПОК ГРАФІКА */
             .chart-controls { position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; gap: 5px; }
-            .chart-btn {
-                background: #222; border: 1px solid #333; color: #888;
-                padding: 2px 8px; border-radius: 3px; font-size: 11px; cursor: pointer; height: auto;
-            }
+            .chart-btn { background: #222; border: 1px solid #333; color: #888; padding: 2px 8px; border-radius: 3px; font-size: 11px; cursor: pointer; height: auto; }
             .chart-btn:hover { color: #fff; background: #333; }
             .chart-btn.active { background: #0070dd; color: #fff; border-color: #0070dd; }
 
@@ -351,6 +400,14 @@ async function generateHTML() {
                     <div class="buttons-group">
                         <button class="btn-import-addon">Lumber Import</button>
                         <button class="btn-import">Reagents Import</button>
+                        
+                        <div class="stats-wrapper">
+                            <div class="stats-icon">i</div>
+                            <div class="stats-tooltip">
+                                <div class="stats-title">Average / Lumber</div>
+                                ${expTooltipHtml}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -364,7 +421,6 @@ async function generateHTML() {
             let currentIndex = 0;
             const ITEMS_PER_PAGE = 20;
             let activeCharts = {};
-            // Зберігаємо поточний вибір періоду для кожного графіку
             let chartRanges = {}; 
 
             function toggleDetails(card, itemId) {
@@ -375,21 +431,11 @@ async function generateHTML() {
             }
             
             function setChartRange(btn, itemId, range) {
-                // Оновлення стилів кнопок
                 const parent = btn.parentElement;
                 parent.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
-                // Збереження вибору
                 chartRanges[itemId] = range;
-                
-                // Видалення старого графіку
-                if (activeCharts[itemId]) {
-                    activeCharts[itemId].destroy();
-                    delete activeCharts[itemId];
-                }
-                
-                // Перемальовування
+                if (activeCharts[itemId]) { activeCharts[itemId].destroy(); delete activeCharts[itemId]; }
                 drawChart(itemId);
             }
 
@@ -405,11 +451,9 @@ async function generateHTML() {
                 gradient.addColorStop(0, 'rgba(0, 112, 221, 0.6)');
                 gradient.addColorStop(1, 'rgba(0, 112, 221, 0.0)');
 
-                // Фільтрація даних на основі вибраного діапазону
-                const range = chartRanges[itemId] || '1m'; // За замовчуванням 1 місяць
+                const range = chartRanges[itemId] || '1m';
                 const now = Date.now();
                 let cutoff = 0;
-
                 switch(range) {
                     case '1w': cutoff = now - (7 * 24 * 60 * 60 * 1000); break;
                     case '1m': cutoff = now - (30 * 24 * 60 * 60 * 1000); break;
@@ -418,7 +462,6 @@ async function generateHTML() {
                     default: cutoff = 0;
                 }
 
-                // Відфільтровуємо історію
                 const filteredHistory = itemData.history.filter(h => h.t >= cutoff);
 
                 const labels = filteredHistory.map(h => {
@@ -460,7 +503,7 @@ async function generateHTML() {
                         },
                         scales: {
                             x: { display: false },
-                            y: { display: false } // ПРИБРАНО ГОРИЗОНТАЛЬНІ ЛІНІЇ І ПІДПИСИ
+                            y: { display: false }
                         }
                     }
                 });
@@ -475,57 +518,40 @@ async function generateHTML() {
                 });
             }
 
-            // --- IMPORT LUMBER ---
             function handleAddonImport(e) {
                 const btn = e.currentTarget;
                 const checkedBoxes = document.querySelectorAll('.check-input:checked');
-                
                 if (checkedBoxes.length === 0) return alert("Вибери предмети галочками!");
 
                 let summary = {}; 
-
                 checkedBoxes.forEach(box => {
                     const card = box.closest('.item-card');
                     const qtyInput = card.querySelector('.qty-input');
                     const count = parseInt(qtyInput.value) || 0;
-                    
                     if (count > 0) {
                         const exp = card.dataset.exp; 
                         const lumberReq = parseInt(card.dataset.lumber) || 0;
                         const totalLumber = count * lumberReq;
-
                         if (exp && totalLumber > 0) {
-                            if (summary[exp]) summary[exp] += totalLumber;
-                            else summary[exp] = totalLumber;
+                            if (summary[exp]) summary[exp] += totalLumber; else summary[exp] = totalLumber;
                         }
                     }
                 });
-
-                const payload = Object.keys(summary).map(exp => ({
-                    "Exp": exp,
-                    "craftQty": summary[exp]
-                }));
-
+                const payload = Object.keys(summary).map(exp => ({ "Exp": exp, "craftQty": summary[exp] }));
                 if (payload.length === 0) return alert("Перевір кількість (> 0) або наявність параметрів дерева.");
-
-                const jsonString = JSON.stringify(payload);
-                visualCopy(btn, jsonString);
+                visualCopy(btn, JSON.stringify(payload));
             }
 
-            // --- IMPORT REAGENTS ---
             function handleReagentsImport(e) {
                 const btn = e.currentTarget;
                 const checkedBoxes = document.querySelectorAll('.check-input:checked');
                 if (checkedBoxes.length === 0) return alert("Вибери предмети галочками!");
-                
                 let reagentsMap = {};
                 let hasItems = false;
-
                 checkedBoxes.forEach(box => {
                     const card = box.closest('.item-card');
                     const qtyInput = card.querySelector('.qty-input');
                     const count = parseInt(qtyInput.value) || 0;
-                    
                     if (count > 0) {
                         hasItems = true;
                         try {
@@ -539,7 +565,6 @@ async function generateHTML() {
                         } catch(e) {}
                     }
                 });
-
                 if (!hasItems) return alert("Введи кількість предметів!");
                 const listString = Object.entries(reagentsMap).map(([n, q]) => \`\${n} x\${q}\`).join('\\n');
                 visualCopy(btn, listString);
@@ -551,26 +576,13 @@ async function generateHTML() {
                 const originalColor = btn.style.backgroundColor;
                 btn.style.backgroundColor = "#4caf50";
                 btn.innerText = "Скопійовано!";
-                setTimeout(() => {
-                    btn.style.backgroundColor = originalColor;
-                    btn.innerText = originalText;
-                }, 2000);
+                setTimeout(() => { btn.style.backgroundColor = originalColor; btn.innerText = originalText; }, 2000);
             }
 
             function createItemHTML(item) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
-                
-                let recipeHtml = '';
-                if (item.reagentsList && item.reagentsList.length > 0) {
-                    recipeHtml = '<ul class="recipe-list">';
-                    item.reagentsList.forEach(r => {
-                        recipeHtml += \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${Math.floor(r.price)} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`;
-                    });
-                    recipeHtml += '</ul>';
-                } else { recipeHtml = '<div style="color:#555">No recipe</div>'; }
-
+                let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${Math.floor(r.price)} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
                 const top10Html = item.top10.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
-
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
 
