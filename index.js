@@ -13,7 +13,7 @@ const REGION = 'eu';
 
 const CONCURRENCY = 20; 
 const HISTORY_FILE = 'price_history.json';
-const HISTORY_LIMIT = 8760; // 1 рік історії
+const HISTORY_LIMIT = 8760; 
 
 const api = axios.create({ timeout: 60000 });
 
@@ -403,7 +403,9 @@ async function generateHTML() {
                 const canvas = document.getElementById('chart-' + itemId);
                 if (!canvas || activeCharts[itemId]) return;
 
-                const itemData = ALL_DATA.find(i => i.itemId === itemId);
+                // --- ВИПРАВЛЕННЯ: М'ЯКЕ ПОРІВНЯННЯ '==' (itemId може бути string або number) ---
+                const itemData = ALL_DATA.find(i => i.itemId == itemId);
+                
                 if (!itemData || !itemData.history || itemData.history.length === 0) return;
 
                 const ctx = canvas.getContext('2d');
@@ -430,11 +432,8 @@ async function generateHTML() {
                 });
                 const dataPoints = filteredHistory.map(h => h.p);
 
-                // --- ВИПРАВЛЕННЯ ВІДОБРАЖЕННЯ 1 ТОЧКИ ---
                 const isSinglePoint = dataPoints.length < 2;
-                // Якщо точок мало, показуємо їх, якщо багато - ховаємо для краси
                 const pointRadius = isSinglePoint ? 5 : 0;
-                // Якщо точка одна, заливку робити не треба (бо це буде квадрат)
                 const shouldFill = !isSinglePoint;
 
                 activeCharts[itemId] = new Chart(ctx, {
@@ -448,13 +447,14 @@ async function generateHTML() {
                             backgroundColor: gradient,
                             borderWidth: 2,
                             tension: 0.4,
-                            fill: shouldFill, // <-- Динамічна заливка
-                            pointRadius: pointRadius, // <-- Динамічний розмір точок
+                            fill: shouldFill,
+                            pointRadius: pointRadius,
                             pointHoverRadius: 6,
                             pointBackgroundColor: '#fff'
                         }]
                     },
                     options: {
+                        animation: false, // --- ВИПРАВЛЕННЯ: БЕЗ АНІМАЦІЇ ДЛЯ ШВИДКОСТІ ---
                         responsive: true,
                         maintainAspectRatio: false,
                         interaction: { mode: 'index', intersect: false },
