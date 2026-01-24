@@ -500,15 +500,23 @@ async function generateHTML() {
                         const lumberReq = parseInt(card.dataset.lumber) || 0;
                         const totalLumber = count * lumberReq;
                         
-                        // --- Збір даних про предмет ---
                         const nameEl = card.querySelector('.name-text');
-                        // childNode[0] бере саме текст, ігноруючи span.copy-tooltip
                         const itemName = nameEl ? nameEl.firstChild.textContent.trim() : "Unknown";
                         
                         const priceEl = card.querySelector('.col-price span');
-                        // Видаляємо все крім цифр
-                        const itemPrice = priceEl ? parseInt(priceEl.innerText.replace(/\\D/g, '')) : 0;
-                        // -----------------------------
+                        const itemPrice = priceEl ? parseInt(priceEl.innerText.replace(/\D/g, '')) : 0;
+                        
+                        const iconId = parseInt(card.dataset.icon) || 0;
+
+                        // --- НОВЕ: ДІСТАЄМО ЦІНУ КРАФТУ ---
+                        // Шукаємо блок Recipe Cost, там є span зі стилем color:#f44336 (червоний)
+                        let craftCost = 0;
+                        const costEl = card.querySelector('.reagents-block span[style*="color:#f44336"]');
+                        if (costEl) {
+                            // Текст типу "Total: -3 620", видаляємо все крім цифр
+                            craftCost = parseInt(costEl.innerText.replace(/\D/g, '')) || 0;
+                        }
+                        // ----------------------------------
 
                         if (exp && totalLumber > 0) {
                             if (!summary[exp]) {
@@ -518,7 +526,9 @@ async function generateHTML() {
                             summary[exp].items.push({
                                 name: itemName,
                                 price: itemPrice,
-                                count: count
+                                count: count,
+                                icon: iconId,
+                                cost: craftCost // Додаємо собівартість
                             });
                         }
                     }
