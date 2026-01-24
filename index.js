@@ -403,7 +403,6 @@ async function generateHTML() {
                 const canvas = document.getElementById('chart-' + itemId);
                 if (!canvas || activeCharts[itemId]) return;
 
-                // --- ВИПРАВЛЕННЯ: М'ЯКЕ ПОРІВНЯННЯ '==' (itemId може бути string або number) ---
                 const itemData = ALL_DATA.find(i => i.itemId == itemId);
                 
                 if (!itemData || !itemData.history || itemData.history.length === 0) return;
@@ -454,7 +453,7 @@ async function generateHTML() {
                         }]
                     },
                     options: {
-                        animation: false, // --- ВИПРАВЛЕННЯ: БЕЗ АНІМАЦІЇ ДЛЯ ШВИДКОСТІ ---
+                        animation: false, 
                         responsive: true,
                         maintainAspectRatio: false,
                         interaction: { mode: 'index', intersect: false },
@@ -495,16 +494,42 @@ async function generateHTML() {
                     const card = box.closest('.item-card');
                     const qtyInput = card.querySelector('.qty-input');
                     const count = parseInt(qtyInput.value) || 0;
+                    
                     if (count > 0) {
                         const exp = card.dataset.exp; 
                         const lumberReq = parseInt(card.dataset.lumber) || 0;
                         const totalLumber = count * lumberReq;
+                        
+                        // --- Збір даних про предмет ---
+                        const nameEl = card.querySelector('.name-text');
+                        // childNode[0] бере саме текст, ігноруючи span.copy-tooltip
+                        const itemName = nameEl ? nameEl.firstChild.textContent.trim() : "Unknown";
+                        
+                        const priceEl = card.querySelector('.col-price span');
+                        // Видаляємо все крім цифр
+                        const itemPrice = priceEl ? parseInt(priceEl.innerText.replace(/\\D/g, '')) : 0;
+                        // -----------------------------
+
                         if (exp && totalLumber > 0) {
-                            if (summary[exp]) summary[exp] += totalLumber; else summary[exp] = totalLumber;
+                            if (!summary[exp]) {
+                                summary[exp] = { totalLumber: 0, items: [] };
+                            }
+                            summary[exp].totalLumber += totalLumber;
+                            summary[exp].items.push({
+                                name: itemName,
+                                price: itemPrice,
+                                count: count
+                            });
                         }
                     }
                 });
-                const payload = Object.keys(summary).map(exp => ({ "Exp": exp, "craftQty": summary[exp] }));
+
+                const payload = Object.keys(summary).map(exp => ({ 
+                    "Exp": exp, 
+                    "craftQty": summary[exp].totalLumber,
+                    "items": summary[exp].items 
+                }));
+
                 if (payload.length === 0) return alert("Перевір кількість (> 0) або наявність параметрів дерева.");
                 visualCopy(btn, JSON.stringify(payload));
             }
