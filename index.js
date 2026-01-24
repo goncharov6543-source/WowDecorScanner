@@ -506,7 +506,7 @@ async function generateHTML() {
                         const priceEl = card.querySelector('.col-price span');
                         const itemPrice = priceEl ? parseInt(priceEl.innerText.replace(/\\D/g, '')) : 0;
                         
-                        // Зчитуємо ID іконки з атрибута data-icon
+                        // --- НОВА ЛОГІКА: ЗЧИТУЄМО ID ІКОНКИ ---
                         const iconId = parseInt(card.dataset.icon) || 0;
 
                         if (exp && totalLumber > 0) {
@@ -518,7 +518,7 @@ async function generateHTML() {
                                 name: itemName,
                                 price: itemPrice,
                                 count: count,
-                                icon: iconId // Додаємо ID іконки в експорт
+                                icon: iconId // --- ДОДАЄМО ID В ЕКСПОРТ ---
                             });
                         }
                     }
@@ -582,8 +582,8 @@ async function generateHTML() {
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
 
-                // --- ВИЛУЧЕННЯ ID ІКОНКИ ---
-                // Blizzard URLs мають формат: .../56/134400.jpg
+                // --- НОВА ЛОГІКА: ВИРІЗАЄМО ID ІКОНКИ ---
+                // Blizzard API дає лінки виду: https://render.worldofwarcraft.com/.../56/134400.jpg
                 const iconIdMatch = item.icon.match(/\/(\d+)\.jpg/);
                 const iconId = iconIdMatch ? iconIdMatch[1] : 0;
 
