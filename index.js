@@ -500,15 +500,14 @@ async function generateHTML() {
                         const lumberReq = parseInt(card.dataset.lumber) || 0;
                         const totalLumber = count * lumberReq;
                         
-                        // --- Збір даних про предмет ---
                         const nameEl = card.querySelector('.name-text');
-                        // childNode[0] бере саме текст, ігноруючи span.copy-tooltip
                         const itemName = nameEl ? nameEl.firstChild.textContent.trim() : "Unknown";
                         
                         const priceEl = card.querySelector('.col-price span');
-                        // Видаляємо все крім цифр
                         const itemPrice = priceEl ? parseInt(priceEl.innerText.replace(/\\D/g, '')) : 0;
-                        // -----------------------------
+                        
+                        // Зчитуємо ID іконки з атрибута data-icon
+                        const iconId = parseInt(card.dataset.icon) || 0;
 
                         if (exp && totalLumber > 0) {
                             if (!summary[exp]) {
@@ -518,7 +517,8 @@ async function generateHTML() {
                             summary[exp].items.push({
                                 name: itemName,
                                 price: itemPrice,
-                                count: count
+                                count: count,
+                                icon: iconId // Додаємо ID іконки в експорт
                             });
                         }
                     }
@@ -582,8 +582,13 @@ async function generateHTML() {
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
 
+                // --- ВИЛУЧЕННЯ ID ІКОНКИ ---
+                // Blizzard URLs мають формат: .../56/134400.jpg
+                const iconIdMatch = item.icon.match(/\/(\d+)\.jpg/);
+                const iconId = iconIdMatch ? iconIdMatch[1] : 0;
+
                 return \`
-                <div class="item-card" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}">
+                <div class="item-card" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}" data-icon="\${iconId}">
                     <div class="main-row">
                         <div class="main-row-left">
                             <div class="col-icon"><img src="\${item.icon}"></div>
