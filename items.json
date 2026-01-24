@@ -1879,6 +1879,7 @@
         "name": "Tauren Storage Chest",
         "id": "245459",
         "Exp": "Legion",
+        "Prof": "Inscription",
         "craftQty": 15,
         "recipe": [
             { "name": "Sallow Pigment", "id": "129034", "count": 15},
