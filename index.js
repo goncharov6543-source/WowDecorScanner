@@ -506,8 +506,17 @@ async function generateHTML() {
                         const priceEl = card.querySelector('.col-price span');
                         const itemPrice = priceEl ? parseInt(priceEl.innerText.replace(/\D/g, '')) : 0;
                         
-                        // --- ЗЧИТУЄМО COST НАПРЯМУ З АТРИБУТА ---
-                        const craftCost = parseInt(card.dataset.cost) || 0;
+                        const iconId = parseInt(card.dataset.icon) || 0;
+
+                        // --- НОВЕ: ДІСТАЄМО ЦІНУ КРАФТУ ---
+                        // Шукаємо блок Recipe Cost, там є span зі стилем color:#f44336 (червоний)
+                        let craftCost = 0;
+                        const costEl = card.querySelector('.reagents-block span[style*="color:#f44336"]');
+                        if (costEl) {
+                            // Текст типу "Total: -3 620", видаляємо все крім цифр
+                            craftCost = parseInt(costEl.innerText.replace(/\D/g, '')) || 0;
+                        }
+                        // ----------------------------------
 
                         if (exp && totalLumber > 0) {
                             if (!summary[exp]) {
@@ -518,7 +527,8 @@ async function generateHTML() {
                                 name: itemName,
                                 price: itemPrice,
                                 count: count,
-                                cost: craftCost // Передаємо собівартість
+                                icon: iconId,
+                                cost: craftCost // Додаємо собівартість
                             });
                         }
                     }
@@ -575,33 +585,29 @@ async function generateHTML() {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
                 
                 let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => 
-                    `<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">${r.count}x</span> <img src="${r.icon}" class="reag-icon"> <span>${r.name}</span></div><div class="reag-right">${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>`
+                    \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`
                 ).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
                 
-                const top10Html = item.top10.map(l => `<div class="server-row"><span>${l.r}</span><span class="server-price">${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>`).join('');
+                const top10Html = item.top10.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
 
-                // --- БЕРЕМО ГОТОВУ ЦІНУ КРАФТУ ---
-                const rawCost = Math.floor(item.craftCost || 0);
-
-                // Записуємо data-cost в картку, щоб потім легко дістати при імпорті
-                return `
-                <div class="item-card" data-recipe="${recipeJson}" data-exp="${item.exp || ''}" data-lumber="${item.craftQty || 0}" data-cost="${rawCost}">
+                return \`
+                <div class="item-card" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}">
                     <div class="main-row">
                         <div class="main-row-left">
-                            <div class="col-icon"><img src="${item.icon}"></div>
-                            <div class="col-name"><div class="name-text" onclick="copyName(event, '${item.name.replace(/'/g, "\\'")}')">${item.name}<span class="copy-tooltip">Скопійовано!</span></div></div>
-                            ${item.exp ? `<div class="info-badge">${item.exp}</div>` : ''}
-                            ${item.prof ? `<div class="info-badge">${item.prof}</div>` : ''}
+                            <div class="col-icon"><img src="\${item.icon}"></div>
+                            <div class="col-name"><div class="name-text" onclick="copyName(event, '\${item.name.replace(/'/g, "\\\\'")}')">\${item.name}<span class="copy-tooltip">Скопійовано!</span></div></div>
+                            \${item.exp ? \`<div class="info-badge">\${item.exp}</div>\` : ''}
+                            \${item.prof ? \`<div class="info-badge">\${item.prof}</div>\` : ''}
                         </div>
                         <div class="main-row-right">
-                            <div class="col-lumber info-badge ${lumberClass}" onclick="toggleDetails(this.closest('.item-card'), ${item.itemId})">
-                                <span style="margin-right:5px;text-transform:uppercase;font-size:0.8em">1 Lumber = </span><span class="val">${dispLumber}</span>
+                            <div class="col-lumber info-badge \${lumberClass}" onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})">
+                                <span style="margin-right:5px;text-transform:uppercase;font-size:0.8em">1 Lumber = </span><span class="val">\${dispLumber}</span>
                                 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs" style="margin-left:4px">
                             </div>
-                            <div class="col-price" onclick="toggleDetails(this.closest('.item-card'), ${item.itemId})">
-                                <span>${Math.floor(item.bestPrice).toLocaleString()}</span><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" style="width:18px;border-radius:50%">
+                            <div class="col-price" onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})">
+                                <span>\${Math.floor(item.bestPrice).toLocaleString()}</span><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" style="width:18px;border-radius:50%">
                             </div>
                             <div class="col-inputs">
                                 <input type="number" class="qty-input" placeholder="0" min="0">
@@ -614,29 +620,29 @@ async function generateHTML() {
                             <div class="details-left">
                                 <div class="chart-wrapper">
                                     <div class="chart-controls">
-                                        <button class="chart-btn" onclick="setChartRange(this, '${item.itemId}', '1w')">1W</button>
-                                        <button class="chart-btn active" onclick="setChartRange(this, '${item.itemId}', '1m')">1M</button>
-                                        <button class="chart-btn" onclick="setChartRange(this, '${item.itemId}', '6m')">6M</button>
-                                        <button class="chart-btn" onclick="setChartRange(this, '${item.itemId}', '1y')">1Y</button>
+                                        <button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1w')">1W</button>
+                                        <button class="chart-btn active" onclick="setChartRange(this, '\${item.itemId}', '1m')">1M</button>
+                                        <button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '6m')">6M</button>
+                                        <button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1y')">1Y</button>
                                     </div>
-                                    <canvas id="chart-${item.itemId}"></canvas>
+                                    <canvas id="chart-\${item.itemId}"></canvas>
                                 </div>
                                 <div class="reagents-block">
                                     <div style="display:flex;justify-content:space-between;margin-bottom:10px">
                                         <h4>Recipe Cost</h4>
-                                        <span style="color:#f44336;font-weight:bold">Total: -${rawCost.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span>
+                                        <span style="color:#f44336;font-weight:bold">Total: -\${Math.floor(item.craftCost).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span>
                                     </div>
-                                    ${recipeHtml}
-                                    ${item.craftQty > 0 ? `<div style="margin-top:10px;color:#4caf50;text-align:center;background:#1a3b1a;padding:5px;border-radius:4px">Requires: <b>${item.craftQty}</b> Lumber</div>` : ''}
+                                    \${recipeHtml}
+                                    \${item.craftQty > 0 ? \`<div style="margin-top:10px;color:#4caf50;text-align:center;background:#1a3b1a;padding:5px;border-radius:4px">Requires: <b>\${item.craftQty}</b> Lumber</div>\` : ''}
                                 </div>
                             </div>
                             <div class="details-right">
                                 <h4>Cheapest Realms (Top 10)</h4>
-                                ${top10Html}
+                                \${top10Html}
                             </div>
                         </div>
                     </div>
-                </div>`;
+                </div>\`;
             }
 
             function loadMore() {
