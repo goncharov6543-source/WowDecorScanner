@@ -173,7 +173,7 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
-    // --- (Логіка розрахунку - без змін) ---
+    // --- (Логіка розрахунку предметів - без змін) ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
@@ -234,6 +234,7 @@ async function generateHTML() {
         .filter(data => data.valid)
         .sort((a, b) => b.lumberPrice - a.lumberPrice);
 
+    // --- Stats Generation ---
     const expStats = {};
     sortedItems.forEach(item => {
         if (item.lumberPrice > -999999) {
@@ -272,6 +273,7 @@ async function generateHTML() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
+            /* Reset & Scrollbar */
             html, body { scrollbar-width: thin; scrollbar-color: #2a2b2e transparent; }
             body::-webkit-scrollbar { width: 10px; }
             body::-webkit-scrollbar-track { background: transparent; }
@@ -290,6 +292,12 @@ async function generateHTML() {
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
 
+            /* REMOVE INPUT ARROWS (SPINNERS) */
+            input[type=number]::-webkit-inner-spin-button, 
+            input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+            input[type=number] { -moz-appearance: textfield; }
+
+            /* Icons & Buttons */
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
             .btn-reset { font-size: 22px; } 
@@ -303,14 +311,35 @@ async function generateHTML() {
             .btn-cart-rect { background: #333; color: #fff; border: 1px solid #555; gap: 8px; }
             .btn-cart-rect:hover { background: #444; border-color: #666; }
             
+            /* Stats Tooltip - Restored Design */
             .stats-wrapper { position: relative; display: flex; align-items: center; }
-            .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; } 
-            .stats-tooltip { visibility: hidden; opacity: 0; position: absolute; top: 120%; left: 0; width: 250px; background: #1a1b1d; border: 1px solid #444; border-radius: 8px; padding: 15px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transition: 0.2s; transform: translateY(-5px); }
+            .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; background: #ffd700; color: #000; border-color: #ffd700; } 
+            .stats-tooltip { visibility: hidden; opacity: 0; position: absolute; top: 120%; left: 0; width: 280px; background: #1a1b1d; border: 1px solid #444; border-radius: 8px; padding: 15px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transition: 0.2s; transform: translateY(-5px); }
             .stats-wrapper:hover .stats-tooltip { visibility: visible; opacity: 1; transform: translateY(0); }
+            .stats-title { font-size: 13px; color: #888; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; text-align: center; letter-spacing: 1px; }
+            .stat-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; border-bottom: 1px solid #222; padding-bottom: 2px; }
+            .stat-name { color: #ccc; }
+            .stat-val { font-weight: bold; }
             
-            /* --- TOP RIGHT CHARACTERS SECTION --- */
-            #topRightSection { position: absolute; top: 20px; right: 30px; z-index: 100; }
+            /* --- TOP RIGHT SECTION --- */
+            #topRightSection { position: absolute; top: 20px; right: 30px; z-index: 100; display: flex; align-items: flex-start; justify-content: flex-end; }
             
+            /* Add Character Circle - Empty State */
+            .add-char-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+            .add-char-circle {
+                width: 60px; height: 60px;
+                border: 2px dashed #444;
+                border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 32px; color: #444;
+                transition: all 0.2s;
+                background: transparent;
+            }
+            .add-char-btn:hover .add-char-circle { border-color: #0070dd; color: #0070dd; }
+            .add-char-label { margin-top: 10px; font-size: 13px; color: #444; transition: color 0.2s; }
+            .add-char-btn:hover .add-char-label { color: #0070dd; }
+
+            /* Characters Info Menu */
             .char-menu-container { position: relative; }
             .btn-char-menu { 
                 background: #2a2b2e; color: #ccc; border: 1px solid #444; 
@@ -323,7 +352,7 @@ async function generateHTML() {
                 background: #111; border: 1px solid #333; border-radius: 8px;
                 width: 320px; padding: 10px;
                 display: none; flex-direction: column; gap: 10px;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+                box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 200;
             }
             .char-dropdown.active { display: flex; }
 
@@ -333,16 +362,17 @@ async function generateHTML() {
             }
             .btn-add-new-char:hover { border-color: #666; color: #fff; background: #1a1a1a; }
 
-            /* Character Tile Style inside Dropdown */
+            /* Character Tile Style */
             .char-tile {
                 display: flex; align-items: center;
                 background: #1a1b1d;
                 border: 2px solid #0070dd;
                 border-radius: 30px;
-                padding: 4px 35px 4px 4px; /* Space for delete button */
+                padding: 6px 10px 6px 6px;
                 gap: 10px;
                 position: relative;
                 transition: all 0.2s;
+                min-height: 42px;
             }
             .char-tile:hover { background: #222; box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); }
             .char-avatar { 
@@ -351,40 +381,24 @@ async function generateHTML() {
                 border: 2px solid #ffd700; 
                 background-size: cover; background-position: center; background-repeat: no-repeat;
                 background-color: #000;
+                flex-shrink: 0;
             }
-            .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; }
+            .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; flex-grow: 1; padding-right: 30px; }
             .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             .char-realm { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
 
-            /* Action Buttons on Tile */
+            /* Fixed Tile Action Buttons */
             .tile-btn {
-                position: absolute; width: 20px; height: 20px; border-radius: 50%;
+                position: absolute; width: 22px; height: 22px; border-radius: 50%;
                 display: flex; align-items: center; justify-content: center;
-                color: white; font-size: 12px; cursor: pointer; border: none;
-                transition: transform 0.2s; z-index: 2;
+                color: white; border: none; cursor: pointer;
+                transition: transform 0.2s; z-index: 10;
+                flex-shrink: 0; /* Prevent stretching */
+                padding: 0; /* Reset padding */
             }
             .tile-btn:hover { transform: scale(1.15); }
-            .tile-btn-edit { top: -5px; left: -5px; background: #007bff; font-size: 10px; } /* Pencil */
-            .tile-btn-delete { top: -5px; right: -5px; background: #dc3545; font-size: 14px; line-height: 1; } /* Cross */
-
-            /* --- IMPORT MODAL STYLES --- */
-            .import-modal-content { background: #121212; border: 1px solid #333; max-width: 800px; width: 90%; border-radius: 8px; }
-            .import-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: none; }
-            .import-modal-title { font-size: 16px; font-weight: bold; color: #fff; letter-spacing: 1px; }
-            .import-input-group { margin-bottom: 20px; }
-            .import-label { display: block; font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
-            .import-textarea { 
-                width: 100%; height: 80px; 
-                background: #080808; border: 1px solid #333; border-radius: 4px; 
-                color: #ccc; padding: 10px; font-family: monospace; resize: none; box-sizing: border-box;
-            }
-            .import-textarea:focus { border-color: #0070dd; outline: none; }
-            .save-btn { 
-                width: 100%; background: #0070dd; color: white; border: none; 
-                padding: 12px; font-weight: bold; font-size: 14px; 
-                border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: 0.2s;
-            }
-            .save-btn:hover { background: #005bb5; }
+            .tile-btn-edit { top: -6px; left: -6px; background: #007bff; font-size: 12px; } 
+            .tile-btn-delete { top: -6px; right: -6px; background: #dc3545; font-size: 14px; line-height: 1; } 
 
             /* Modal General */
             .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
@@ -404,11 +418,14 @@ async function generateHTML() {
             .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
             .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
             
-            .modal-body::-webkit-scrollbar { width: 10px; }
-            .modal-body::-webkit-scrollbar-track { background: transparent; } 
-            .modal-body::-webkit-scrollbar-thumb { background: #2a2b2e; border-radius: 5px; border: 2px solid #0f1011; } 
-            .modal-body::-webkit-scrollbar-thumb:hover { background: #333; }
-            .modal-body::-webkit-scrollbar-button { display: none; } 
+            /* Import Modal Specifics */
+            .import-modal-content { background: #121212; border: 1px solid #333; max-width: 800px; width: 90%; border-radius: 8px; }
+            .import-input-group { margin-bottom: 20px; }
+            .import-label { display: block; font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+            .import-textarea { width: 100%; height: 80px; background: #080808; border: 1px solid #333; border-radius: 4px; color: #ccc; padding: 10px; font-family: monospace; resize: none; box-sizing: border-box; }
+            .import-textarea:focus { border-color: #0070dd; outline: none; }
+            .save-btn { width: 100%; background: #0070dd; color: white; border: none; padding: 12px; font-weight: bold; font-size: 14px; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+            .save-btn:hover { background: #005bb5; }
 
             .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
@@ -453,7 +470,12 @@ async function generateHTML() {
     </head>
     <body>
         <div id="topRightSection">
-            <div class="char-menu-container">
+            <div id="btnAddCharWrapper" class="add-char-btn" onclick="openImportModal()">
+                <div class="add-char-circle">+</div>
+                <div class="add-char-label">Add your first character</div>
+            </div>
+
+            <div id="charMenuContainer" class="char-menu-container" style="display:none;">
                 <button id="btnCharMenu" class="btn-char-menu">Characters Info</button>
                 <div id="charDropdown" class="char-dropdown">
                     <div id="charList"></div>
@@ -530,10 +552,8 @@ async function generateHTML() {
             let chartRanges = {}; 
             
             let savedState = JSON.parse(localStorage.getItem('wowScnr_state')) || {};
-            // Array of characters
             let charsList = JSON.parse(localStorage.getItem('wowScnr_chars_list')) || [];
 
-            // Mapping for class icons
             const CLASS_ICONS = {
                 "warrior": "classicon_warrior",
                 "paladin": "classicon_paladin",
@@ -581,14 +601,25 @@ async function generateHTML() {
             }
 
             // --- CHARACTERS LOGIC ---
-            
-            // Toggle Dropdown
+            function updateTopRightSection() {
+                const addWrapper = document.getElementById('btnAddCharWrapper');
+                const menuContainer = document.getElementById('charMenuContainer');
+                
+                if (charsList.length === 0) {
+                    addWrapper.style.display = 'flex';
+                    menuContainer.style.display = 'none';
+                } else {
+                    addWrapper.style.display = 'none';
+                    menuContainer.style.display = 'block';
+                    renderCharList();
+                }
+            }
+
             document.getElementById('btnCharMenu').addEventListener('click', (e) => {
                 e.stopPropagation();
                 document.getElementById('charDropdown').classList.toggle('active');
             });
             
-            // Close dropdown when clicking outside
             document.addEventListener('click', (e) => {
                 const dropdown = document.getElementById('charDropdown');
                 const btn = document.getElementById('btnCharMenu');
@@ -600,12 +631,10 @@ async function generateHTML() {
             function openImportModal(editIndex = -1) {
                 document.getElementById('editCharId').value = editIndex;
                 if (editIndex >= 0 && charsList[editIndex]) {
-                    // Pre-fill fields
                     const char = charsList[editIndex];
                     document.getElementById('prof1Input').value = char.p1 || "";
                     document.getElementById('prof2Input').value = char.p2 || "";
                 } else {
-                    // Clear fields
                     document.getElementById('prof1Input').value = "";
                     document.getElementById('prof2Input').value = "";
                 }
@@ -623,16 +652,15 @@ async function generateHTML() {
                 
                 let name = "Unknown";
                 let realm = "Unknown";
-                let charClass = "mage"; // default
+                let charClass = "mage"; 
 
                 try {
-                    // Try parsing JSON to get name/realm/class
                     const obj = JSON.parse(p1 || p2);
                     if(obj.character) name = obj.character;
                     if(obj.realm) realm = obj.realm;
                     if(obj.class) charClass = obj.class.toLowerCase();
                 } catch(e) {
-                    if (p1 || p2) name = "Imported"; // Fallback if data exists but not JSON
+                    if (p1 || p2) name = "Imported"; 
                 }
 
                 const newChar = { name, realm, class: charClass, p1, p2 };
@@ -645,14 +673,14 @@ async function generateHTML() {
                 
                 saveCharsToStorage();
                 document.getElementById('importModal').classList.remove('active');
-                renderCharList();
+                updateTopRightSection();
             }
 
             function deleteCharacter(index) {
                 if(confirm("Delete this character?")) {
                     charsList.splice(index, 1);
                     saveCharsToStorage();
-                    renderCharList();
+                    updateTopRightSection();
                 }
             }
 
@@ -763,7 +791,7 @@ async function generateHTML() {
                 currentIndex = 0;
                 document.getElementById('list').innerHTML = '';
                 loadMore();
-                renderCharList();
+                updateTopRightSection();
             }
 
             function openCart() {
@@ -900,7 +928,7 @@ async function generateHTML() {
 
             document.addEventListener('DOMContentLoaded', () => {
                 loadMore();
-                renderCharList(); // Render saved characters
+                updateTopRightSection(); // Show circle or menu
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
                 document.getElementById('smartSearchInput').addEventListener('input', handleSearch);
                 document.querySelector('.btn-import-addon').addEventListener('click', handleAddonImport);
