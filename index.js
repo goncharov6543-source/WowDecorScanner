@@ -295,11 +295,12 @@ async function generateHTML() {
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
 
-            /* Загальний стиль для круглих сірих кнопок (i, reset) */
+            /* Загальний стиль для круглих сірих кнопок (i, reset, cart) */
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
 
-            .btn-reset { font-size: 22px; } /* Трохи більша іконка для ресета */
+            .btn-reset { font-size: 22px; } 
+            .btn-cart-icon { font-size: 20px; }
 
             .buttons-group { display: flex; gap: 15px; align-items: center; }
             button { border: none; padding: 0 20px; border-radius: 4px; cursor: pointer; font-weight: bold; height: 42px; color: white; transition: 0.2s; }
@@ -307,12 +308,9 @@ async function generateHTML() {
             .btn-import:hover { background: #8a2be2; }
             .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
-            .btn-cart { background: #ff9800; display: flex; align-items: center; gap: 8px; }
-            .btn-cart:hover { background: #f57c00; }
-
+            
             .stats-wrapper { position: relative; display: flex; align-items: center; }
-            /* stats-icon стиль винесено вище */
-            .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; } /* Специфічний стиль для "i" */
+            .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; } 
             .stats-tooltip { visibility: hidden; opacity: 0; position: absolute; top: 120%; right: 0; width: 250px; background: #1a1b1d; border: 1px solid #444; border-radius: 8px; padding: 15px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transition: 0.2s; transform: translateY(-5px); }
             .stats-wrapper:hover .stats-tooltip { visibility: visible; opacity: 1; transform: translateY(0); }
             .stats-title { font-size: 14px; color: #888; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; text-align: center; }
@@ -328,8 +326,8 @@ async function generateHTML() {
             
             .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
-            /* ЗОЛОТА ОБВОДКА ДЛЯ АКТИВНОГО ЕЛЕМЕНТА */
-            .item-card.active { border-color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.15); }
+            /* ЗОЛОТА ОБВОДКА ДЛЯ АКТИВНОГО ЕЛЕМЕНТА (з !important щоб перекрити hover) */
+            .item-card.active { border-color: #ffd700 !important; box-shadow: 0 0 15px rgba(255, 215, 0, 0.15); }
             
             .main-row { display: flex; height: 60px; position: relative; z-index: 2; }
             .main-row-left { display: flex; align-items: center; flex-grow: 1; padding-left: 20px; }
@@ -367,26 +365,27 @@ async function generateHTML() {
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
             .name-text.copied .copy-tooltip { opacity: 1; }
 
-            /* Стилі для модального вікна */
-            .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-            /* Розширено модальне вікно до 1200px */
-            .modal-content { background: #151618; width: 90%; max-width: 1200px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
+            /* Стилі для модального вікна з анімацією */
+            .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+            .modal-overlay.active { opacity: 1; visibility: visible; }
+
+            .modal-content { background: #151618; width: 90%; max-width: 1200px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s ease; }
+            .modal-overlay.active .modal-content { transform: scale(1); }
+
             .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1b1d; }
             .modal-title { font-size: 1.5em; color: #fff; margin: 0; }
-            /* Виправлено кнопку закриття на ідеально круглу */
-            .modal-close { background: transparent; border: 1px solid #444; color: #888; font-size: 24px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; padding: 0; line-height: 1; cursor: pointer; transition: 0.2s; }
+            /* Виправлено вирівнювання хрестика */
+            .modal-close { background: transparent; border: 1px solid #444; color: #888; font-size: 26px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; padding: 0; cursor: pointer; transition: 0.2s; }
             .modal-close:hover { background: #333; color: #fff; border-color: #fff; }
             .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
             .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
 
-            /* Стилізація скролбара в модалці */
-            .modal-body::-webkit-scrollbar { width: 10px; } /* Трохи ширше для зручності */
-            .modal-body::-webkit-scrollbar-track { background: transparent; } /* Без фону треку */
-            .modal-body::-webkit-scrollbar-thumb { background: #2a2b2e; border-radius: 5px; border: 2px solid #0f1011; } /* Темніший бігунок з відступом */
+            .modal-body::-webkit-scrollbar { width: 10px; }
+            .modal-body::-webkit-scrollbar-track { background: transparent; } 
+            .modal-body::-webkit-scrollbar-thumb { background: #2a2b2e; border-radius: 5px; border: 2px solid #0f1011; } 
             .modal-body::-webkit-scrollbar-thumb:hover { background: #333; }
-            .modal-body::-webkit-scrollbar-button { display: none; } /* Прибрати стрілочки */
+            .modal-body::-webkit-scrollbar-button { display: none; } 
 
-            /* В корзині курсор на ціні та ламбері не має бути pointer, бо вони не клікабельні */
             #cartBody .col-lumber, #cartBody .col-price { cursor: default; }
         </style>
     </head>
@@ -408,7 +407,7 @@ async function generateHTML() {
                                 ${expTooltipHtml}
                             </div>
                         </div>
-                        <button id="btnOpenCart" class="btn-cart">🛒 Cart</button>
+                        <div id="btnOpenCart" class="stats-icon btn-cart-icon" title="Відкрити кошик">🛒</div>
                         <button class="btn-import-addon">Lumber Import</button>
                         <button class="btn-import">Reagents Import</button>
                     </div>
@@ -418,7 +417,7 @@ async function generateHTML() {
             <div class="load-more-container"><button id="btnLoadMore" class="btn-load-more">Показати ще</button></div>
         </div>
         
-        <div id="cartModal" class="modal-overlay hidden">
+        <div id="cartModal" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title">📦 Обрані предмети (Cart)</h2>
@@ -464,8 +463,8 @@ async function generateHTML() {
             });
 
             function toggleDetails(card, itemId) {
-                // Якщо це картка в корзині, ігноруємо клік
-                if (card.closest='#cartBody') return;
+                // ВИПРАВЛЕНО БАГ: додано дужки для методу closest()
+                if (card.closest('#cartBody')) return;
 
                 card.classList.toggle('active');
                 if (card.classList.contains('active')) {
@@ -591,15 +590,16 @@ async function generateHTML() {
                     body.innerHTML = '<div class="empty-cart-msg">Кошик порожній. Виберіть предмети галочками.</div>';
                 } else {
                     const cartItems = ALL_DATA.filter(item => checkedIds.includes(item.itemId.toString()));
-                    // Використовуємо спеціальну функцію для рендеру в корзині (без розкриття)
                     body.innerHTML = cartItems.map(createCartItemHTML).join('');
                 }
                 
-                modal.classList.remove('hidden');
+                // Додаємо клас active для анімації
+                modal.classList.add('active');
             }
 
             function closeCart() {
-                document.getElementById('cartModal').classList.add('hidden');
+                // Прибираємо клас active для анімації
+                document.getElementById('cartModal').classList.remove('active');
                 const list = document.getElementById('list');
                 list.innerHTML = '';
                 currentIndex = 0;
@@ -688,17 +688,14 @@ async function generateHTML() {
                 setTimeout(() => { btn.style.backgroundColor = originalColor; btn.innerText = originalText; }, 2000);
             }
 
-            // Функція для рендеру звичайного елемента (розкривається)
             function createItemHTML(item) {
                 return generateItemHtmlString(item, true);
             }
 
-            // Функція для рендеру елемента в корзині (НЕ розкривається)
             function createCartItemHTML(item) {
                 return generateItemHtmlString(item, false);
             }
 
-            // Спільна логіка генерації HTML
             function generateItemHtmlString(item, expandale) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
                 const saved = savedState[item.itemId] || {};
@@ -713,7 +710,6 @@ async function generateHTML() {
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
 
-                // Якщо елемент розкривається, додаємо обробник кліку
                 const toggleAttr = expandale ? \`onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})"\` : '';
 
                 return \`
