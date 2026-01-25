@@ -173,40 +173,31 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
-    // --- (Логіка розрахунку предметів залишається без змін) ---
+    // --- (Логіка розрахунку предметів - без змін) ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
-        
         Object.keys(marketData).forEach(realmName => {
             const price = marketData[realmName][itemId];
             if (price) listings.push({ r: realmName, p: price });
         });
-
         if (commoditiesMap[itemId]) {
             for(let i=0; i<3; i++) listings.push({ r: "Region (Commodity)", p: commoditiesMap[itemId] });
         }
-
         if (listings.length === 0) return { valid: false };
-
         listings.sort((a, b) => a.p - b.p);
         const bestListing = listings[0];
-        
         updateHistory(itemId, bestListing.p);
-
         let craftCost = 0;
         let missingReagents = false;
         let reagentsList = [];
-        
         if (item.recipe) {
             item.recipe.forEach(reag => {
                 const reagId = safeId(reag.id);
                 const reagPrice = reag.fixPrice || commoditiesMap[reagId];
                 const reagMeta = metaData[reagId] || { icon: '', name: '?' };
                 if (!reagPrice) missingReagents = true;
-                
                 craftCost += (reagPrice || 0) * reag.count;
-                
                 reagentsList.push({
                     name: reagMeta.name,
                     count: reag.count,
@@ -215,12 +206,10 @@ async function generateHTML() {
                 });
             });
         }
-
         let lumberPrice = -Infinity; 
         if (item.craftQty > 0 && !missingReagents) {
             lumberPrice = (bestListing.p - craftCost) / item.craftQty;
         }
-
         return {
             valid: true,
             itemId,
@@ -245,7 +234,6 @@ async function generateHTML() {
         .filter(data => data.valid)
         .sort((a, b) => b.lumberPrice - a.lumberPrice);
 
-    // --- (Статистика для тултіпа залишається без змін) ---
     const expStats = {};
     sortedItems.forEach(item => {
         if (item.lumberPrice > -999999) {
@@ -274,18 +262,6 @@ async function generateHTML() {
     const jsonPayload = JSON.stringify(sortedItems);
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
 
-    // Список професій для генерації модалки імпорту
-    const professionsList = ['Alchemy', 'Blacksmithing', 'Enchanting', 'Engineering', 'Inscription', 'Jewelcrafting', 'Leatherworking', 'Tailoring'];
-    let profImportInputsHtml = '';
-    professionsList.forEach(prof => {
-        profImportInputsHtml += `
-            <div class="prof-input-group">
-                <label for="prof-input-${prof}">${prof}</label>
-                <textarea id="prof-input-${prof}" class="prof-textarea" placeholder="CharacterName - 100/100 (один на рядок)"></textarea>
-            </div>
-        `;
-    });
-
     const html = `
     <!DOCTYPE html>
     <html lang="uk">
@@ -296,7 +272,7 @@ async function generateHTML() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
-            /* Стилізація головного скролбару сторінки */
+            /* Global Scrollbar */
             html, body { scrollbar-width: thin; scrollbar-color: #2a2b2e transparent; }
             body::-webkit-scrollbar { width: 10px; }
             body::-webkit-scrollbar-track { background: transparent; }
@@ -305,8 +281,8 @@ async function generateHTML() {
             body::-webkit-scrollbar-button { display: none; }
 
             body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
-            .container { max-width: 1300px; margin: 0 auto; padding-bottom: 50px; }
-            .header-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; gap: 5px; }
+            .container { max-width: 1300px; margin: 0 auto; padding-bottom: 50px; position: relative; }
+            .header-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; gap: 5px; position: relative; }
             h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; font-size: 2.5em; }
             .update-time { font-size: 0.9em; color: #666; margin-bottom: 15px; }
             .controls-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 10px; }
@@ -315,13 +291,11 @@ async function generateHTML() {
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
 
-            /* Загальний стиль для круглих сірих кнопок */
+            /* Stats / Cart / Reset Icons */
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
-
             .btn-reset { font-size: 22px; } 
-            .btn-cart-icon { font-size: 20px; }
-            .btn-prof-icon { font-size: 20px; }
+            .btn-cart-icon { font-size: 20px; } /* Cart is now grey */
 
             .buttons-group { display: flex; gap: 15px; align-items: center; }
             button { border: none; padding: 0 20px; border-radius: 4px; cursor: pointer; font-weight: bold; height: 42px; color: white; transition: 0.2s; }
@@ -329,23 +303,73 @@ async function generateHTML() {
             .btn-import:hover { background: #8a2be2; }
             .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
-            /* Старі стилі кнопок видалено */
             
             .stats-wrapper { position: relative; display: flex; align-items: center; }
             .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; } 
             .stats-tooltip { visibility: hidden; opacity: 0; position: absolute; top: 120%; left: 0; width: 250px; background: #1a1b1d; border: 1px solid #444; border-radius: 8px; padding: 15px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transition: 0.2s; transform: translateY(-5px); }
             .stats-wrapper:hover .stats-tooltip { visibility: visible; opacity: 1; transform: translateY(0); }
-            .stats-title { font-size: 14px; color: #888; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; text-align: center; }
-            .stat-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
-            .stat-name { color: #ccc; }
-            .stat-val { font-weight: bold; }
-            input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-            input[type=number] { -moz-appearance: textfield; }
-            .load-more-container { text-align: center; margin-top: 30px; }
-            .btn-load-more { background: #2a2b2e; border: 1px solid #444; color: #fff; }
-            .btn-load-more:hover { background: #333; }
-            .hidden { display: none !important; }
             
+            /* --- TOP RIGHT ADD CHARACTER SECTION --- */
+            #topRightSection { position: absolute; top: 0; right: 0; z-index: 50; }
+            
+            /* Add Button Style */
+            .add-char-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; }
+            .add-char-btn:hover { transform: scale(1.05); }
+            .add-char-circle {
+                width: 50px; height: 50px;
+                border: 2px dashed #444;
+                border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 24px; color: #444;
+                transition: all 0.2s;
+            }
+            .add-char-btn:hover .add-char-circle { border-color: #0070dd; color: #0070dd; }
+            .add-char-label { margin-top: 8px; font-size: 12px; color: #444; transition: color 0.2s; }
+            .add-char-btn:hover .add-char-label { color: #0070dd; }
+
+            /* Character Tile Style */
+            .char-tile {
+                display: flex; align-items: center;
+                background: #1a1b1d;
+                border: 2px solid #0070dd;
+                border-radius: 30px;
+                padding: 4px 15px 4px 4px;
+                gap: 10px;
+                min-width: 180px;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .char-tile:hover { background: #222; box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); }
+            .char-avatar { 
+                width: 36px; height: 36px; 
+                border-radius: 50%; 
+                border: 2px solid #ffd700; 
+                background: #000 url('https://wow.zamimg.com/images/wow/icons/large/classicon_mage.jpg') no-repeat center/cover;
+            }
+            .char-info { display: flex; flex-direction: column; line-height: 1.2; }
+            .char-name { font-weight: bold; color: #fff; font-size: 14px; }
+            .char-realm { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+
+            /* --- IMPORT MODAL STYLES --- */
+            .import-modal-content { background: #121212; border: 1px solid #333; max-width: 600px; border-radius: 8px; }
+            .import-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: none; }
+            .import-modal-title { font-size: 16px; font-weight: bold; color: #fff; letter-spacing: 1px; }
+            .import-input-group { margin-bottom: 20px; }
+            .import-label { display: block; font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+            .import-textarea { 
+                width: 100%; height: 80px; 
+                background: #080808; border: 1px solid #333; border-radius: 4px; 
+                color: #ccc; padding: 10px; font-family: monospace; resize: none; box-sizing: border-box;
+            }
+            .import-textarea:focus { border-color: #0070dd; outline: none; }
+            .save-btn { 
+                width: 100%; background: #0070dd; color: white; border: none; 
+                padding: 12px; font-weight: bold; font-size: 14px; 
+                border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: 0.2s;
+            }
+            .save-btn:hover { background: #005bb5; }
+
+            /* Default items styles */
             .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
             .item-card.active { border-color: #ffd700 !important; box-shadow: 0 0 15px rgba(255, 215, 0, 0.15); }
@@ -386,7 +410,7 @@ async function generateHTML() {
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
             .name-text.copied .copy-tooltip { opacity: 1; }
 
-            /* Стилі для модальних вікон */
+            /* Modal Overlay */
             .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
             .modal-overlay.active { opacity: 1; visibility: visible; }
             .modal-content { background: #151618; width: 90%; max-width: 1200px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s ease; }
@@ -398,40 +422,6 @@ async function generateHTML() {
             .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
             .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
             
-            /* Стилі для модалки імпорту професій */
-            #profModal .modal-content { max-width: 800px; height: auto; max-height: 90%; }
-            .prof-import-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-            .prof-input-group { display: flex; flex-direction: column; gap: 8px; }
-            .prof-input-group label { font-weight: bold; color: #a335ee; }
-            .prof-textarea { background: #1a1a1a; border: 1px solid #333; color: #e0e0e0; padding: 10px; border-radius: 6px; resize: vertical; height: 100px; font-family: monospace; }
-            .prof-textarea:focus { border-color: #673ab7; outline: none; }
-            .modal-footer { padding: 20px; border-top: 1px solid #333; background: #1a1b1d; display: flex; justify-content: flex-end; }
-            .btn-save-prof { background: #4caf50; }
-            .btn-save-prof:hover { background: #43a047; }
-
-            /* Стилі для Profession Summary Card */
-            .prof-summary-container { margin-bottom: 20px; display: none; } 
-            .prof-summary-card { background: #1a1b1d; border: 1px solid #2a2b2e; border-radius: 8px; overflow: hidden; transition: all 0.3s ease; }
-            .prof-summary-card:hover { border-color: #444; background: #202124; }
-            .prof-summary-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-            .prof-summary-title { display: flex; align-items: center; gap: 10px; font-size: 1.1em; font-weight: bold; }
-            .prof-badges { display: flex; gap: 8px; }
-            .prof-badge { background: #252629; padding: 4px 10px; border-radius: 4px; font-size: 0.9em; color: #aaa; border: 1px solid #333; }
-            .prof-toggle-icon { transition: transform 0.3s ease; font-size: 1.2em; color: #888; }
-            .prof-summary-card.active .prof-toggle-icon { transform: rotate(180deg); }
-            .prof-summary-details { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; }
-            .prof-summary-card.active .prof-summary-details { max-height: 1000px; } 
-            .prof-details-content { padding: 20px; }
-            .prof-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
-            .prof-list-item { background: #111; padding: 10px 15px; border-radius: 6px; border: 1px solid #333; display: flex; flex-direction: column; gap: 5px; }
-            .prof-char-name { color: #fff; font-weight: bold; }
-            .prof-skill-row { display: flex; align-items: center; justify-content: space-between; font-size: 0.9em; }
-            .prof-name { color: #a335ee; }
-            .skill-bar-container { flex-grow: 1; height: 8px; background: #222; border-radius: 4px; margin: 0 10px; overflow: hidden; position: relative; border: 1px solid #333; }
-            .skill-bar-fill { height: 100%; background: linear-gradient(90deg, #673ab7, #a335ee); width: 0%; transition: width 0.5s ease; }
-            .skill-text { font-family: monospace; color: #ccc; font-size: 0.85em; }
-
-            /* Скролбар для модалок */
             .modal-body::-webkit-scrollbar { width: 10px; }
             .modal-body::-webkit-scrollbar-track { background: transparent; } 
             .modal-body::-webkit-scrollbar-thumb { background: #2a2b2e; border-radius: 5px; border: 2px solid #0f1011; } 
@@ -443,6 +433,14 @@ async function generateHTML() {
     </head>
     <body>
         <div class="container">
+            <div id="topRightSection">
+                <div id="btnAddCharWrapper" class="add-char-btn" onclick="openImportModal()">
+                    <div class="add-char-circle">+</div>
+                    <div class="add-char-label">Add your first character</div>
+                </div>
+                <div id="charTileContainer" style="display:none;"></div>
+            </div>
+
             <div class="header-container">
                 <h1>💎 WoW Decor Scanner</h1>
                 <div class="update-time">Оновлено: ${updateTime}</div>
@@ -459,28 +457,9 @@ async function generateHTML() {
                     </div>
                     <div class="buttons-group">
                         <div id="btnReset" class="stats-icon btn-reset" title="Очистити все">↻</div>
-                        
-                        <div id="btnOpenProfImport" class="stats-icon btn-prof-icon" title="Імпорт професій (Import Professions)">👤</div>
-
                         <div id="btnOpenCart" class="stats-icon btn-cart-icon" title="Відкрити кошик">🛒</div>
-
                         <button class="btn-import-addon">Lumber Import</button>
                         <button class="btn-import">Reagents Import</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="profSummaryContainer" class="prof-summary-container">
-                <div class="prof-summary-card" onclick="toggleProfSummary(this)">
-                    <div class="prof-summary-header">
-                        <div class="prof-summary-title">
-                            <span>🔨 Imported Professions</span>
-                            <div id="profBadges" class="prof-badges"></div>
-                        </div>
-                        <div class="prof-toggle-icon">▼</div>
-                    </div>
-                    <div class="prof-summary-details">
-                        <div id="profDetailsContent" class="prof-details-content"></div>
                     </div>
                 </div>
             </div>
@@ -499,20 +478,22 @@ async function generateHTML() {
             </div>
         </div>
 
-        <div id="profModal" class="modal-overlay">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title">🔨 Import Professions</h2>
-                    <button id="btnCloseProf" class="modal-close">×</button>
+        <div id="importModal" class="modal-overlay">
+            <div class="import-modal-content">
+                <div class="import-modal-header">
+                    <div class="import-modal-title">IMPORT CHARACTER</div>
+                    <button id="btnCloseImport" class="modal-close">×</button>
                 </div>
-                <div class="modal-body">
-                    <p style="color:#888; margin-bottom: 20px;">Вставте дані у форматі: <code>CharacterName - Skill/MaxSkill</code> (наприклад: <code>Twarisc - 100/100</code>) або просто <code>CharacterName</code>. Кожен запис з нового рядка.</p>
-                    <div class="prof-import-grid">
-                        ${profImportInputsHtml}
+                <div class="modal-body" style="padding: 20px;">
+                    <div class="import-input-group">
+                        <label class="import-label">PROFESSION 1 (PASTE JSON)</label>
+                        <textarea id="prof1Input" class="import-textarea"></textarea>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button id="btnSaveProfs" class="btn-save-prof">Save Professions</button>
+                    <div class="import-input-group">
+                        <label class="import-label">PROFESSION 2 (PASTE JSON)</label>
+                        <textarea id="prof2Input" class="import-textarea"></textarea>
+                    </div>
+                    <button class="save-btn" onclick="saveCharacter()">SAVE CHARACTER</button>
                 </div>
             </div>
         </div>
@@ -526,16 +507,11 @@ async function generateHTML() {
             let chartRanges = {}; 
             
             let savedState = JSON.parse(localStorage.getItem('wowScnr_state')) || {};
-            // Стан для збережених професій
-            let importedProfs = JSON.parse(localStorage.getItem('wowScnr_profs')) || {};
+            // Зберігаємо дані персонажа
+            let charData = JSON.parse(localStorage.getItem('wowScnr_char')) || null;
 
-            function saveToStorage() {
-                localStorage.setItem('wowScnr_state', JSON.stringify(savedState));
-            }
-            
-            function saveProfsToStorage() {
-                localStorage.setItem('wowScnr_profs', JSON.stringify(importedProfs));
-            }
+            function saveToStorage() { localStorage.setItem('wowScnr_state', JSON.stringify(savedState)); }
+            function saveCharToStorage() { localStorage.setItem('wowScnr_char', JSON.stringify(charData)); }
 
             document.addEventListener('change', (e) => {
                 if (e.target.classList.contains('check-input')) {
@@ -560,114 +536,63 @@ async function generateHTML() {
 
             function toggleDetails(card, itemId) {
                 if (card.closest('#cartBody')) return;
-
                 card.classList.toggle('active');
-                if (card.classList.contains('active')) {
-                    setTimeout(() => drawChart(itemId), 50);
-                }
+                if (card.classList.contains('active')) setTimeout(() => drawChart(itemId), 50);
             }
 
-            // --- Функції для Професій ---
-            function openProfImport() {
-                // Заповнюємо textarea збереженими даними
-                for (const prof in importedProfs) {
-                    const textarea = document.getElementById(\`prof-input-\${prof}\`);
-                    if (textarea) {
-                        textarea.value = importedProfs[prof].map(p => {
-                            let line = p.char;
-                            if (p.skill && p.max) line += \` - \${p.skill}/\${p.max}\`;
-                            return line;
-                        }).join('\\n');
-                    }
-                }
-                document.getElementById('profModal').classList.add('active');
+            // --- IMPORT LOGIC ---
+            function openImportModal() {
+                document.getElementById('importModal').classList.add('active');
             }
-
-            function closeProfImport() {
-                document.getElementById('profModal').classList.remove('active');
-            }
-
-            function handleSaveProfs() {
-                const textareas = document.querySelectorAll('.prof-textarea');
-                let newProfs = {};
-                let hasData = false;
-
-                textareas.forEach(ta => {
-                    const profName = ta.id.replace('prof-input-', '');
-                    const lines = ta.value.split('\\n').map(l => l.trim()).filter(l => l);
-                    
-                    if (lines.length > 0) {
-                        hasData = true;
-                        newProfs[profName] = [];
-                        lines.forEach(line => {
-                            // Парсинг рядка: "Name - 100/100" або "Name"
-                            const match = line.match(/^(.+?)(?:\\s*-\\s*(\\d+)\\/(\\d+))?$/);
-                            if (match) {
-                                newProfs[profName].push({
-                                    char: match[1].trim(),
-                                    skill: match[2] || null,
-                                    max: match[3] || null
-                                });
-                            }
-                        });
-                    }
-                });
-
-                importedProfs = newProfs;
-                saveProfsToStorage();
-                closeProfImport();
-                renderProfSummary();
-            }
-
-            function toggleProfSummary(card) {
-                card.classList.toggle('active');
-            }
-
-            function renderProfSummary() {
-                const container = document.getElementById('profSummaryContainer');
-                const badgesContainer = document.getElementById('profBadges');
-                const contentContainer = document.getElementById('profDetailsContent');
-                
-                const profKeys = Object.keys(importedProfs);
-                if (profKeys.length === 0) {
-                    container.style.display = 'none';
-                    return;
-                }
-
-                // 1. Рендеримо бейджі (collapsed view)
-                badgesContainer.innerHTML = profKeys.map(prof => {
-                    const count = importedProfs[prof].length;
-                    return \`<span class="prof-badge">\${prof} x\${count}</span>\`;
-                }).join('');
-
-                // 2. Рендеримо детальний список (expanded view)
-                let detailsHtml = '<ul class="prof-list">';
-                profKeys.forEach(prof => {
-                    importedProfs[prof].forEach(p => {
-                        const skillPercent = (p.skill && p.max) ? (p.skill / p.max * 100) : 0;
-                        const skillText = (p.skill && p.max) ? \`\${p.skill}/\${p.max}\` : 'N/A';
-                        
-                        detailsHtml += \`
-                            <li class="prof-list-item">
-                                <div class="prof-char-name">\${p.char}</div>
-                                <div class="prof-skill-row">
-                                    <span class="prof-name">\${prof}</span>
-                                    <div class="skill-bar-container">
-                                        <div class="skill-bar-fill" style="width: \${skillPercent}%"></div>
-                                    </div>
-                                    <span class="skill-text">\${skillText}</span>
-                                </div>
-                            </li>
-                        \`;
-                    });
-                });
-                detailsHtml += '</ul>';
-                contentContainer.innerHTML = detailsHtml;
-                
-                container.style.display = 'block';
-            }
-            // ---------------------------
             
+            document.getElementById('btnCloseImport').addEventListener('click', () => {
+                document.getElementById('importModal').classList.remove('active');
+            });
+
+            function saveCharacter() {
+                const p1 = document.getElementById('prof1Input').value;
+                const p2 = document.getElementById('prof2Input').value;
+                
+                // Пробуємо розпарсити JSON, якщо ні - ставимо дефолт
+                let name = "Kevvinn";
+                let realm = "Tarren Mill";
+                
+                try {
+                    // Якщо користувач вставить JSON з аддона
+                    const obj = JSON.parse(p1 || p2);
+                    if(obj.character) name = obj.character;
+                    if(obj.realm) realm = obj.realm;
+                } catch(e) {}
+
+                charData = { name, realm, p1, p2 };
+                saveCharToStorage();
+                
+                document.getElementById('importModal').classList.remove('active');
+                renderCharTile();
+            }
+
+            function renderCharTile() {
+                const btn = document.getElementById('btnAddCharWrapper');
+                const tileContainer = document.getElementById('charTileContainer');
+                
+                if (charData) {
+                    btn.style.display = 'none';
+                    tileContainer.style.display = 'block';
+                    tileContainer.innerHTML = \`
+                        <div class="char-tile" onclick="openImportModal()">
+                            <div class="char-avatar"></div>
+                            <div class="char-info">
+                                <div class="char-name">\${charData.name}</div>
+                                <div class="char-realm">\${charData.realm}</div>
+                            </div>
+                        </div>
+                    \`;
+                } else {
+                    btn.style.display = 'flex';
+                    tileContainer.style.display = 'none';
+                }
+            }
+
             function setChartRange(btn, itemId, range) {
                 const parent = btn.parentElement;
                 parent.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
@@ -680,16 +605,12 @@ async function generateHTML() {
             function drawChart(itemId) {
                 const canvas = document.getElementById('chart-' + itemId);
                 if (!canvas || activeCharts[itemId]) return;
-
                 const itemData = ALL_DATA.find(i => i.itemId == itemId);
-                
                 if (!itemData || !itemData.history || itemData.history.length === 0) return;
-
                 const ctx = canvas.getContext('2d');
                 const gradient = ctx.createLinearGradient(0, 0, 0, 300);
                 gradient.addColorStop(0, 'rgba(0, 112, 221, 0.6)');
                 gradient.addColorStop(1, 'rgba(0, 112, 221, 0.0)');
-
                 const range = chartRanges[itemId] || '1m';
                 const now = Date.now();
                 let cutoff = 0;
@@ -700,19 +621,12 @@ async function generateHTML() {
                     case '1y': cutoff = now - (365 * 24 * 60 * 60 * 1000); break;
                     default: cutoff = 0;
                 }
-
                 const filteredHistory = itemData.history.filter(h => h.t >= cutoff);
-
                 const labels = filteredHistory.map(h => {
                     const d = new Date(h.t);
                     return d.toLocaleDateString() + ' ' + d.getHours() + ':00';
                 });
                 const dataPoints = filteredHistory.map(h => h.p);
-
-                const isSinglePoint = dataPoints.length < 2;
-                const pointRadius = isSinglePoint ? 5 : 0;
-                const shouldFill = !isSinglePoint;
-
                 activeCharts[itemId] = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -724,8 +638,8 @@ async function generateHTML() {
                             backgroundColor: gradient,
                             borderWidth: 2,
                             tension: 0.4,
-                            fill: shouldFill,
-                            pointRadius: pointRadius,
+                            fill: true,
+                            pointRadius: dataPoints.length < 2 ? 5 : 0,
                             pointHoverRadius: 6,
                             pointBackgroundColor: '#fff'
                         }]
@@ -735,20 +649,8 @@ async function generateHTML() {
                         responsive: true,
                         maintainAspectRatio: false,
                         interaction: { mode: 'index', intersect: false },
-                        plugins: { 
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: 'rgba(0,0,0,0.8)',
-                                titleColor: '#fff',
-                                bodyColor: '#0070dd',
-                                displayColors: false,
-                                callbacks: { label: (c) => c.parsed.y.toLocaleString() + ' g' }
-                            }
-                        },
-                        scales: {
-                            x: { display: false },
-                            y: { display: false }
-                        }
+                        plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#fff', bodyColor: '#0070dd', displayColors: false, callbacks: { label: (c) => c.parsed.y.toLocaleString() + ' g' } } },
+                        scales: { x: { display: false }, y: { display: false } }
                     }
                 });
             }
@@ -763,45 +665,38 @@ async function generateHTML() {
             }
 
             function handleReset() {
-                if(!confirm("Очистити всі фільтри, вибрані предмети та імпортовані професії?")) return;
-                // Очищаємо обидва сторейджа
+                if(!confirm("Очистити всі дані?")) return;
                 localStorage.removeItem('wowScnr_state');
-                localStorage.removeItem('wowScnr_profs');
+                localStorage.removeItem('wowScnr_char');
                 savedState = {};
-                importedProfs = {};
-                
+                charData = null;
                 document.querySelectorAll('.check-input').forEach(el => el.checked = false);
                 document.querySelectorAll('.qty-input').forEach(el => el.value = '');
                 document.getElementById('smartSearchInput').value = '';
-                
                 activeData = ALL_DATA;
                 currentIndex = 0;
                 document.getElementById('list').innerHTML = '';
                 loadMore();
-                renderProfSummary(); // Оновлюємо summary (воно сховається)
+                renderCharTile();
             }
 
             function openCart() {
                 const modal = document.getElementById('cartModal');
                 const body = document.getElementById('cartBody');
                 body.innerHTML = '';
-                
                 const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
-                
                 if (checkedIds.length === 0) {
-                    body.innerHTML = '<div class="empty-cart-msg">Кошик порожній. Виберіть предмети галочками.</div>';
+                    body.innerHTML = '<div class="empty-cart-msg">Кошик порожній.</div>';
                 } else {
                     const cartItems = ALL_DATA.filter(item => checkedIds.includes(item.itemId.toString()));
                     body.innerHTML = cartItems.map(createCartItemHTML).join('');
                 }
-                
                 modal.classList.add('active');
             }
 
             function closeCart() {
                 document.getElementById('cartModal').classList.remove('active');
-                const list = document.getElementById('list');
-                list.innerHTML = '';
+                document.getElementById('list').innerHTML = '';
                 currentIndex = 0;
                 loadMore();
             }
@@ -809,59 +704,37 @@ async function generateHTML() {
             function handleAddonImport(e) {
                 const btn = e.currentTarget;
                 const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
-                
-                if (checkedIds.length === 0) return alert("Вибери предмети галочками!");
-
+                if (checkedIds.length === 0) return alert("Вибери предмети!");
                 let summary = {}; 
-                
                 checkedIds.forEach(id => {
                     const itemData = ALL_DATA.find(i => i.itemId == id);
                     if (!itemData) return;
-                    
                     const count = savedState[id].qty || 0;
-                    
                     if (count > 0) {
                         const exp = itemData.exp; 
                         const lumberReq = itemData.craftQty || 0;
                         const totalLumber = count * lumberReq;
-                        
                         if (exp && totalLumber > 0) {
-                            if (!summary[exp]) {
-                                summary[exp] = { totalLumber: 0, items: [] };
-                            }
+                            if (!summary[exp]) summary[exp] = { totalLumber: 0, items: [] };
                             summary[exp].totalLumber += totalLumber;
-                            summary[exp].items.push({
-                                name: itemData.name,
-                                price: itemData.bestPrice,
-                                count: count
-                            });
+                            summary[exp].items.push({ name: itemData.name, price: itemData.bestPrice, count: count });
                         }
                     }
                 });
-
-                const payload = Object.keys(summary).map(exp => ({ 
-                    "Exp": exp, 
-                    "craftQty": summary[exp].totalLumber,
-                    "items": summary[exp].items 
-                }));
-
-                if (payload.length === 0) return alert("Перевір кількість (> 0) або наявність параметрів дерева.");
+                const payload = Object.keys(summary).map(exp => ({ "Exp": exp, "craftQty": summary[exp].totalLumber, "items": summary[exp].items }));
+                if (payload.length === 0) return alert("Помилка даних.");
                 visualCopy(btn, JSON.stringify(payload));
             }
 
             function handleReagentsImport(e) {
                 const btn = e.currentTarget;
                 const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
-                
-                if (checkedIds.length === 0) return alert("Вибери предмети галочками!");
-                
+                if (checkedIds.length === 0) return alert("Вибери предмети!");
                 let reagentsMap = {};
                 let hasItems = false;
-                
                 checkedIds.forEach(id => {
                     const itemData = ALL_DATA.find(i => i.itemId == id);
                     if (!itemData) return;
-                    
                     const count = savedState[id].qty || 0;
                     if (count > 0) {
                         hasItems = true;
@@ -873,8 +746,7 @@ async function generateHTML() {
                         }
                     }
                 });
-
-                if (!hasItems) return alert("Введи кількість предметів!");
+                if (!hasItems) return alert("Введи кількість!");
                 const listString = Object.entries(reagentsMap).map(([n, q]) => \`\${n} x\${q}\`).join('\\n');
                 visualCopy(btn, listString);
             }
@@ -888,32 +760,21 @@ async function generateHTML() {
                 setTimeout(() => { btn.style.backgroundColor = originalColor; btn.innerText = originalText; }, 2000);
             }
 
-            function createItemHTML(item) {
-                return generateItemHtmlString(item, true);
-            }
-
-            function createCartItemHTML(item) {
-                return generateItemHtmlString(item, false);
-            }
+            function createItemHTML(item) { return generateItemHtmlString(item, true); }
+            function createCartItemHTML(item) { return generateItemHtmlString(item, false); }
 
             function generateItemHtmlString(item, expandale) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
                 const saved = savedState[item.itemId] || {};
                 const isChecked = saved.checked ? 'checked' : '';
                 const qtyVal = saved.qty && saved.qty > 0 ? saved.qty : '';
-
-                let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => 
-                    \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`
-                ).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
-                
+                let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
                 const top10Html = item.top10.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
-
                 const toggleAttr = expandale ? \`onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})"\` : '';
 
-                return \`
-                <div class="item-card" data-id="\${item.itemId}" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}">
+                return \`<div class="item-card" data-id="\${item.itemId}" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}">
                     <div class="main-row">
                         <div class="main-row-left">
                             <div class="col-icon"><img src="\${item.icon}"></div>
@@ -922,47 +783,12 @@ async function generateHTML() {
                             \${item.prof ? \`<div class="info-badge">\${item.prof}</div>\` : ''}
                         </div>
                         <div class="main-row-right">
-                            <div class="col-lumber info-badge \${lumberClass}" \${toggleAttr}>
-                                <span style="margin-right:5px;text-transform:uppercase;font-size:0.8em">1 Lumber = </span><span class="val">\${dispLumber}</span>
-                                <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs" style="margin-left:4px">
-                            </div>
-                            <div class="col-price" \${toggleAttr}>
-                                <span>\${Math.floor(item.bestPrice).toLocaleString()}</span><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" style="width:18px;border-radius:50%">
-                            </div>
-                            <div class="col-inputs">
-                                <input type="number" class="qty-input" placeholder="0" min="0" value="\${qtyVal}">
-                                <input type="checkbox" class="check-input" \${isChecked}>
-                            </div>
+                            <div class="col-lumber info-badge \${lumberClass}" \${toggleAttr}><span style="margin-right:5px;text-transform:uppercase;font-size:0.8em">1 Lumber = </span><span class="val">\${dispLumber}</span><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs" style="margin-left:4px"></div>
+                            <div class="col-price" \${toggleAttr}><span>\${Math.floor(item.bestPrice).toLocaleString()}</span><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" style="width:18px;border-radius:50%"></div>
+                            <div class="col-inputs"><input type="number" class="qty-input" placeholder="0" min="0" value="\${qtyVal}"><input type="checkbox" class="check-input" \${isChecked}></div>
                         </div>
                     </div>
-                    \${expandale ? \`
-                    <div class="details-row">
-                        <div class="details-content">
-                            <div class="details-left">
-                                <div class="chart-wrapper">
-                                    <div class="chart-controls">
-                                        <button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1w')">1W</button>
-                                        <button class="chart-btn active" onclick="setChartRange(this, '\${item.itemId}', '1m')">1M</button>
-                                        <button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '6m')">6M</button>
-                                        <button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1y')">1Y</button>
-                                    </div>
-                                    <canvas id="chart-\${item.itemId}"></canvas>
-                                </div>
-                                <div class="reagents-block">
-                                    <div style="display:flex;justify-content:space-between;margin-bottom:10px">
-                                        <h4>Recipe Cost</h4>
-                                        <span style="color:#f44336;font-weight:bold">Total: -\${Math.floor(item.craftCost).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span>
-                                    </div>
-                                    \${recipeHtml}
-                                    \${item.craftQty > 0 ? \`<div style="margin-top:10px;color:#4caf50;text-align:center;background:#1a3b1a;padding:5px;border-radius:4px">Requires: <b>\${item.craftQty}</b> Lumber</div>\` : ''}
-                                </div>
-                            </div>
-                            <div class="details-right">
-                                <h4>Cheapest Realms (Top 10)</h4>
-                                \${top10Html}
-                            </div>
-                        </div>
-                    </div>\` : ''}
+                    \${expandale ? \`<div class="details-row"><div class="details-content"><div class="details-left"><div class="chart-wrapper"><div class="chart-controls"><button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1w')">1W</button><button class="chart-btn active" onclick="setChartRange(this, '\${item.itemId}', '1m')">1M</button><button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '6m')">6M</button><button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1y')">1Y</button></div><canvas id="chart-\${item.itemId}"></canvas></div><div class="reagents-block"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><h4>Recipe Cost</h4><span style="color:#f44336;font-weight:bold">Total: -\${Math.floor(item.craftCost).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\${recipeHtml}\${item.craftQty > 0 ? \`<div style="margin-top:10px;color:#4caf50;text-align:center;background:#1a3b1a;padding:5px;border-radius:4px">Requires: <b>\${item.craftQty}</b> Lumber</div>\` : ''}</div></div><div class="details-right"><h4>Cheapest Realms (Top 10)</h4>\${top10Html}</div></div></div>\` : ''}
                 </div>\`;
             }
 
@@ -970,10 +796,7 @@ async function generateHTML() {
                 const list = document.getElementById('list');
                 const btn = document.getElementById('btnLoadMore');
                 const nextItems = activeData.slice(currentIndex, currentIndex + ITEMS_PER_PAGE);
-                if (nextItems.length > 0) {
-                    list.insertAdjacentHTML('beforeend', nextItems.map(createItemHTML).join(''));
-                    currentIndex += nextItems.length;
-                }
+                if (nextItems.length > 0) { list.insertAdjacentHTML('beforeend', nextItems.map(createItemHTML).join('')); currentIndex += nextItems.length; }
                 if (currentIndex >= activeData.length) btn.classList.add('hidden'); else btn.classList.remove('hidden');
             }
 
@@ -986,31 +809,21 @@ async function generateHTML() {
                     return inName || inExp || inProf;
                 });
                 filtered.sort((a, b) => b.lumberPrice - a.lumberPrice);
-                activeData = filtered;
-                currentIndex = 0;
-                document.getElementById('list').innerHTML = '';
-                loadMore();
+                activeData = filtered; currentIndex = 0; document.getElementById('list').innerHTML = ''; loadMore();
             }
 
             document.addEventListener('DOMContentLoaded', () => {
                 loadMore();
-                renderProfSummary();
-
+                renderCharTile(); // Render tile or add button
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
                 document.getElementById('smartSearchInput').addEventListener('input', handleSearch);
                 document.querySelector('.btn-import-addon').addEventListener('click', handleAddonImport);
                 document.querySelector('.btn-import').addEventListener('click', handleReagentsImport);
-                
                 document.getElementById('btnOpenCart').addEventListener('click', openCart);
                 document.getElementById('btnCloseCart').addEventListener('click', closeCart);
                 document.getElementById('cartModal').addEventListener('click', (e) => { if (e.target.id === 'cartModal') closeCart(); });
-                
                 document.getElementById('btnReset').addEventListener('click', handleReset);
-
-                document.getElementById('btnOpenProfImport').addEventListener('click', openProfImport);
-                document.getElementById('btnCloseProf').addEventListener('click', closeProfImport);
-                document.getElementById('btnSaveProfs').addEventListener('click', handleSaveProfs);
-                document.getElementById('profModal').addEventListener('click', (e) => { if (e.target.id === 'profModal') closeProfImport(); });
+                document.getElementById('importModal').addEventListener('click', (e) => { if (e.target.id === 'importModal') document.getElementById('importModal').classList.remove('active'); });
             });
         </script>
         <script src="import.js"></script>
