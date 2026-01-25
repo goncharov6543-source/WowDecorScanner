@@ -186,7 +186,7 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
-    // --- 1. Server Side Calculation ---
+    // --- 1. Data Calculation (Server Side) ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
@@ -277,6 +277,8 @@ async function generateHTML() {
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
 
     // --- 2. HTML Template ---
+    // IMPORTANT: Client-side JS uses strict concatenation with ' and + 
+    // to avoid Node.js interpolation errors (ReferenceError: n is not defined).
     const html = `
     <!DOCTYPE html>
     <html lang="uk">
@@ -430,9 +432,9 @@ async function generateHTML() {
             .server-price { color: #ffd700; font-weight: bold; }
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
             .name-text.copied .copy-tooltip { opacity: 1; }
+            #cartBody .col-lumber, #cartBody .col-price { cursor: default; }
             
             .load-more-container { display: flex; justify-content: center; margin-top: 30px; width: 100%; }
-
             .crafter-badge { color: #ffd700; border: 1px solid #ffd700; background: rgba(255, 215, 0, 0.1); } 
         </style>
     </head>
@@ -953,7 +955,6 @@ async function generateHTML() {
                     }
                 });
                 if (!hasItems) return alert("Введи кількість!");
-                // FIX: Concat used here instead of template literal to appease Node.js
                 const listString = Object.entries(reagentsMap).map(function(entry) { return entry[0] + " x" + entry[1]; }).join('\\n');
                 visualCopy(btn, listString);
             }
