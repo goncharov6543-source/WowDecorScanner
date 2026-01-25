@@ -186,7 +186,7 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
-    // --- 1. Підготовка даних (Server Side) ---
+    // --- 1. Data Calculation (Server Side) ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
@@ -277,8 +277,8 @@ async function generateHTML() {
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
 
     // --- 2. HTML Template ---
-    // УВАГА: Всі скрипти нижче використовують конкатенацію (' + var + '), 
-    // щоб Node.js не намагався обробити їх як свої змінні.
+    // SAFE MODE: Using single quotes and + for concatenation in client scripts
+    // to avoid Node.js build errors and ReferenceErrors.
     const html = `
     <!DOCTYPE html>
     <html lang="uk">
@@ -335,30 +335,65 @@ async function generateHTML() {
             .stat-val { font-weight: bold; }
             
             #topRightSection { position: absolute; top: 20px; right: 30px; z-index: 100; }
+            
             .add-char-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-            .add-char-circle { width: 60px; height: 60px; border: 2px dashed #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #444; transition: all 0.2s; background: transparent; line-height: 1; padding-bottom: 4px; }
+            .add-char-circle {
+                width: 60px; height: 60px; border: 2px dashed #444; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 32px; color: #444; transition: all 0.2s;
+                background: transparent; line-height: 1; padding-bottom: 4px; 
+            }
             .add-char-btn:hover .add-char-circle { border-color: #0070dd; color: #0070dd; }
             .add-char-label { margin-top: 10px; font-size: 13px; color: #444; transition: color 0.2s; }
             .add-char-btn:hover .add-char-label { color: #0070dd; }
 
             .char-menu-container { position: relative; }
-            .btn-char-menu { background: #2a2b2e; color: #ccc; border: 1px solid #444; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; }
+            .btn-char-menu { 
+                background: #2a2b2e; color: #ccc; border: 1px solid #444; 
+                padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;
+            }
             .btn-char-menu:hover { background: #333; color: #fff; }
 
-            .char-dropdown { position: absolute; top: 100%; right: 0; margin-top: 10px; background: #111; border: 1px solid #333; border-radius: 8px; width: 340px; padding: 10px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 200; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s ease; }
+            .char-dropdown {
+                position: absolute; top: 100%; right: 0; margin-top: 10px;
+                background: #111; border: 1px solid #333; border-radius: 8px;
+                width: 340px; padding: 10px;
+                display: flex; flex-direction: column; gap: 10px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 200;
+                opacity: 0; visibility: hidden; transform: translateY(-10px);
+                transition: all 0.3s ease;
+            }
             .char-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
 
-            .btn-add-new-char { background: transparent; border: 1px dashed #444; color: #888; width: 100%; padding: 10px; border-radius: 6px; cursor: pointer; }
+            .btn-add-new-char {
+                background: transparent; border: 1px dashed #444; color: #888;
+                width: 100%; padding: 10px; border-radius: 6px; cursor: pointer;
+            }
             .btn-add-new-char:hover { border-color: #666; color: #fff; background: #1a1a1a; }
 
-            .char-tile { display: flex; align-items: center; background: #1a1b1d; border: 2px solid #0070dd; border-radius: 30px; padding: 6px 10px 6px 6px; gap: 10px; position: relative; transition: all 0.2s; min-height: 42px; margin-bottom: 10px; }
+            .char-tile {
+                display: flex; align-items: center; background: #1a1b1d;
+                border: 2px solid #0070dd; border-radius: 30px;
+                padding: 6px 10px 6px 6px; gap: 10px;
+                position: relative; transition: all 0.2s; min-height: 42px;
+                margin-bottom: 10px;
+            }
             .char-tile:hover { background: #222; box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); }
-            .char-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ffd700; background-color: #222; background-size: cover; background-position: center; flex-shrink: 0; }
+            .char-avatar { 
+                width: 40px; height: 40px; border-radius: 50%; 
+                border: 2px solid #ffd700; background-color: #222; 
+                background-size: cover; background-position: center; flex-shrink: 0;
+            }
             .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; flex-grow: 1; padding-right: 30px; }
             .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             .char-realm { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
 
-            .tile-btn { position: absolute; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: none; cursor: pointer; transition: transform 0.2s; z-index: 10; flex-shrink: 0; padding: 0; }
+            .tile-btn {
+                position: absolute; width: 22px; height: 22px; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                color: white; border: none; cursor: pointer;
+                transition: transform 0.2s; z-index: 10; flex-shrink: 0; padding: 0;
+            }
             .tile-btn:hover { transform: scale(1.15); }
             .tile-btn-edit { top: -6px; left: -6px; background: #007bff; font-size: 12px; } 
             .tile-btn-delete { top: -6px; right: -6px; background: #dc3545; font-size: 14px; line-height: 1; } 
@@ -369,13 +404,21 @@ async function generateHTML() {
             .modal-overlay.active .modal-content { transform: scale(1); }
             .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1b1d; }
             .modal-title { font-size: 1.5em; color: #fff; margin: 0; }
-            .modal-close { background: transparent; border: 1px solid #444; color: #888; font-size: 26px; width: 36px; height: 36px; border-radius: 50%; padding: 0; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; line-height: 1; }
+            .modal-close { 
+                background: transparent; border: 1px solid #444; color: #888; font-size: 26px; 
+                width: 36px; height: 36px; border-radius: 50%; padding: 0; 
+                cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; line-height: 1;
+            }
             .modal-close:hover { background: #333; color: #fff; border-color: #fff; }
             .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
             .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
             
             .import-modal-content { background: #121212; border: 1px solid #333; max-width: 800px; width: 90%; border-radius: 8px; }
-            .import-modal-header { display: flex !important; justify-content: space-between !important; flex-direction: row !important; align-items: center; padding: 15px 20px; border-bottom: none; width: 100%; box-sizing: border-box; }
+            .import-modal-header { 
+                display: flex !important; justify-content: space-between !important; 
+                flex-direction: row !important; align-items: center; 
+                padding: 15px 20px; border-bottom: none; width: 100%; box-sizing: border-box;
+            }
             .import-input-group { margin-bottom: 20px; }
             .import-label { display: block; font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
             .import-textarea { width: 100%; height: 80px; background: #080808; border: 1px solid #333; border-radius: 4px; color: #ccc; padding: 10px; font-family: monospace; resize: none; box-sizing: border-box; }
@@ -434,6 +477,7 @@ async function generateHTML() {
             .name-text.copied .copy-tooltip { opacity: 1; }
             
             .load-more-container { display: flex; justify-content: center; margin-top: 30px; width: 100%; }
+
             .crafter-badge { color: #ffd700; border: 1px solid #ffd700; background: rgba(255, 215, 0, 0.1); } 
         </style>
     </head>
@@ -475,6 +519,7 @@ async function generateHTML() {
                     </div>
                 </div>
             </div>
+
             <div id="list"></div>
             <div class="load-more-container"><button id="btnLoadMore" class="btn-load-more">Показати ще</button></div>
         </div>
@@ -555,6 +600,7 @@ async function generateHTML() {
                 document.getElementById('list').innerHTML = '';
                 currentIndex = 0;
                 loadMore();
+                updateVisibleCrafterBadges();
             }
 
             function reparseAllCharacters() {
@@ -953,7 +999,12 @@ async function generateHTML() {
                     }
                 });
                 if (!hasItems) return alert("Введи кількість!");
-                const listString = Object.entries(reagentsMap).map(function(entry) { return entry[0] + " x" + entry[1]; }).join('\\n');
+                
+                // Fixed line: using concatenation instead of template literals
+                const listString = Object.entries(reagentsMap).map(function(entry) { 
+                    return entry[0] + " x" + entry[1]; 
+                }).join('\\n');
+                
                 visualCopy(btn, listString);
             }
 
