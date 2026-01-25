@@ -290,7 +290,6 @@ async function generateHTML() {
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
 
-            /* Stats Icon - No yellow bg by default, only hover */
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
             .btn-reset { font-size: 22px; } 
@@ -307,7 +306,6 @@ async function generateHTML() {
             /* Info Button Specifics */
             .stats-wrapper { position: relative; display: flex; align-items: center; }
             .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; } 
-            /* Tooltip Style */
             .stats-tooltip { visibility: hidden; opacity: 0; position: absolute; top: 120%; left: 0; width: 280px; background: #1a1b1d; border: 1px solid #444; border-radius: 8px; padding: 15px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transition: 0.2s; transform: translateY(-5px); }
             .stats-wrapper:hover .stats-tooltip { visibility: visible; opacity: 1; transform: translateY(0); }
             .stats-title { font-size: 13px; color: #888; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; text-align: center; letter-spacing: 1px; }
@@ -318,7 +316,7 @@ async function generateHTML() {
             /* --- TOP RIGHT CHARACTERS SECTION --- */
             #topRightSection { position: absolute; top: 20px; right: 30px; z-index: 100; }
             
-            /* Add Button */
+            /* Add Button - Centered Plus */
             .add-char-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
             .add-char-circle {
                 width: 60px; height: 60px;
@@ -328,6 +326,7 @@ async function generateHTML() {
                 font-size: 32px; color: #444;
                 transition: all 0.2s;
                 background: transparent;
+                line-height: 1; padding-bottom: 2px; /* Fine-tuning center */
             }
             .add-char-btn:hover .add-char-circle { border-color: #0070dd; color: #0070dd; }
             .add-char-label { margin-top: 10px; font-size: 13px; color: #444; transition: color 0.2s; }
@@ -348,7 +347,6 @@ async function generateHTML() {
                 width: 340px; padding: 10px;
                 display: flex; flex-direction: column; gap: 10px;
                 box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 200;
-                
                 opacity: 0; visibility: hidden; transform: translateY(-10px);
                 transition: all 0.3s ease;
             }
@@ -360,20 +358,19 @@ async function generateHTML() {
             }
             .btn-add-new-char:hover { border-color: #666; color: #fff; background: #1a1a1a; }
 
-            /* Character Tile Style - Extended */
+            /* Character Tile Style - Compact again */
             .char-tile {
-                display: flex; flex-direction: column;
+                display: flex; align-items: center;
                 background: #1a1b1d;
                 border: 2px solid #0070dd;
-                border-radius: 12px;
-                padding: 10px;
+                border-radius: 30px;
+                padding: 6px 10px 6px 6px;
+                gap: 10px;
                 position: relative;
                 transition: all 0.2s;
+                min-height: 42px;
             }
             .char-tile:hover { background: #222; box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); }
-            
-            .char-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding-right: 25px; }
-            
             .char-avatar { 
                 width: 40px; height: 40px; 
                 border-radius: 50%; 
@@ -382,16 +379,9 @@ async function generateHTML() {
                 background-color: #000;
                 flex-shrink: 0;
             }
-            .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; flex-grow: 1; }
+            .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; flex-grow: 1; padding-right: 30px; }
             .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             .char-realm { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
-
-            /* Profession Bars inside Tile */
-            .char-profs { display: flex; flex-direction: column; gap: 6px; }
-            .prof-row { display: flex; flex-direction: column; gap: 2px; }
-            .prof-header { display: flex; justify-content: space-between; font-size: 10px; color: #aaa; text-transform: uppercase; }
-            .skill-bar-bg { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
-            .skill-bar-fill { height: 100%; background: linear-gradient(90deg, #0070dd, #a335ee); width: 0%; border-radius: 3px; }
 
             /* Fixed Tile Action Buttons */
             .tile-btn {
@@ -402,6 +392,7 @@ async function generateHTML() {
                 flex-shrink: 0; padding: 0;
             }
             .tile-btn:hover { transform: scale(1.15); }
+            /* Edit button now opens details modal */
             .tile-btn-edit { top: -6px; left: -6px; background: #007bff; font-size: 12px; } 
             .tile-btn-delete { top: -6px; right: -6px; background: #dc3545; font-size: 14px; line-height: 1; } 
 
@@ -410,6 +401,7 @@ async function generateHTML() {
             .modal-overlay.active { opacity: 1; visibility: visible; }
             .modal-content { background: #151618; width: 90%; max-width: 1200px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s ease; }
             .modal-overlay.active .modal-content { transform: scale(1); }
+            /* Header Flex Fix */
             .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1b1d; }
             .modal-title { font-size: 1.5em; color: #fff; margin: 0; }
             .modal-close { 
@@ -430,6 +422,13 @@ async function generateHTML() {
             .import-textarea:focus { border-color: #0070dd; outline: none; }
             .save-btn { width: 100%; background: #0070dd; color: white; border: none; padding: 12px; font-weight: bold; font-size: 14px; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
             .save-btn:hover { background: #005bb5; }
+
+            /* Character Details Modal Specifics */
+            .details-modal-content { max-width: 500px; height: auto; max-height: 80%; }
+            .prof-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; }
+            .prof-header { display: flex; justify-content: space-between; font-size: 14px; color: #fff; }
+            .skill-bar-bg { width: 100%; height: 10px; background: #333; border-radius: 5px; overflow: hidden; border: 1px solid #444; }
+            .skill-bar-fill { height: 100%; background: linear-gradient(90deg, #0070dd, #a335ee); width: 0%; border-radius: 5px; transition: width 0.5s ease; }
 
             .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
@@ -528,8 +527,8 @@ async function generateHTML() {
 
         <div id="importModal" class="modal-overlay">
             <div class="import-modal-content">
-                <div class="import-modal-header">
-                    <div class="import-modal-title">IMPORT CHARACTER</div>
+                <div class="modal-header">
+                    <div class="modal-title">IMPORT CHARACTER</div>
                     <button id="btnCloseImport" class="modal-close">×</button>
                 </div>
                 <div class="modal-body" style="padding: 20px;">
@@ -544,6 +543,17 @@ async function generateHTML() {
                     <input type="hidden" id="editCharId" value="">
                     <button class="save-btn" onclick="saveCharacter()">SAVE CHARACTER</button>
                 </div>
+            </div>
+        </div>
+
+        <div id="charDetailsModal" class="modal-overlay">
+            <div class="modal-content details-modal-content">
+                <div class="modal-header">
+                    <h2 id="detailsModalTitle" class="modal-title">Character Details</h2>
+                    <button id="btnCloseDetails" class="modal-close">×</button>
+                </div>
+                <div id="charDetailsBody" class="modal-body" style="padding: 20px;">
+                    </div>
             </div>
         </div>
 
@@ -632,6 +642,7 @@ async function generateHTML() {
                 }
             });
 
+            // --- Import Modal ---
             function openImportModal(editIndex = -1) {
                 document.getElementById('editCharId').value = editIndex;
                 if (editIndex >= 0 && charsList[editIndex]) {
@@ -657,35 +668,22 @@ async function generateHTML() {
                 let name = "Unknown";
                 let realm = "Unknown";
                 let charClass = "mage"; 
-                let professions = [];
 
-                // Helper to parse prof data
-                function parseProf(str) {
+                // Improved parsing function
+                function parseCharInfo(str) {
                     try {
                         const obj = JSON.parse(str);
                         if(obj.character) name = obj.character;
                         if(obj.realm) realm = obj.realm;
-                        if(obj.class) charClass = obj.class.toLowerCase();
-                        
-                        // Assuming standard TSM/Addon json structure like: 
-                        // { "professions": { "Alchemy": { "skill": 100, "max": 100 } } }
-                        // Or flat structure depending on source. Let's assume user pastes simple JSON like:
-                        // { "profession": "Enchanting", "skill": 105, "max": 105 }
-                        
-                        // For this example, let's extract ANY profession data we find
-                        if (obj.profession && obj.skill) {
-                            professions.push({ name: obj.profession, skill: obj.skill, max: obj.max || obj.skill });
-                        }
+                        if(obj.class) charClass = obj.class.toLowerCase(); // Lowercase for key lookup
                     } catch(e) {}
                 }
+                parseCharInfo(p1Str);
+                parseCharInfo(p2Str);
 
-                parseProf(p1Str);
-                parseProf(p2Str);
-
-                // Fallback name if nothing parsed but data exists
                 if ((p1Str || p2Str) && name === "Unknown") name = "Imported Char";
 
-                const newChar = { name, realm, class: charClass, p1: p1Str, p2: p2Str, profs: professions };
+                const newChar = { name, realm, class: charClass, p1: p1Str, p2: p2Str };
 
                 if (editId >= 0) {
                     charsList[editId] = newChar;
@@ -706,42 +704,72 @@ async function generateHTML() {
                 }
             }
 
+            // --- Character Details Modal (Pencil Click) ---
+            function openCharDetails(index) {
+                const char = charsList[index];
+                if (!char) return;
+
+                document.getElementById('detailsModalTitle').innerText = \`\${char.name} (\${char.realm})\`;
+                const body = document.getElementById('charDetailsBody');
+                body.innerHTML = '';
+
+                let professions = [];
+                function parseProf(str) {
+                    try {
+                        const obj = JSON.parse(str);
+                        // Assuming TSM structure: { "professions": { "Alchemy": { "skill": 100, "max": 100 }, ... } }
+                        if (obj.professions) {
+                            for (const [profName, details] of Object.entries(obj.professions)) {
+                                professions.push({ name: profName, skill: details.skill || 0, max: details.max || details.skill || 100 });
+                            }
+                        }
+                    } catch(e) {}
+                }
+                parseProf(char.p1);
+                parseProf(char.p2);
+
+                if (professions.length === 0) {
+                    body.innerHTML = '<p style="color:#888;text-align:center;">No profession data found in imports.</p>';
+                } else {
+                    professions.forEach(p => {
+                        const pct = (p.skill / p.max) * 100;
+                        body.innerHTML += \`
+                            <div class="prof-row">
+                                <div class="prof-header"><span>\${p.name}</span><span>\${p.skill} / \${p.max}</span></div>
+                                <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:\${pct}%"></div></div>
+                            </div>
+                        \`;
+                    });
+                }
+
+                document.getElementById('charDetailsModal').classList.add('active');
+            }
+            
+            document.getElementById('btnCloseDetails').addEventListener('click', () => {
+                document.getElementById('charDetailsModal').classList.remove('active');
+            });
+            // ----------------------------------------------
+
+
             function renderCharList() {
                 const container = document.getElementById('charList');
                 container.innerHTML = '';
                 
                 charsList.forEach((char, index) => {
+                    // Improved icon key lookup with fallback
                     const iconKey = CLASS_ICONS[char.class] || "classicon_mage";
                     const iconUrl = \`https://wow.zamimg.com/images/wow/icons/large/\${iconKey}.jpg\`;
                     
-                    let profsHtml = '';
-                    if (char.profs && char.profs.length > 0) {
-                        profsHtml = '<div class="char-profs">';
-                        char.profs.forEach(p => {
-                            const pct = (p.skill / p.max) * 100;
-                            profsHtml += \`
-                                <div class="prof-row">
-                                    <div class="prof-header"><span>\${p.name}</span><span>\${p.skill} / \${p.max}</span></div>
-                                    <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:\${pct}%"></div></div>
-                                </div>
-                            \`;
-                        });
-                        profsHtml += '</div>';
-                    }
-
                     const div = document.createElement('div');
                     div.className = 'char-tile';
                     div.innerHTML = \`
-                        <button class="tile-btn tile-btn-edit" onclick="openImportModal(\${index})">✎</button>
+                        <button class="tile-btn tile-btn-edit" onclick="openCharDetails(\${index})">✎</button>
                         <button class="tile-btn tile-btn-delete" onclick="deleteCharacter(\${index})">×</button>
-                        <div class="char-header">
-                            <div class="char-avatar" style="background-image: url('\${iconUrl}')"></div>
-                            <div class="char-info">
-                                <div class="char-name">\${char.name}</div>
-                                <div class="char-realm">\${char.realm}</div>
-                            </div>
+                        <div class="char-avatar" style="background-image: url('\${iconUrl}')"></div>
+                        <div class="char-info">
+                            <div class="char-name">\${char.name}</div>
+                            <div class="char-realm">\${char.realm}</div>
                         </div>
-                        \${profsHtml}
                     \`;
                     container.appendChild(div);
                 });
@@ -968,7 +996,7 @@ async function generateHTML() {
 
             document.addEventListener('DOMContentLoaded', () => {
                 loadMore();
-                updateTopRightSection(); // Show circle or menu
+                updateTopRightSection();
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
                 document.getElementById('smartSearchInput').addEventListener('input', handleSearch);
                 document.querySelector('.btn-import-addon').addEventListener('click', handleAddonImport);
@@ -978,6 +1006,7 @@ async function generateHTML() {
                 document.getElementById('cartModal').addEventListener('click', (e) => { if (e.target.id === 'cartModal') closeCart(); });
                 document.getElementById('btnReset').addEventListener('click', handleReset);
                 document.getElementById('importModal').addEventListener('click', (e) => { if (e.target.id === 'importModal') document.getElementById('importModal').classList.remove('active'); });
+                document.getElementById('charDetailsModal').addEventListener('click', (e) => { if (e.target.id === 'charDetailsModal') document.getElementById('charDetailsModal').classList.remove('active'); });
             });
         </script>
         <script src="import.js"></script>
