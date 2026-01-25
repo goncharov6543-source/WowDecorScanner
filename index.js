@@ -291,16 +291,9 @@ async function generateHTML() {
             #smartSearchInput:focus { border-color: #ffd700; }
 
             /* REMOVE INPUT ARROWS (SPINNERS) - FORCE */
-            /* Chrome, Safari, Edge, Opera */
             input::-webkit-outer-spin-button,
-            input::-webkit-inner-spin-button {
-                -webkit-appearance: none !important;
-                margin: 0 !important;
-            }
-            /* Firefox */
-            input[type=number] {
-                -moz-appearance: textfield !important;
-            }
+            input::-webkit-inner-spin-button { -webkit-appearance: none !important; margin: 0 !important; }
+            input[type=number] { -moz-appearance: textfield !important; }
 
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
@@ -339,8 +332,7 @@ async function generateHTML() {
                 font-size: 32px; color: #444;
                 transition: all 0.2s;
                 background: transparent;
-                line-height: 1; 
-                padding-bottom: 4px; 
+                line-height: 1; padding-bottom: 4px; 
             }
             .add-char-btn:hover .add-char-circle { border-color: #0070dd; color: #0070dd; }
             .add-char-label { margin-top: 10px; font-size: 13px; color: #444; transition: color 0.2s; }
@@ -389,7 +381,7 @@ async function generateHTML() {
                 border-radius: 50%; 
                 border: 2px solid #ffd700; 
                 background-size: cover; background-position: center; background-repeat: no-repeat;
-                background-color: #222; /* Neutral dark grey background */
+                background-color: #222; 
                 flex-shrink: 0;
             }
             .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; flex-grow: 1; padding-right: 30px; }
@@ -437,7 +429,15 @@ async function generateHTML() {
             .details-modal-content { max-width: 900px; height: auto; max-height: 80%; }
             .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
             .prof-col { display: flex; flex-direction: column; gap: 15px; }
-            .prof-title { color: #ffd700; font-size: 1.1em; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px; }
+            
+            /* Updated Profession Title Styles */
+            .prof-title-wrapper {
+                display: flex; align-items: center; gap: 10px;
+                border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px;
+            }
+            .prof-icon { width: 32px; height: 32px; border-radius: 4px; border: 1px solid #444; }
+            .prof-title { color: #ffd700; font-size: 1.1em; font-weight: bold; text-transform: uppercase; }
+            
             .prof-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
             .prof-header { display: flex; justify-content: space-between; font-size: 14px; color: #fff; }
             .skill-bar-bg { width: 100%; height: 10px; background: #333; border-radius: 5px; overflow: hidden; border: 1px solid #444; }
@@ -565,8 +565,7 @@ async function generateHTML() {
                     <h2 id="detailsModalTitle" class="modal-title">Character Details</h2>
                     <button id="btnCloseDetails" class="modal-close">×</button>
                 </div>
-                <div id="charDetailsBody" class="modal-body" style="padding: 20px;">
-                    </div>
+                <div id="charDetailsBody" class="modal-body" style="padding: 20px;"></div>
             </div>
         </div>
 
@@ -580,22 +579,6 @@ async function generateHTML() {
             
             let savedState = JSON.parse(localStorage.getItem('wowScnr_state')) || {};
             let charsList = JSON.parse(localStorage.getItem('wowScnr_chars_list')) || [];
-
-            const CLASS_ICONS = {
-                "warrior": "classicon_warrior",
-                "paladin": "classicon_paladin",
-                "hunter": "classicon_hunter",
-                "rogue": "classicon_rogue",
-                "priest": "classicon_priest",
-                "death knight": "spell_deathknight_classicon",
-                "shaman": "classicon_shaman",
-                "mage": "classicon_mage",
-                "warlock": "classicon_warlock",
-                "monk": "classicon_monk",
-                "druid": "classicon_druid",
-                "demon hunter": "classicon_demonhunter",
-                "evoker": "classicon_evoker"
-            };
 
             function saveToStorage() { localStorage.setItem('wowScnr_state', JSON.stringify(savedState)); }
             function saveCharsToStorage() { localStorage.setItem('wowScnr_chars_list', JSON.stringify(charsList)); }
@@ -655,7 +638,6 @@ async function generateHTML() {
                 }
             });
 
-            // --- Import Modal ---
             function openImportModal(editIndex = -1) {
                 document.getElementById('editCharId').value = editIndex;
                 if (editIndex >= 0 && charsList[editIndex]) {
@@ -680,7 +662,7 @@ async function generateHTML() {
                 
                 let name = "Unknown";
                 let realm = "Unknown";
-                let charClass = ""; 
+                let charClass = "unknown"; 
 
                 // Simple parser to extract meta data
                 function parseMeta(str) {
@@ -688,7 +670,7 @@ async function generateHTML() {
                         const obj = JSON.parse(str);
                         if(obj.character) name = obj.character;
                         if(obj.realm) realm = obj.realm;
-                        if(obj.class) charClass = obj.class.toLowerCase();
+                        if(obj.class) charClass = obj.class.toLowerCase().replace(/\\s/g, '');
                     } catch(e) {}
                 }
                 parseMeta(p1Str);
@@ -725,41 +707,59 @@ async function generateHTML() {
                 document.getElementById('detailsModalTitle').innerText = \`\${char.name} (\${char.realm})\`;
                 const body = document.getElementById('charDetailsBody');
                 
-                // RECURSIVE PARSER: Finds objects with name, skill, maxSkill
+                // RECURSIVE PARSER
                 function extractSkillData(str) {
                     if (!str) return null;
                     let root;
                     try { root = JSON.parse(str); } catch(e) { return null; }
 
-                    let title = root.profession || "Profession";
+                    let title = "Unknown Profession";
                     let skillsFound = [];
 
                     function traverse(node) {
                         if (typeof node !== 'object' || node === null) return;
 
-                        // Check if node matches format: { name: "...", skill: 10, maxSkill: 75 }
+                        // Found a skill category node
                         if (node.name && (node.skill !== undefined || node.value !== undefined)) {
+                            if(title === "Unknown Profession" && node.name.toLowerCase().includes("inscription")) title = "Inscription";
+                            if(title === "Unknown Profession" && node.name.toLowerCase().includes("alchemy")) title = "Alchemy";
+                            
                             let current = node.skill !== undefined ? node.skill : node.value;
-                            // Prioritize maxSkill, then max, then cap, then 100
                             let max = node.maxSkill !== undefined ? node.maxSkill : 
                                       (node.max !== undefined ? node.max : 
                                       (node.cap !== undefined ? node.cap : 100));
                             
                             skillsFound.push({ name: node.name, skill: current, max: max });
                         }
-
-                        // Recursion
+                        
                         Object.keys(node).forEach(key => traverse(node[key]));
                     }
-
                     traverse(root);
+                    
+                    if(skillsFound.length > 0) {
+                        const first = skillsFound[0].name.toLowerCase();
+                        if(first.includes('inscription')) title = 'Inscription';
+                        else if(first.includes('jewelcrafting')) title = 'Jewelcrafting';
+                        else if(first.includes('alchemy')) title = 'Alchemy';
+                        else if(first.includes('blacksmithing')) title = 'Blacksmithing';
+                        else if(first.includes('enchanting')) title = 'Enchanting';
+                        else if(first.includes('engineering')) title = 'Engineering';
+                        else if(first.includes('leatherworking')) title = 'Leatherworking';
+                        else if(first.includes('tailoring')) title = 'Tailoring';
+                        else title = skillsFound[0].name.split(' ')[0];
+                    }
+
                     return { title, skills: skillsFound };
                 }
 
                 function buildHtmlColumn(data, defaultTitle) {
                     if (!data || data.skills.length === 0) {
-                        return \`<div class="prof-col"><div class="prof-title">\${defaultTitle}</div><div style="color:#666">No skill data found</div></div>\`;
+                        return \`<div class="prof-col"><div class="prof-title-wrapper"><span class="prof-title">\${defaultTitle}</span></div><div style="color:#666">No skill data found</div></div>\`;
                     }
+                    
+                    const iconName = data.title.toLowerCase().replace(/\\s+/g, '');
+                    const iconUrl = \`prof_class_icons/\${iconName}.jpg\`;
+                    
                     let rows = '';
                     data.skills.forEach(s => {
                         const pct = Math.min(100, (s.skill / s.max) * 100);
@@ -770,7 +770,15 @@ async function generateHTML() {
                             </div>
                         \`;
                     });
-                    return \`<div class="prof-col"><div class="prof-title">\${data.title}</div>\${rows}</div>\`;
+                    
+                    return \`
+                        <div class="prof-col">
+                            <div class="prof-title-wrapper">
+                                <img src="\${iconUrl}" class="prof-icon" onerror="this.style.display='none'">
+                                <span class="prof-title">\${data.title}</span>
+                            </div>
+                            \${rows}
+                        </div>\`;
                 }
 
                 const data1 = extractSkillData(char.p1);
@@ -787,24 +795,21 @@ async function generateHTML() {
                 document.getElementById('charDetailsModal').classList.remove('active');
             });
 
-            // --- Render Char List in Dropdown ---
+            // --- Render Char List ---
             function renderCharList() {
                 const container = document.getElementById('charList');
                 container.innerHTML = '';
                 
                 charsList.forEach((char, index) => {
-                    const iconKey = CLASS_ICONS[char.class];
-                    const iconUrl = iconKey ? \`https://wow.zamimg.com/images/wow/icons/large/\${iconKey}.jpg\` : '';
-                    // Use a question mark if no class found
-                    const fallbackUrl = 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
-                    const bgStyle = \`background-image: url('\${iconUrl || fallbackUrl}')\`;
-
+                    const iconName = char.class ? char.class.toLowerCase().replace(/\\s+/g, '') : "unknown";
+                    const iconUrl = \`prof_class_icons/\${iconName}.jpg\`;
+                    
                     const div = document.createElement('div');
                     div.className = 'char-tile';
                     div.innerHTML = \`
                         <button class="tile-btn tile-btn-edit" onclick="openCharDetails(\${index})">✎</button>
                         <button class="tile-btn tile-btn-delete" onclick="deleteCharacter(\${index})">×</button>
-                        <div class="char-avatar" style="\${bgStyle}"></div>
+                        <div class="char-avatar" style="background-image: url('\${iconUrl}');"></div>
                         <div class="char-info">
                             <div class="char-name">\${char.name}</div>
                             <div class="char-realm">\${char.realm}</div>
@@ -814,7 +819,7 @@ async function generateHTML() {
                 });
             }
 
-            // ... (Chart and other logic remains same) ...
+            // ... (Rest of logic: chart, loadMore, search, listeners) ...
             function setChartRange(btn, itemId, range) {
                 const parent = btn.parentElement;
                 parent.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
