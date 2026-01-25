@@ -1184,39 +1184,34 @@ async function generateHTML() {
             }
 
             function visualCopy(btn, text) {
-                // 1. ЗАПОБІЖНИК: Якщо кнопка вже "світиться", не реагуємо на кліки
-                if (btn.dataset.locked === "true") return;
-                
-                // 2. Визначаємо, як кнопка МАЄ називатися, дивлячись на її клас
-                // Це виправляє баг: ми не беремо поточний текст (який може бути "Скопійовано!")
-                let correctLabel = btn.innerText; // запасний варіант
-                
-                if (btn.classList.contains('btn-import')) {
-                    correctLabel = "Reagents Import";
-                } else if (btn.classList.contains('btn-import-addon')) {
-                    correctLabel = "Lumber Import";
-                } else if (btn.id === 'btnOpenCart') {
-                    correctLabel = "🛒 Cart";
+                // 1. Якщо таймер вже йде (швидкий клік), скасовуємо його, щоб не було глюків
+                if (btn.dataset.timer) {
+                    clearTimeout(btn.dataset.timer);
                 }
 
-                // Зберігаємо оригінальний колір (або беремо дефолтний, якщо стиль не задано inline)
-                const originalColor = btn.style.backgroundColor;
+                // 2. Жорстко визначаємо, який текст має повернутись
+                let defaultLabel = "Import"; 
+                
+                if (btn.classList.contains('btn-import')) {
+                    defaultLabel = "Reagents Import";
+                } else if (btn.classList.contains('btn-import-addon')) {
+                    defaultLabel = "Lumber Import";
+                } else if (btn.id === 'btnOpenCart') {
+                    defaultLabel = "🛒 Cart";
+                }
 
-                // 3. Блокуємо кнопку
-                btn.dataset.locked = "true";
-
-                // 4. Копіюємо текст в буфер
+                // 3. Копіюємо текст
                 navigator.clipboard.writeText(text).catch(err => console.error(err));
 
-                // 5. Змінюємо вигляд
+                // 4. Ставимо статус "Успіх"
                 btn.innerText = "Скопійовано!";
                 btn.style.backgroundColor = "#a335ee"; // Фіолетовий
 
-                // 6. Таймер повернення (2 секунди)
-                setTimeout(() => {
-                    btn.innerText = correctLabel; // Повертаємо ПРАВИЛЬНУ назву
-                    btn.style.backgroundColor = originalColor; // Повертаємо колір
-                    btn.dataset.locked = "false"; // Розблоковуємо
+                // 5. Запускаємо новий таймер відновлення
+                btn.dataset.timer = setTimeout(() => {
+                    btn.innerText = defaultLabel; // Повертаємо правильний текст
+                    btn.style.backgroundColor = ""; // ВАЖЛИВО: Просто скидаємо колір, щоб повернувся ваш CSS (зелений/синій)
+                    delete btn.dataset.timer;
                 }, 2000);
             }
 
