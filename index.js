@@ -173,6 +173,7 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
+    // --- (Логіка розрахунку предметів залишається без змін) ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
@@ -244,6 +245,7 @@ async function generateHTML() {
         .filter(data => data.valid)
         .sort((a, b) => b.lumberPrice - a.lumberPrice);
 
+    // --- (Статистика для тултіпа залишається без змін) ---
     const expStats = {};
     sortedItems.forEach(item => {
         if (item.lumberPrice > -999999) {
@@ -288,14 +290,25 @@ async function generateHTML() {
             h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; font-size: 2.5em; }
             .update-time { font-size: 0.9em; color: #666; margin-bottom: 15px; }
             .controls-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 10px; }
+            
+            /* Новий стиль для групи пошуку та кнопки Reset */
+            .search-wrapper { display: flex; gap: 10px; align-items: center; }
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
+            .btn-reset { background: #d32f2f; border: 1px solid #b71c1c; width: 42px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 1.2em; }
+            .btn-reset:hover { background: #b71c1c; }
+
             .buttons-group { display: flex; gap: 15px; align-items: center; }
             button { border: none; padding: 0 20px; border-radius: 4px; cursor: pointer; font-weight: bold; height: 42px; color: white; transition: 0.2s; }
             .btn-import { background: #a335ee; }
             .btn-import:hover { background: #8a2be2; }
             .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
+            
+            /* Стиль кнопки кошика */
+            .btn-cart { background: #ff9800; display: flex; align-items: center; gap: 8px; }
+            .btn-cart:hover { background: #f57c00; }
+
             .stats-wrapper { position: relative; display: flex; align-items: center; }
             .stats-icon { width: 30px; height: 30px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: serif; font-weight: bold; font-style: italic; font-size: 18px; cursor: help; transition: 0.2s; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
@@ -310,7 +323,7 @@ async function generateHTML() {
             .load-more-container { text-align: center; margin-top: 30px; }
             .btn-load-more { background: #2a2b2e; border: 1px solid #444; color: #fff; }
             .btn-load-more:hover { background: #333; }
-            .hidden { display: none; }
+            .hidden { display: none !important; }
             .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
             .item-card.active { border-color: #a335ee; box-shadow: 0 0 15px rgba(163, 53, 238, 0.1); }
@@ -349,6 +362,16 @@ async function generateHTML() {
             .server-price { color: #ffd700; font-weight: bold; }
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
             .name-text.copied .copy-tooltip { opacity: 1; }
+
+            /* Стилі для модального вікна */
+            .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+            .modal-content { background: #151618; width: 90%; max-width: 1000px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
+            .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1b1d; }
+            .modal-title { font-size: 1.5em; color: #fff; margin: 0; }
+            .modal-close { background: transparent; border: 1px solid #444; color: #888; font-size: 20px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+            .modal-close:hover { background: #333; color: #fff; border-color: #fff; }
+            .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
+            .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
         </style>
     </head>
     <body>
@@ -357,7 +380,10 @@ async function generateHTML() {
                 <h1>💎 WoW Decor Scanner</h1>
                 <div class="update-time">Оновлено: ${updateTime}</div>
                 <div class="controls-row">
-                    <input type="text" id="smartSearchInput" placeholder="Назва, професія або патч...">
+                    <div class="search-wrapper">
+                        <input type="text" id="smartSearchInput" placeholder="Назва, професія або патч...">
+                        <button id="btnReset" class="btn-reset" title="Очистити все">🗑️</button>
+                    </div>
                     <div class="buttons-group">
                         <div class="stats-wrapper">
                             <div class="stats-icon">i</div>
@@ -366,6 +392,7 @@ async function generateHTML() {
                                 ${expTooltipHtml}
                             </div>
                         </div>
+                        <button id="btnOpenCart" class="btn-cart">🛒 Cart</button>
                         <button class="btn-import-addon">Lumber Import</button>
                         <button class="btn-import">Reagents Import</button>
                     </div>
@@ -375,6 +402,16 @@ async function generateHTML() {
             <div class="load-more-container"><button id="btnLoadMore" class="btn-load-more">Показати ще</button></div>
         </div>
         
+        <div id="cartModal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">📦 Обрані предмети (Cart)</h2>
+                    <button id="btnCloseCart" class="modal-close">×</button>
+                </div>
+                <div id="cartBody" class="modal-body"></div>
+            </div>
+        </div>
+
         <script>
             const ALL_DATA = ${jsonPayload};
             let activeData = ALL_DATA; 
@@ -382,6 +419,39 @@ async function generateHTML() {
             const ITEMS_PER_PAGE = 20;
             let activeCharts = {};
             let chartRanges = {}; 
+            
+            // --- СТАН (LocalStorage) ---
+            // Формат: { "12345": { checked: true, qty: 5 } }
+            let savedState = JSON.parse(localStorage.getItem('wowScnr_state')) || {};
+
+            function saveToStorage() {
+                localStorage.setItem('wowScnr_state', JSON.stringify(savedState));
+            }
+
+            // Оновлюємо стан при зміні інпутів (делегування подій для продуктивності)
+            document.addEventListener('change', (e) => {
+                if (e.target.classList.contains('check-input')) {
+                    const card = e.target.closest('.item-card');
+                    // Витягуємо ID через toggleDetails, який має itemId, або з onclick атрибуту
+                    // Але надійніше знайти кнопку графіка і взяти ID звідти, або зберегти ID в data-атрибут картки
+                    // Нижче я додав itemId в data-атрибут item-card
+                    const itemId = card.dataset.id;
+                    if (!savedState[itemId]) savedState[itemId] = {};
+                    savedState[itemId].checked = e.target.checked;
+                    saveToStorage();
+                }
+            });
+
+            document.addEventListener('input', (e) => {
+                if (e.target.classList.contains('qty-input')) {
+                    const card = e.target.closest('.item-card');
+                    const itemId = card.dataset.id;
+                    const val = parseInt(e.target.value);
+                    if (!savedState[itemId]) savedState[itemId] = {};
+                    savedState[itemId].qty = isNaN(val) ? 0 : val;
+                    saveToStorage();
+                }
+            });
 
             function toggleDetails(card, itemId) {
                 card.classList.toggle('active');
@@ -484,40 +554,84 @@ async function generateHTML() {
                 });
             }
 
+            // Функція скидання (Reset)
+            function handleReset() {
+                if(!confirm("Очистити всі фільтри та вибрані предмети?")) return;
+                
+                // 1. Очистити пам'ять
+                localStorage.removeItem('wowScnr_state');
+                savedState = {};
+                
+                // 2. Очистити поля вводу в DOM
+                document.querySelectorAll('.check-input').forEach(el => el.checked = false);
+                document.querySelectorAll('.qty-input').forEach(el => el.value = '');
+                document.getElementById('smartSearchInput').value = '';
+                
+                // 3. Скинути пошук
+                activeData = ALL_DATA;
+                currentIndex = 0;
+                document.getElementById('list').innerHTML = '';
+                loadMore();
+            }
+
+            // Функції кошика
+            function openCart() {
+                const modal = document.getElementById('cartModal');
+                const body = document.getElementById('cartBody');
+                body.innerHTML = '';
+                
+                // Знаходимо всі ID, які мають checked: true
+                const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
+                
+                if (checkedIds.length === 0) {
+                    body.innerHTML = '<div class="empty-cart-msg">Кошик порожній. Виберіть предмети галочками.</div>';
+                } else {
+                    // Фільтруємо дані
+                    const cartItems = ALL_DATA.filter(item => checkedIds.includes(item.itemId.toString()));
+                    body.innerHTML = cartItems.map(createItemHTML).join('');
+                }
+                
+                modal.classList.remove('hidden');
+            }
+
+            function closeCart() {
+                document.getElementById('cartModal').classList.add('hidden');
+                // При закритті кошика варто оновити основний список, якщо там змінились дані, 
+                // але для простоти просто залишимо як є, бо дані беруться з localStorage при рендері
+                const list = document.getElementById('list');
+                list.innerHTML = '';
+                currentIndex = 0;
+                loadMore();
+            }
+
             function handleAddonImport(e) {
                 const btn = e.currentTarget;
-                const checkedBoxes = document.querySelectorAll('.check-input:checked');
-                if (checkedBoxes.length === 0) return alert("Вибери предмети галочками!");
+                // Шукаємо чекнуті items в глобальному стані, а не тільки в DOM (бо DOM може бути неповним через пагінацію)
+                const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
+                
+                if (checkedIds.length === 0) return alert("Вибери предмети галочками!");
 
                 let summary = {}; 
-                checkedBoxes.forEach(box => {
-                    const card = box.closest('.item-card');
-                    const qtyInput = card.querySelector('.qty-input');
-                    const count = parseInt(qtyInput.value) || 0;
+                
+                checkedIds.forEach(id => {
+                    const itemData = ALL_DATA.find(i => i.itemId == id);
+                    if (!itemData) return;
+                    
+                    const count = savedState[id].qty || 0;
                     
                     if (count > 0) {
-                        const exp = card.dataset.exp; 
-                        const lumberReq = parseInt(card.dataset.lumber) || 0;
+                        const exp = itemData.exp; 
+                        const lumberReq = itemData.craftQty || 0;
                         const totalLumber = count * lumberReq;
                         
-                        // --- Збір даних про предмет ---
-                        const nameEl = card.querySelector('.name-text');
-                        // childNode[0] бере саме текст, ігноруючи span.copy-tooltip
-                        const itemName = nameEl ? nameEl.firstChild.textContent.trim() : "Unknown";
-                        
-                        const priceEl = card.querySelector('.col-price span');
-                        // Видаляємо все крім цифр
-                        const itemPrice = priceEl ? parseInt(priceEl.innerText.replace(/\\D/g, '')) : 0;
-                        // -----------------------------
-
                         if (exp && totalLumber > 0) {
                             if (!summary[exp]) {
                                 summary[exp] = { totalLumber: 0, items: [] };
                             }
                             summary[exp].totalLumber += totalLumber;
                             summary[exp].items.push({
-                                name: itemName,
-                                price: itemPrice,
+                                name: itemData.name,
+                                price: itemData.bestPrice,
                                 count: count
                             });
                         }
@@ -536,27 +650,29 @@ async function generateHTML() {
 
             function handleReagentsImport(e) {
                 const btn = e.currentTarget;
-                const checkedBoxes = document.querySelectorAll('.check-input:checked');
-                if (checkedBoxes.length === 0) return alert("Вибери предмети галочками!");
+                const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
+                
+                if (checkedIds.length === 0) return alert("Вибери предмети галочками!");
+                
                 let reagentsMap = {};
                 let hasItems = false;
-                checkedBoxes.forEach(box => {
-                    const card = box.closest('.item-card');
-                    const qtyInput = card.querySelector('.qty-input');
-                    const count = parseInt(qtyInput.value) || 0;
+                
+                checkedIds.forEach(id => {
+                    const itemData = ALL_DATA.find(i => i.itemId == id);
+                    if (!itemData) return;
+                    
+                    const count = savedState[id].qty || 0;
                     if (count > 0) {
                         hasItems = true;
-                        try {
-                            const recipe = JSON.parse(card.dataset.recipe);
-                            if (Array.isArray(recipe)) {
-                                recipe.forEach(r => {
-                                    if (!reagentsMap[r.name]) reagentsMap[r.name] = 0;
-                                    reagentsMap[r.name] += (r.count * count);
-                                });
-                            }
-                        } catch(e) {}
+                        if (itemData.recipeRaw && Array.isArray(itemData.recipeRaw)) {
+                            itemData.recipeRaw.forEach(r => {
+                                if (!reagentsMap[r.name]) reagentsMap[r.name] = 0;
+                                reagentsMap[r.name] += (r.count * count);
+                            });
+                        }
                     }
                 });
+
                 if (!hasItems) return alert("Введи кількість предметів!");
                 const listString = Object.entries(reagentsMap).map(([n, q]) => \`\${n} x\${q}\`).join('\\n');
                 visualCopy(btn, listString);
@@ -574,6 +690,11 @@ async function generateHTML() {
             function createItemHTML(item) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
                 
+                // ВІДНОВЛЕННЯ СТАНУ З LocalStorage
+                const saved = savedState[item.itemId] || {};
+                const isChecked = saved.checked ? 'checked' : '';
+                const qtyVal = saved.qty && saved.qty > 0 ? saved.qty : '';
+
                 let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => 
                     \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`
                 ).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
@@ -583,7 +704,7 @@ async function generateHTML() {
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
 
                 return \`
-                <div class="item-card" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}">
+                <div class="item-card" data-id="\${item.itemId}" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}">
                     <div class="main-row">
                         <div class="main-row-left">
                             <div class="col-icon"><img src="\${item.icon}"></div>
@@ -600,8 +721,8 @@ async function generateHTML() {
                                 <span>\${Math.floor(item.bestPrice).toLocaleString()}</span><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" style="width:18px;border-radius:50%">
                             </div>
                             <div class="col-inputs">
-                                <input type="number" class="qty-input" placeholder="0" min="0">
-                                <input type="checkbox" class="check-input">
+                                <input type="number" class="qty-input" placeholder="0" min="0" value="\${qtyVal}">
+                                <input type="checkbox" class="check-input" \${isChecked}>
                             </div>
                         </div>
                     </div>
@@ -667,6 +788,16 @@ async function generateHTML() {
                 document.getElementById('smartSearchInput').addEventListener('input', handleSearch);
                 document.querySelector('.btn-import-addon').addEventListener('click', handleAddonImport);
                 document.querySelector('.btn-import').addEventListener('click', handleReagentsImport);
+                
+                // Нові лісенери
+                document.getElementById('btnOpenCart').addEventListener('click', openCart);
+                document.getElementById('btnCloseCart').addEventListener('click', closeCart);
+                document.getElementById('btnReset').addEventListener('click', handleReset);
+                
+                // Закриття модалки по кліку на фон
+                document.getElementById('cartModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'cartModal') closeCart();
+                });
             });
         </script>
         <script src="import.js"></script>
