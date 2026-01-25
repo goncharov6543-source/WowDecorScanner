@@ -1184,28 +1184,39 @@ async function generateHTML() {
             }
 
             function visualCopy(btn, text) {
-                // Запобіжник: якщо кнопка вже показує "Скопійовано!", не чіпаємо її
+                // 1. ЗАПОБІЖНИК: Якщо кнопка вже "світиться", не реагуємо на кліки
                 if (btn.dataset.locked === "true") return;
+                
+                // 2. Визначаємо, як кнопка МАЄ називатися, дивлячись на її клас
+                // Це виправляє баг: ми не беремо поточний текст (який може бути "Скопійовано!")
+                let correctLabel = btn.innerText; // запасний варіант
+                
+                if (btn.classList.contains('btn-import')) {
+                    correctLabel = "Reagents Import";
+                } else if (btn.classList.contains('btn-import-addon')) {
+                    correctLabel = "Lumber Import";
+                } else if (btn.id === 'btnOpenCart') {
+                    correctLabel = "🛒 Cart";
+                }
 
-                // 1. Запам'ятовуємо, як кнопка виглядала ДО натискання
-                const originalText = btn.innerText;
+                // Зберігаємо оригінальний колір (або беремо дефолтний, якщо стиль не задано inline)
                 const originalColor = btn.style.backgroundColor;
 
-                // 2. Блокуємо кнопку від повторних натискань
+                // 3. Блокуємо кнопку
                 btn.dataset.locked = "true";
 
-                // 3. Копіюємо текст
+                // 4. Копіюємо текст в буфер
                 navigator.clipboard.writeText(text).catch(err => console.error(err));
 
-                // 4. Змінюємо вигляд на "Скопійовано!" (Фіолетовий колір)
-                btn.style.backgroundColor = "#a335ee"; 
+                // 5. Змінюємо вигляд
                 btn.innerText = "Скопійовано!";
+                btn.style.backgroundColor = "#a335ee"; // Фіолетовий
 
-                // 5. Через 2 секунди повертаємо все як було
+                // 6. Таймер повернення (2 секунди)
                 setTimeout(() => {
-                    btn.style.backgroundColor = originalColor;
-                    btn.innerText = originalText;
-                    btn.dataset.locked = "false"; // Знімаємо блокування
+                    btn.innerText = correctLabel; // Повертаємо ПРАВИЛЬНУ назву
+                    btn.style.backgroundColor = originalColor; // Повертаємо колір
+                    btn.dataset.locked = "false"; // Розблоковуємо
                 }, 2000);
             }
 
