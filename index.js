@@ -989,19 +989,31 @@ async function generateHTML() {
             }
 
             function handleReset() {
-                if(!confirm("Очистити всі дані?")) return;
+                if(!confirm("Очистити вибір предметів? (Персонажі залишаться)")) return;
+                
+                // Очищаємо тільки стан вибору
                 localStorage.removeItem('wowScnr_state');
-                localStorage.removeItem('wowScnr_chars_list');
+                
+                // НЕ видаляємо персонажів
+                // localStorage.removeItem('wowScnr_chars_list'); 
+                
                 savedState = {};
-                charsList = [];
-                reparseAllCharacters();
+                
+                // НЕ обнуляємо список персонажів у пам'яті
+                // charsList = []; 
+                // reparseAllCharacters();
+
+                // Скидаємо UI
                 document.querySelectorAll('.check-input').forEach(el => el.checked = false);
                 document.querySelectorAll('.qty-input').forEach(el => el.value = '');
                 document.getElementById('smartSearchInput').value = '';
+                
                 activeData = ALL_DATA;
                 currentIndex = 0;
                 document.getElementById('list').innerHTML = '';
                 loadMore();
+                
+                // Оновлюємо бейджі, бо крафтери залишились
                 updateTopRightSection();
                 updateVisibleCrafterBadges();
             }
@@ -1032,20 +1044,23 @@ async function generateHTML() {
                 const btn = e.currentTarget;
                 const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
                 if (checkedIds.length === 0) return alert("Вибери предмети!");
+                
                 let summary = {}; 
                 checkedIds.forEach(id => {
                     const itemData = ALL_DATA.find(i => i.itemId == id);
                     if (!itemData) return;
                     const count = savedState[id].qty || 0;
+                    
                     if (count > 0) {
                         const exp = itemData.exp; 
                         const lumberReq = itemData.craftQty || 0;
                         const totalLumber = count * lumberReq;
-                        if (exp && totalLumber > 0) {
+                        
+                        // Додаємо навіть якщо не вимагає ламберу, але є в списку (опціонально, але для адону безпечніше)
+                        if (exp) {
                             if (!summary[exp]) summary[exp] = { totalLumber: 0, items: [] };
                             summary[exp].totalLumber += totalLumber;
                             
-                            // CRAFTER LOGIC HERE
                             const crafter = findCrafters(itemData.exp, itemData.prof) || "";
                             
                             summary[exp].items.push({ 
@@ -1053,13 +1068,20 @@ async function generateHTML() {
                                 price: itemData.bestPrice, 
                                 count: count,
                                 crafter: crafter,
-                                craftCost: Math.floor(itemData.craftCost)
+                                craftCost: Math.floor(itemData.craftCost),
+                                prof: itemData.prof // <--- ДОДАНО ПРОФЕСІЮ ТУТ
                             });
                         }
                     }
                 });
-                const payload = Object.keys(summary).map(exp => ({ "Exp": exp, "craftQty": summary[exp].totalLumber, "items": summary[exp].items }));
-                if (payload.length === 0) return alert("Помилка даних.");
+                
+                const payload = Object.keys(summary).map(exp => ({ 
+                    "Exp": exp, 
+                    "craftQty": summary[exp].totalLumber, 
+                    "items": summary[exp].items 
+                }));
+                
+                if (payload.length === 0) return alert("Помилка даних або не введено кількість.");
                 visualCopy(btn, JSON.stringify(payload));
             }
 
@@ -1089,12 +1111,24 @@ async function generateHTML() {
             }
 
             function visualCopy(btn, text) {
-                navigator.clipboard.writeText(text);
+                // Захист від подвійного кліку (щоб текст не застряг)
+                if (btn.dataset.copying) return;
+                btn.dataset.copying = "true";
+
                 const originalText = btn.innerText;
                 const originalColor = btn.style.backgroundColor;
-                btn.style.backgroundColor = "#4caf50";
+
+                // Спробувати скопіювати, навіть якщо API поверне помилку, анімація спрацює
+                navigator.clipboard.writeText(text).catch(err => console.error("Clipboard error:", err));
+
+                btn.style.backgroundColor = "#a335ee"; // Фіолетовий колір як на скріншоті (або #4caf50 для зеленого)
                 btn.innerText = "Скопійовано!";
-                setTimeout(() => { btn.style.backgroundColor = originalColor; btn.innerText = originalText; }, 2000);
+
+                setTimeout(() => { 
+                    btn.style.backgroundColor = originalColor; 
+                    btn.innerText = originalText; 
+                    delete btn.dataset.copying;
+                }, 2000);
             }
 
             function createItemHTML(item) { return generateItemHtmlString(item, true); }
