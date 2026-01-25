@@ -173,7 +173,7 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
-    // --- (Логіка розрахунку предметів залишається без змін) ---
+    // --- (Логіка розрахунку - без змін) ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
@@ -272,7 +272,6 @@ async function generateHTML() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
-            /* Global Scrollbar */
             html, body { scrollbar-width: thin; scrollbar-color: #2a2b2e transparent; }
             body::-webkit-scrollbar { width: 10px; }
             body::-webkit-scrollbar-track { background: transparent; }
@@ -291,20 +290,16 @@ async function generateHTML() {
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
 
-            /* Stats / Reset Icons (Round) */
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
             .btn-reset { font-size: 22px; } 
             
-            /* General Buttons */
             .buttons-group { display: flex; gap: 15px; align-items: center; }
             button { border: none; padding: 0 20px; border-radius: 4px; cursor: pointer; font-weight: bold; height: 42px; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
             .btn-import { background: #a335ee; }
             .btn-import:hover { background: #8a2be2; }
             .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
-
-            /* Rectangular Gray Cart Button */
             .btn-cart-rect { background: #333; color: #fff; border: 1px solid #555; gap: 8px; }
             .btn-cart-rect:hover { background: #444; border-color: #666; }
             
@@ -313,48 +308,66 @@ async function generateHTML() {
             .stats-tooltip { visibility: hidden; opacity: 0; position: absolute; top: 120%; left: 0; width: 250px; background: #1a1b1d; border: 1px solid #444; border-radius: 8px; padding: 15px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transition: 0.2s; transform: translateY(-5px); }
             .stats-wrapper:hover .stats-tooltip { visibility: visible; opacity: 1; transform: translateY(0); }
             
-            /* --- TOP RIGHT ADD CHARACTER SECTION (Moved outside container) --- */
+            /* --- TOP RIGHT CHARACTERS SECTION --- */
             #topRightSection { position: absolute; top: 20px; right: 30px; z-index: 100; }
             
-            /* Add Button Style (No hover scale, centered plus) */
-            .add-char-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-            .add-char-circle {
-                width: 50px; height: 50px;
-                border: 2px dashed #444;
-                border-radius: 50%;
-                display: flex; align-items: center; justify-content: center; /* Flex centering holds the plus in place */
-                font-size: 24px; color: #444;
-                transition: all 0.2s;
+            .char-menu-container { position: relative; }
+            .btn-char-menu { 
+                background: #2a2b2e; color: #ccc; border: 1px solid #444; 
+                padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;
             }
-            .add-char-btn:hover .add-char-circle { border-color: #0070dd; color: #0070dd; }
-            .add-char-label { margin-top: 8px; font-size: 12px; color: #444; transition: color 0.2s; }
-            .add-char-btn:hover .add-char-label { color: #0070dd; }
+            .btn-char-menu:hover { background: #333; color: #fff; }
 
-            /* Character Tile Style */
+            .char-dropdown {
+                position: absolute; top: 100%; right: 0; margin-top: 8px;
+                background: #111; border: 1px solid #333; border-radius: 8px;
+                width: 320px; padding: 10px;
+                display: none; flex-direction: column; gap: 10px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            }
+            .char-dropdown.active { display: flex; }
+
+            .btn-add-new-char {
+                background: transparent; border: 1px dashed #444; color: #888;
+                width: 100%; padding: 10px; border-radius: 6px; cursor: pointer;
+            }
+            .btn-add-new-char:hover { border-color: #666; color: #fff; background: #1a1a1a; }
+
+            /* Character Tile Style inside Dropdown */
             .char-tile {
                 display: flex; align-items: center;
                 background: #1a1b1d;
                 border: 2px solid #0070dd;
                 border-radius: 30px;
-                padding: 4px 15px 4px 4px;
+                padding: 4px 35px 4px 4px; /* Space for delete button */
                 gap: 10px;
-                min-width: 180px;
-                cursor: pointer;
+                position: relative;
                 transition: all 0.2s;
             }
             .char-tile:hover { background: #222; box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); }
             .char-avatar { 
-                width: 36px; height: 36px; 
+                width: 40px; height: 40px; 
                 border-radius: 50%; 
                 border: 2px solid #ffd700; 
-                background: #000 url('https://wow.zamimg.com/images/wow/icons/large/classicon_mage.jpg') no-repeat center/cover;
+                background-size: cover; background-position: center; background-repeat: no-repeat;
+                background-color: #000;
             }
-            .char-info { display: flex; flex-direction: column; line-height: 1.2; }
-            .char-name { font-weight: bold; color: #fff; font-size: 14px; }
+            .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; }
+            .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             .char-realm { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
 
+            /* Action Buttons on Tile */
+            .tile-btn {
+                position: absolute; width: 20px; height: 20px; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                color: white; font-size: 12px; cursor: pointer; border: none;
+                transition: transform 0.2s; z-index: 2;
+            }
+            .tile-btn:hover { transform: scale(1.15); }
+            .tile-btn-edit { top: -5px; left: -5px; background: #007bff; font-size: 10px; } /* Pencil */
+            .tile-btn-delete { top: -5px; right: -5px; background: #dc3545; font-size: 14px; line-height: 1; } /* Cross */
+
             /* --- IMPORT MODAL STYLES --- */
-            /* Wider modal */
             .import-modal-content { background: #121212; border: 1px solid #333; max-width: 800px; width: 90%; border-radius: 8px; }
             .import-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: none; }
             .import-modal-title { font-size: 16px; font-weight: bold; color: #fff; letter-spacing: 1px; }
@@ -373,11 +386,33 @@ async function generateHTML() {
             }
             .save-btn:hover { background: #005bb5; }
 
-            /* Default items styles */
+            /* Modal General */
+            .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+            .modal-overlay.active { opacity: 1; visibility: visible; }
+            .modal-content { background: #151618; width: 90%; max-width: 1200px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s ease; }
+            .modal-overlay.active .modal-content { transform: scale(1); }
+            .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1b1d; }
+            .modal-title { font-size: 1.5em; color: #fff; margin: 0; }
+            /* Centered Close Icon */
+            .modal-close { 
+                background: transparent; border: 1px solid #444; color: #888; font-size: 26px; 
+                width: 36px; height: 36px; border-radius: 50%; padding: 0; 
+                cursor: pointer; transition: 0.2s;
+                display: flex; align-items: center; justify-content: center; line-height: 1;
+            }
+            .modal-close:hover { background: #333; color: #fff; border-color: #fff; }
+            .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
+            .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
+            
+            .modal-body::-webkit-scrollbar { width: 10px; }
+            .modal-body::-webkit-scrollbar-track { background: transparent; } 
+            .modal-body::-webkit-scrollbar-thumb { background: #2a2b2e; border-radius: 5px; border: 2px solid #0f1011; } 
+            .modal-body::-webkit-scrollbar-thumb:hover { background: #333; }
+            .modal-body::-webkit-scrollbar-button { display: none; } 
+
             .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
             .item-card.active { border-color: #ffd700 !important; box-shadow: 0 0 15px rgba(255, 215, 0, 0.15); }
-            
             .main-row { display: flex; height: 60px; position: relative; z-index: 2; }
             .main-row-left { display: flex; align-items: center; flex-grow: 1; padding-left: 20px; }
             .main-row-right { display: flex; align-items: center; padding-right: 20px; }
@@ -413,35 +448,18 @@ async function generateHTML() {
             .server-price { color: #ffd700; font-weight: bold; }
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
             .name-text.copied .copy-tooltip { opacity: 1; }
-
-            /* Modal Overlay */
-            .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
-            .modal-overlay.active { opacity: 1; visibility: visible; }
-            .modal-content { background: #151618; width: 90%; max-width: 1200px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s ease; }
-            .modal-overlay.active .modal-content { transform: scale(1); }
-            .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1b1d; }
-            .modal-title { font-size: 1.5em; color: #fff; margin: 0; }
-            .modal-close { background: transparent; border: 1px solid #444; color: #888; font-size: 26px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; padding: 0; cursor: pointer; transition: 0.2s; }
-            .modal-close:hover { background: #333; color: #fff; border-color: #fff; }
-            .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
-            .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
-            
-            .modal-body::-webkit-scrollbar { width: 10px; }
-            .modal-body::-webkit-scrollbar-track { background: transparent; } 
-            .modal-body::-webkit-scrollbar-thumb { background: #2a2b2e; border-radius: 5px; border: 2px solid #0f1011; } 
-            .modal-body::-webkit-scrollbar-thumb:hover { background: #333; }
-            .modal-body::-webkit-scrollbar-button { display: none; } 
-
             #cartBody .col-lumber, #cartBody .col-price { cursor: default; }
         </style>
     </head>
     <body>
         <div id="topRightSection">
-            <div id="btnAddCharWrapper" class="add-char-btn" onclick="openImportModal()">
-                <div class="add-char-circle">+</div>
-                <div class="add-char-label">Add your first character</div>
+            <div class="char-menu-container">
+                <button id="btnCharMenu" class="btn-char-menu">Characters Info</button>
+                <div id="charDropdown" class="char-dropdown">
+                    <div id="charList"></div>
+                    <button class="btn-add-new-char" onclick="openImportModal()">+ Add Character</button>
+                </div>
             </div>
-            <div id="charTileContainer" style="display:none;"></div>
         </div>
 
         <div class="container">
@@ -497,6 +515,7 @@ async function generateHTML() {
                         <label class="import-label">PROFESSION 2 (PASTE JSON)</label>
                         <textarea id="prof2Input" class="import-textarea"></textarea>
                     </div>
+                    <input type="hidden" id="editCharId" value="">
                     <button class="save-btn" onclick="saveCharacter()">SAVE CHARACTER</button>
                 </div>
             </div>
@@ -511,10 +530,28 @@ async function generateHTML() {
             let chartRanges = {}; 
             
             let savedState = JSON.parse(localStorage.getItem('wowScnr_state')) || {};
-            let charData = JSON.parse(localStorage.getItem('wowScnr_char')) || null;
+            // Array of characters
+            let charsList = JSON.parse(localStorage.getItem('wowScnr_chars_list')) || [];
+
+            // Mapping for class icons
+            const CLASS_ICONS = {
+                "warrior": "classicon_warrior",
+                "paladin": "classicon_paladin",
+                "hunter": "classicon_hunter",
+                "rogue": "classicon_rogue",
+                "priest": "classicon_priest",
+                "death knight": "spell_deathknight_classicon",
+                "shaman": "classicon_shaman",
+                "mage": "classicon_mage",
+                "warlock": "classicon_warlock",
+                "monk": "classicon_monk",
+                "druid": "classicon_druid",
+                "demon hunter": "classicon_demonhunter",
+                "evoker": "classicon_evoker"
+            };
 
             function saveToStorage() { localStorage.setItem('wowScnr_state', JSON.stringify(savedState)); }
-            function saveCharToStorage() { localStorage.setItem('wowScnr_char', JSON.stringify(charData)); }
+            function saveCharsToStorage() { localStorage.setItem('wowScnr_chars_list', JSON.stringify(charsList)); }
 
             document.addEventListener('change', (e) => {
                 if (e.target.classList.contains('check-input')) {
@@ -543,8 +580,35 @@ async function generateHTML() {
                 if (card.classList.contains('active')) setTimeout(() => drawChart(itemId), 50);
             }
 
-            // --- IMPORT LOGIC ---
-            function openImportModal() {
+            // --- CHARACTERS LOGIC ---
+            
+            // Toggle Dropdown
+            document.getElementById('btnCharMenu').addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.getElementById('charDropdown').classList.toggle('active');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                const dropdown = document.getElementById('charDropdown');
+                const btn = document.getElementById('btnCharMenu');
+                if (!dropdown.contains(e.target) && e.target !== btn) {
+                    dropdown.classList.remove('active');
+                }
+            });
+
+            function openImportModal(editIndex = -1) {
+                document.getElementById('editCharId').value = editIndex;
+                if (editIndex >= 0 && charsList[editIndex]) {
+                    // Pre-fill fields
+                    const char = charsList[editIndex];
+                    document.getElementById('prof1Input').value = char.p1 || "";
+                    document.getElementById('prof2Input').value = char.p2 || "";
+                } else {
+                    // Clear fields
+                    document.getElementById('prof1Input').value = "";
+                    document.getElementById('prof2Input').value = "";
+                }
                 document.getElementById('importModal').classList.add('active');
             }
             
@@ -555,43 +619,64 @@ async function generateHTML() {
             function saveCharacter() {
                 const p1 = document.getElementById('prof1Input').value;
                 const p2 = document.getElementById('prof2Input').value;
+                const editId = parseInt(document.getElementById('editCharId').value);
                 
-                let name = "Kevvinn";
-                let realm = "Tarren Mill";
-                
+                let name = "Unknown";
+                let realm = "Unknown";
+                let charClass = "mage"; // default
+
                 try {
+                    // Try parsing JSON to get name/realm/class
                     const obj = JSON.parse(p1 || p2);
                     if(obj.character) name = obj.character;
                     if(obj.realm) realm = obj.realm;
-                } catch(e) {}
+                    if(obj.class) charClass = obj.class.toLowerCase();
+                } catch(e) {
+                    if (p1 || p2) name = "Imported"; // Fallback if data exists but not JSON
+                }
 
-                charData = { name, realm, p1, p2 };
-                saveCharToStorage();
+                const newChar = { name, realm, class: charClass, p1, p2 };
+
+                if (editId >= 0) {
+                    charsList[editId] = newChar;
+                } else {
+                    charsList.push(newChar);
+                }
                 
+                saveCharsToStorage();
                 document.getElementById('importModal').classList.remove('active');
-                renderCharTile();
+                renderCharList();
             }
 
-            function renderCharTile() {
-                const btn = document.getElementById('btnAddCharWrapper');
-                const tileContainer = document.getElementById('charTileContainer');
+            function deleteCharacter(index) {
+                if(confirm("Delete this character?")) {
+                    charsList.splice(index, 1);
+                    saveCharsToStorage();
+                    renderCharList();
+                }
+            }
+
+            function renderCharList() {
+                const container = document.getElementById('charList');
+                container.innerHTML = '';
                 
-                if (charData) {
-                    btn.style.display = 'none';
-                    tileContainer.style.display = 'block';
-                    tileContainer.innerHTML = \`
-                        <div class="char-tile" onclick="openImportModal()">
-                            <div class="char-avatar"></div>
-                            <div class="char-info">
-                                <div class="char-name">\${charData.name}</div>
-                                <div class="char-realm">\${charData.realm}</div>
-                            </div>
+                charsList.forEach((char, index) => {
+                    const iconKey = CLASS_ICONS[char.class] || "classicon_mage";
+                    const iconUrl = \`https://wow.zamimg.com/images/wow/icons/large/\${iconKey}.jpg\`;
+                    
+                    const div = document.createElement('div');
+                    div.className = 'char-tile';
+                    div.innerHTML = \`
+                        <button class="tile-btn tile-btn-edit" onclick="openImportModal(\${index})">✎</button>
+                        <button class="tile-btn tile-btn-delete" onclick="deleteCharacter(\${index})">×</button>
+                        <div class="char-avatar" style="background-image: url('\${iconUrl}')"></div>
+                        <div class="char-info">
+                            <div class="char-name">\${char.name}</div>
+                            <div class="char-realm">\${char.realm}</div>
                         </div>
                     \`;
-                } else {
-                    btn.style.display = 'flex';
-                    tileContainer.style.display = 'none';
-                }
+                    container.appendChild(div);
+                });
             }
 
             function setChartRange(btn, itemId, range) {
@@ -668,9 +753,9 @@ async function generateHTML() {
             function handleReset() {
                 if(!confirm("Очистити всі дані?")) return;
                 localStorage.removeItem('wowScnr_state');
-                localStorage.removeItem('wowScnr_char');
+                localStorage.removeItem('wowScnr_chars_list');
                 savedState = {};
-                charData = null;
+                charsList = [];
                 document.querySelectorAll('.check-input').forEach(el => el.checked = false);
                 document.querySelectorAll('.qty-input').forEach(el => el.value = '');
                 document.getElementById('smartSearchInput').value = '';
@@ -678,7 +763,7 @@ async function generateHTML() {
                 currentIndex = 0;
                 document.getElementById('list').innerHTML = '';
                 loadMore();
-                renderCharTile();
+                renderCharList();
             }
 
             function openCart() {
@@ -815,7 +900,7 @@ async function generateHTML() {
 
             document.addEventListener('DOMContentLoaded', () => {
                 loadMore();
-                renderCharTile(); // Render tile or add button
+                renderCharList(); // Render saved characters
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
                 document.getElementById('smartSearchInput').addEventListener('input', handleSearch);
                 document.querySelector('.btn-import-addon').addEventListener('click', handleAddonImport);
