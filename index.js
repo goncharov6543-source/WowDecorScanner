@@ -1184,39 +1184,28 @@ async function generateHTML() {
             }
 
             function visualCopy(btn, text) {
-                // Захист від подвійного кліку
-                if (btn.dataset.copying === "true") return;
+                // Запобіжник: якщо кнопка вже показує "Скопійовано!", не чіпаємо її
+                if (btn.dataset.locked === "true") return;
 
-                // 1. Визначаємо правильний оригінальний текст на основі класу кнопки
-                // Це гарантує, що текст відновиться правильно, навіть якщо зараз там написано "Скопійовано!"
-                let defaultText = btn.innerText;
-                
-                if (btn.classList.contains('btn-import-addon')) {
-                    defaultText = "Lumber Import";
-                } else if (btn.classList.contains('btn-import')) {
-                    defaultText = "Reagents Import";
-                } else if (btn.id === 'btnOpenCart') {
-                    defaultText = "🛒 Cart";
-                }
+                // 1. Запам'ятовуємо, як кнопка виглядала ДО натискання
+                const originalText = btn.innerText;
+                const originalColor = btn.style.backgroundColor;
 
-                // Зберігаємо поточний колір
-                const originalColor = btn.style.backgroundColor || ""; 
-                
-                // Блокуємо кнопку
-                btn.dataset.copying = "true";
+                // 2. Блокуємо кнопку від повторних натискань
+                btn.dataset.locked = "true";
 
-                // Копіюємо
+                // 3. Копіюємо текст
                 navigator.clipboard.writeText(text).catch(err => console.error(err));
 
-                // Змінюємо вигляд
+                // 4. Змінюємо вигляд на "Скопійовано!" (Фіолетовий колір)
                 btn.style.backgroundColor = "#a335ee"; 
                 btn.innerText = "Скопійовано!";
 
-                // Повертаємо назад через 2 секунди
+                // 5. Через 2 секунди повертаємо все як було
                 setTimeout(() => {
                     btn.style.backgroundColor = originalColor;
-                    btn.innerText = defaultText; // Примусово ставимо правильний текст
-                    btn.dataset.copying = "false";
+                    btn.innerText = originalText;
+                    btn.dataset.locked = "false"; // Знімаємо блокування
                 }, 2000);
             }
 
