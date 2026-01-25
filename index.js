@@ -569,29 +569,7 @@ async function generateHTML() {
                 box-shadow: 0 2px 5px rgba(0,0,0,0.4);
                 font-weight: bold;
             }
-            /* --- СТИЛІ ДЛЯ ІКОНОК ПРОФЕСІЙ В ПЛИТЦІ --- */
-            .char-profs {
-                display: flex;
-                align-items: center;
-                gap: -5px; /* Легке перекриття іконок виглядає стильно, або поставте 5px для відступу */
-                margin-left: auto; /* Притискає блок праворуч */
-                margin-right: 25px; /* Відступ, щоб не налізти на кнопку видалення */
-                z-index: 5;
-            }
-            .prof-mini-icon {
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                border: 2px solid #ffd700; /* Золота рамка */
-                background-color: #111;
-                object-fit: cover;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-                transition: transform 0.2s;
-            }
-            .prof-mini-icon:hover {
-                transform: scale(1.1);
-                z-index: 10;
-            }        
+                    
         </style>
     </head>
     <body>
@@ -995,42 +973,21 @@ async function generateHTML() {
                 const container = document.getElementById('charList');
                 container.innerHTML = '';
                 
-                charsList.forEach(function(char, index) {
-                    // 1. Логіка іконки класу (ліворуч)
-                    const iconName = char.class ? char.class.toLowerCase().replace(/\s+/g, '') : "unknown";
-                    const iconUrl = "prof_class_icons/" + iconName + ".jpg";
+                charsList.forEach((char, index) => {
+                    const iconName = char.class ? char.class.toLowerCase().replace(/\\s+/g, '') : "unknown";
+                    const iconUrl = \`prof_class_icons/\${iconName}.jpg\`;
                     
-                    // 2. Логіка іконок професій (праворуч)
-                    const p1Data = extractSkillData(char.p1);
-                    const p2Data = extractSkillData(char.p2);
-                    
-                    let profsHtml = '<div class="char-profs">';
-                    
-                    [p1Data, p2Data].forEach(function(p) {
-                        if (p && p.title && p.title !== "Unknown Profession") {
-                            // Перетворюємо "Mining" -> "mining", "Blacksmithing" -> "blacksmithing"
-                            const pName = p.title.toLowerCase().replace(/\s+/g, '');
-                            const pUrl = "prof_class_icons/" + pName + ".jpg";
-                            
-                            // Додаємо картинку. onerror сховає її, якщо картинки немає
-                            profsHtml += '<img src="' + pUrl + '" class="prof-mini-icon" title="' + p.title + '" onerror="this.style.display=\'none\'">';
-                        }
-                    });
-                    profsHtml += '</div>';
-
-                    // 3. Формуємо плитку
                     const div = document.createElement('div');
                     div.className = 'char-tile';
-                    div.innerHTML = 
-                        '<button class="tile-btn tile-btn-edit" onclick="openCharDetails(' + index + ')">✎</button>' +
-                        '<button class="tile-btn tile-btn-delete" onclick="deleteCharacter(' + index + ')">×</button>' +
-                        '<div class="char-avatar" style="background-image: url(\'' + iconUrl + '\');"></div>' +
-                        '<div class="char-info">' +
-                            '<div class="char-name">' + char.name + '</div>' +
-                            '<div class="char-realm">' + char.realm + '</div>' +
-                        '</div>' +
-                        profsHtml; // Вставляємо блок професій
-                    
+                    div.innerHTML = \`
+                        <button class="tile-btn tile-btn-edit" onclick="openCharDetails(\${index})">✎</button>
+                        <button class="tile-btn tile-btn-delete" onclick="deleteCharacter(\${index})">×</button>
+                        <div class="char-avatar" style="background-image: url('\${iconUrl}');"></div>
+                        <div class="char-info">
+                            <div class="char-name">\${char.name}</div>
+                            <div class="char-realm">\${char.realm}</div>
+                        </div>
+                    \`;
                     container.appendChild(div);
                 });
             }
