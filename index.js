@@ -386,12 +386,13 @@ async function generateHTML() {
             }
             .btn-add-new-char:hover { border-color: #666; color: #fff; background: #1a1a1a; }
 
-            /* CHAR TILE */
+            /* CHAR TILE (TASK 1: Spacing added) */
             .char-tile {
                 display: flex; align-items: center; background: #1a1b1d;
                 border: 2px solid #0070dd; border-radius: 30px;
                 padding: 6px 10px 6px 6px; gap: 10px;
                 position: relative; transition: all 0.2s; min-height: 42px;
+                margin-bottom: 10px; /* Spacing between tiles */
             }
             .char-tile:hover { background: #222; box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); }
             
@@ -421,6 +422,7 @@ async function generateHTML() {
             .modal-overlay.active .modal-content { transform: scale(1); }
             .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1b1d; }
             .modal-title { font-size: 1.5em; color: #fff; margin: 0; }
+            
             .modal-close { 
                 background: transparent; border: 1px solid #444; color: #888; font-size: 26px; 
                 width: 36px; height: 36px; border-radius: 50%; padding: 0; 
@@ -492,8 +494,8 @@ async function generateHTML() {
             /* LOAD MORE */
             .load-more-container { display: flex; justify-content: center; margin-top: 30px; width: 100%; }
 
-            /* CRAFTER BADGE */
-            .crafter-badge { color: #ffd700; border: 1px solid #ffd700; background: rgba(255, 215, 0, 0.1); } 
+            /* CRAFTER BADGE (TASK 2: Removed specific coloring, now inherits info-badge gray) */
+            /* .crafter-badge { } */
         </style>
     </head>
     <body>
@@ -615,10 +617,9 @@ async function generateHTML() {
             function saveCharsToStorage() { 
                 localStorage.setItem('wowScnr_chars_list', JSON.stringify(charsList)); 
                 reparseAllCharacters();
-                // Rerender list to show new matches
-                document.getElementById('list').innerHTML = '';
-                currentIndex = 0;
-                loadMore();
+                updateTopRightSection();
+                // TASK 3: Dynamically update badges on existing list
+                updateVisibleCrafterBadges();
             }
 
             function reparseAllCharacters() {
@@ -698,6 +699,37 @@ async function generateHTML() {
                 });
                 
                 return validCrafters.length > 0 ? validCrafters.join(', ') : null;
+            }
+
+            // TASK 3: Function to update badges dynamically without full re-render
+            function updateVisibleCrafterBadges() {
+                const cards = document.querySelectorAll('.item-card');
+                cards.forEach(card => {
+                    const itemId = card.dataset.id;
+                    const itemData = ALL_DATA.find(i => i.itemId == itemId);
+                    if (itemData) {
+                        const crafterName = findCrafters(itemData.exp, itemData.prof);
+                        const leftCol = card.querySelector('.main-row-left');
+                        
+                        // Remove existing
+                        const existingBadge = leftCol.querySelector('.crafter-badge');
+                        if (existingBadge) existingBadge.remove();
+
+                        // Add new if crafter exists
+                        if (crafterName) {
+                            const badge = document.createElement('div');
+                            badge.className = 'info-badge crafter-badge';
+                            badge.textContent = crafterName;
+                            // Insert before other badges (after name)
+                            const expBadge = leftCol.querySelector('.info-badge:not(.crafter-badge)');
+                            if (expBadge) {
+                                leftCol.insertBefore(badge, expBadge);
+                            } else {
+                                leftCol.appendChild(badge);
+                            }
+                        }
+                    }
+                });
             }
 
             document.addEventListener('change', (e) => {
@@ -804,14 +836,12 @@ async function generateHTML() {
                 
                 saveCharsToStorage();
                 document.getElementById('importModal').classList.remove('active');
-                updateTopRightSection();
             }
 
             function deleteCharacter(index) {
                 if(confirm("Delete this character?")) {
                     charsList.splice(index, 1);
                     saveCharsToStorage();
-                    updateTopRightSection();
                 }
             }
 
@@ -951,8 +981,6 @@ async function generateHTML() {
             }
 
             function copyName(el) {
-                // Get the text content of the element's first child (the name text)
-                // This ignores the tooltip span
                 const text = el.firstChild.textContent;
                 navigator.clipboard.writeText(text).then(() => {
                     el.classList.add('copied');
@@ -975,6 +1003,7 @@ async function generateHTML() {
                 document.getElementById('list').innerHTML = '';
                 loadMore();
                 updateTopRightSection();
+                updateVisibleCrafterBadges();
             }
 
             function openCart() {
@@ -996,6 +1025,7 @@ async function generateHTML() {
                 document.getElementById('list').innerHTML = '';
                 currentIndex = 0;
                 loadMore();
+                updateVisibleCrafterBadges();
             }
 
             function handleAddonImport(e) {
