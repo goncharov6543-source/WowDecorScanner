@@ -291,12 +291,15 @@ async function generateHTML() {
             .update-time { font-size: 0.9em; color: #666; margin-bottom: 15px; }
             .controls-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 10px; }
             
-            /* Новий стиль для групи пошуку та кнопки Reset */
             .search-wrapper { display: flex; gap: 10px; align-items: center; }
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
-            .btn-reset { background: #d32f2f; border: 1px solid #b71c1c; width: 42px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 1.2em; }
-            .btn-reset:hover { background: #b71c1c; }
+
+            /* Загальний стиль для круглих сірих кнопок (i, reset) */
+            .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
+            .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
+
+            .btn-reset { font-size: 22px; } /* Трохи більша іконка для ресета */
 
             .buttons-group { display: flex; gap: 15px; align-items: center; }
             button { border: none; padding: 0 20px; border-radius: 4px; cursor: pointer; font-weight: bold; height: 42px; color: white; transition: 0.2s; }
@@ -304,14 +307,12 @@ async function generateHTML() {
             .btn-import:hover { background: #8a2be2; }
             .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
-            
-            /* Стиль кнопки кошика */
             .btn-cart { background: #ff9800; display: flex; align-items: center; gap: 8px; }
             .btn-cart:hover { background: #f57c00; }
 
             .stats-wrapper { position: relative; display: flex; align-items: center; }
-            .stats-icon { width: 30px; height: 30px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: serif; font-weight: bold; font-style: italic; font-size: 18px; cursor: help; transition: 0.2s; }
-            .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
+            /* stats-icon стиль винесено вище */
+            .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; } /* Специфічний стиль для "i" */
             .stats-tooltip { visibility: hidden; opacity: 0; position: absolute; top: 120%; right: 0; width: 250px; background: #1a1b1d; border: 1px solid #444; border-radius: 8px; padding: 15px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transition: 0.2s; transform: translateY(-5px); }
             .stats-wrapper:hover .stats-tooltip { visibility: visible; opacity: 1; transform: translateY(0); }
             .stats-title { font-size: 14px; color: #888; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; text-align: center; }
@@ -324,9 +325,12 @@ async function generateHTML() {
             .btn-load-more { background: #2a2b2e; border: 1px solid #444; color: #fff; }
             .btn-load-more:hover { background: #333; }
             .hidden { display: none !important; }
+            
             .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
-            .item-card.active { border-color: #a335ee; box-shadow: 0 0 15px rgba(163, 53, 238, 0.1); }
+            /* ЗОЛОТА ОБВОДКА ДЛЯ АКТИВНОГО ЕЛЕМЕНТА */
+            .item-card.active { border-color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.15); }
+            
             .main-row { display: flex; height: 60px; position: relative; z-index: 2; }
             .main-row-left { display: flex; align-items: center; flex-grow: 1; padding-left: 20px; }
             .main-row-right { display: flex; align-items: center; padding-right: 20px; }
@@ -365,13 +369,25 @@ async function generateHTML() {
 
             /* Стилі для модального вікна */
             .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-            .modal-content { background: #151618; width: 90%; max-width: 1000px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
+            /* Розширено модальне вікно до 1200px */
+            .modal-content { background: #151618; width: 90%; max-width: 1200px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
             .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1b1d; }
             .modal-title { font-size: 1.5em; color: #fff; margin: 0; }
-            .modal-close { background: transparent; border: 1px solid #444; color: #888; font-size: 20px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+            /* Виправлено кнопку закриття на ідеально круглу */
+            .modal-close { background: transparent; border: 1px solid #444; color: #888; font-size: 24px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; padding: 0; line-height: 1; cursor: pointer; transition: 0.2s; }
             .modal-close:hover { background: #333; color: #fff; border-color: #fff; }
             .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
             .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
+
+            /* Стилізація скролбара в модалці */
+            .modal-body::-webkit-scrollbar { width: 10px; } /* Трохи ширше для зручності */
+            .modal-body::-webkit-scrollbar-track { background: transparent; } /* Без фону треку */
+            .modal-body::-webkit-scrollbar-thumb { background: #2a2b2e; border-radius: 5px; border: 2px solid #0f1011; } /* Темніший бігунок з відступом */
+            .modal-body::-webkit-scrollbar-thumb:hover { background: #333; }
+            .modal-body::-webkit-scrollbar-button { display: none; } /* Прибрати стрілочки */
+
+            /* В корзині курсор на ціні та ламбері не має бути pointer, бо вони не клікабельні */
+            #cartBody .col-lumber, #cartBody .col-price { cursor: default; }
         </style>
     </head>
     <body>
@@ -382,11 +398,11 @@ async function generateHTML() {
                 <div class="controls-row">
                     <div class="search-wrapper">
                         <input type="text" id="smartSearchInput" placeholder="Назва, професія або патч...">
-                        <button id="btnReset" class="btn-reset" title="Очистити все">🗑️</button>
+                        <div id="btnReset" class="stats-icon btn-reset" title="Очистити все">↻</div>
                     </div>
                     <div class="buttons-group">
                         <div class="stats-wrapper">
-                            <div class="stats-icon">i</div>
+                            <div class="stats-icon info-btn">i</div>
                             <div class="stats-tooltip">
                                 <div class="stats-title">Average / Lumber</div>
                                 ${expTooltipHtml}
@@ -420,21 +436,15 @@ async function generateHTML() {
             let activeCharts = {};
             let chartRanges = {}; 
             
-            // --- СТАН (LocalStorage) ---
-            // Формат: { "12345": { checked: true, qty: 5 } }
             let savedState = JSON.parse(localStorage.getItem('wowScnr_state')) || {};
 
             function saveToStorage() {
                 localStorage.setItem('wowScnr_state', JSON.stringify(savedState));
             }
 
-            // Оновлюємо стан при зміні інпутів (делегування подій для продуктивності)
             document.addEventListener('change', (e) => {
                 if (e.target.classList.contains('check-input')) {
                     const card = e.target.closest('.item-card');
-                    // Витягуємо ID через toggleDetails, який має itemId, або з onclick атрибуту
-                    // Але надійніше знайти кнопку графіка і взяти ID звідти, або зберегти ID в data-атрибут картки
-                    // Нижче я додав itemId в data-атрибут item-card
                     const itemId = card.dataset.id;
                     if (!savedState[itemId]) savedState[itemId] = {};
                     savedState[itemId].checked = e.target.checked;
@@ -454,6 +464,9 @@ async function generateHTML() {
             });
 
             function toggleDetails(card, itemId) {
+                // Якщо це картка в корзині, ігноруємо клік
+                if (card.closest='#cartBody') return;
+
                 card.classList.toggle('active');
                 if (card.classList.contains('active')) {
                     setTimeout(() => drawChart(itemId), 50);
@@ -554,41 +567,32 @@ async function generateHTML() {
                 });
             }
 
-            // Функція скидання (Reset)
             function handleReset() {
                 if(!confirm("Очистити всі фільтри та вибрані предмети?")) return;
-                
-                // 1. Очистити пам'ять
                 localStorage.removeItem('wowScnr_state');
                 savedState = {};
-                
-                // 2. Очистити поля вводу в DOM
                 document.querySelectorAll('.check-input').forEach(el => el.checked = false);
                 document.querySelectorAll('.qty-input').forEach(el => el.value = '');
                 document.getElementById('smartSearchInput').value = '';
-                
-                // 3. Скинути пошук
                 activeData = ALL_DATA;
                 currentIndex = 0;
                 document.getElementById('list').innerHTML = '';
                 loadMore();
             }
 
-            // Функції кошика
             function openCart() {
                 const modal = document.getElementById('cartModal');
                 const body = document.getElementById('cartBody');
                 body.innerHTML = '';
                 
-                // Знаходимо всі ID, які мають checked: true
                 const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
                 
                 if (checkedIds.length === 0) {
                     body.innerHTML = '<div class="empty-cart-msg">Кошик порожній. Виберіть предмети галочками.</div>';
                 } else {
-                    // Фільтруємо дані
                     const cartItems = ALL_DATA.filter(item => checkedIds.includes(item.itemId.toString()));
-                    body.innerHTML = cartItems.map(createItemHTML).join('');
+                    // Використовуємо спеціальну функцію для рендеру в корзині (без розкриття)
+                    body.innerHTML = cartItems.map(createCartItemHTML).join('');
                 }
                 
                 modal.classList.remove('hidden');
@@ -596,8 +600,6 @@ async function generateHTML() {
 
             function closeCart() {
                 document.getElementById('cartModal').classList.add('hidden');
-                // При закритті кошика варто оновити основний список, якщо там змінились дані, 
-                // але для простоти просто залишимо як є, бо дані беруться з localStorage при рендері
                 const list = document.getElementById('list');
                 list.innerHTML = '';
                 currentIndex = 0;
@@ -606,7 +608,6 @@ async function generateHTML() {
 
             function handleAddonImport(e) {
                 const btn = e.currentTarget;
-                // Шукаємо чекнуті items в глобальному стані, а не тільки в DOM (бо DOM може бути неповним через пагінацію)
                 const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
                 
                 if (checkedIds.length === 0) return alert("Вибери предмети галочками!");
@@ -687,10 +688,19 @@ async function generateHTML() {
                 setTimeout(() => { btn.style.backgroundColor = originalColor; btn.innerText = originalText; }, 2000);
             }
 
+            // Функція для рендеру звичайного елемента (розкривається)
             function createItemHTML(item) {
+                return generateItemHtmlString(item, true);
+            }
+
+            // Функція для рендеру елемента в корзині (НЕ розкривається)
+            function createCartItemHTML(item) {
+                return generateItemHtmlString(item, false);
+            }
+
+            // Спільна логіка генерації HTML
+            function generateItemHtmlString(item, expandale) {
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
-                
-                // ВІДНОВЛЕННЯ СТАНУ З LocalStorage
                 const saved = savedState[item.itemId] || {};
                 const isChecked = saved.checked ? 'checked' : '';
                 const qtyVal = saved.qty && saved.qty > 0 ? saved.qty : '';
@@ -703,6 +713,9 @@ async function generateHTML() {
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
 
+                // Якщо елемент розкривається, додаємо обробник кліку
+                const toggleAttr = expandale ? \`onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})"\` : '';
+
                 return \`
                 <div class="item-card" data-id="\${item.itemId}" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}">
                     <div class="main-row">
@@ -713,11 +726,11 @@ async function generateHTML() {
                             \${item.prof ? \`<div class="info-badge">\${item.prof}</div>\` : ''}
                         </div>
                         <div class="main-row-right">
-                            <div class="col-lumber info-badge \${lumberClass}" onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})">
+                            <div class="col-lumber info-badge \${lumberClass}" \${toggleAttr}>
                                 <span style="margin-right:5px;text-transform:uppercase;font-size:0.8em">1 Lumber = </span><span class="val">\${dispLumber}</span>
                                 <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs" style="margin-left:4px">
                             </div>
-                            <div class="col-price" onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})">
+                            <div class="col-price" \${toggleAttr}>
                                 <span>\${Math.floor(item.bestPrice).toLocaleString()}</span><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" style="width:18px;border-radius:50%">
                             </div>
                             <div class="col-inputs">
@@ -726,6 +739,7 @@ async function generateHTML() {
                             </div>
                         </div>
                     </div>
+                    \${expandale ? \`
                     <div class="details-row">
                         <div class="details-content">
                             <div class="details-left">
@@ -752,7 +766,7 @@ async function generateHTML() {
                                 \${top10Html}
                             </div>
                         </div>
-                    </div>
+                    </div>\` : ''}
                 </div>\`;
             }
 
@@ -789,12 +803,10 @@ async function generateHTML() {
                 document.querySelector('.btn-import-addon').addEventListener('click', handleAddonImport);
                 document.querySelector('.btn-import').addEventListener('click', handleReagentsImport);
                 
-                // Нові лісенери
                 document.getElementById('btnOpenCart').addEventListener('click', openCart);
                 document.getElementById('btnCloseCart').addEventListener('click', closeCart);
                 document.getElementById('btnReset').addEventListener('click', handleReset);
                 
-                // Закриття модалки по кліку на фон
                 document.getElementById('cartModal').addEventListener('click', (e) => {
                     if (e.target.id === 'cartModal') closeCart();
                 });
