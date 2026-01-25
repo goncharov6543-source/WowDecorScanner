@@ -542,6 +542,33 @@ async function generateHTML() {
             #cartBody .qty-input {
                 margin-right: 0; 
             }
+            /* --- 1. ПОВЕРТАЄМО СИНІЙ СТИЛЬ ПЛИТОЧОК ПЕРСОНАЖІВ (як було спочатку) --- */
+            .char-tile {
+                display: flex; align-items: center; background: #1a1b1d;
+                border: 2px solid #0070dd; /* Синя рамка */
+                border-radius: 30px;
+                padding: 6px 10px 6px 6px; gap: 10px;
+                position: relative; transition: all 0.2s; min-height: 42px;
+                margin-bottom: 10px;
+                box-shadow: none;
+            }
+            .char-tile:hover { 
+                background: #222; 
+                border-color: #0070dd;
+                box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); 
+            }
+            .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+            /* --- 2. НОВИЙ СТИЛЬ ДЛЯ КРАФТЕРА В ЛОТІ (Золотий, як просили) --- */
+            /* Це застосується до елемента, виділеного червоним на скріншоті */
+            .info-badge.crafter-badge {
+                background: linear-gradient(145deg, #2b2515, #1a1a1a); /* Темне золото фон */
+                border: 1px solid #7c6a28; /* Золота рамка */
+                color: #ffd700; /* Яскравий золотий текст */
+                text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+                font-weight: bold;
+            }    
         </style>
     </head>
     <body>
@@ -1157,31 +1184,39 @@ async function generateHTML() {
             }
 
             function visualCopy(btn, text) {
-                // 1. Захист від подвійного кліку
+                // Захист від подвійного кліку
                 if (btn.dataset.copying === "true") return;
+
+                // 1. Визначаємо правильний оригінальний текст на основі класу кнопки
+                // Це гарантує, що текст відновиться правильно, навіть якщо зараз там написано "Скопійовано!"
+                let defaultText = btn.innerText;
                 
-                // 2. Запам'ятовуємо оригінальний текст ПРИ ПЕРШОМУ КЛІЦІ
-                // Це гарантує, що ми запам'ятаємо "Reagents Import", а не "Скопійовано!"
-                if (!btn.dataset.originalText) {
-                    btn.dataset.originalText = btn.innerText;
+                if (btn.classList.contains('btn-import-addon')) {
+                    defaultText = "Lumber Import";
+                } else if (btn.classList.contains('btn-import')) {
+                    defaultText = "Reagents Import";
+                } else if (btn.id === 'btnOpenCart') {
+                    defaultText = "🛒 Cart";
                 }
 
+                // Зберігаємо поточний колір
+                const originalColor = btn.style.backgroundColor || ""; 
+                
+                // Блокуємо кнопку
                 btn.dataset.copying = "true";
-                const originalColor = btn.style.backgroundColor;
 
-                // 3. Копіюємо
-                navigator.clipboard.writeText(text).catch(err => console.error("Clipboard error:", err));
+                // Копіюємо
+                navigator.clipboard.writeText(text).catch(err => console.error(err));
 
-                // 4. Змінюємо вигляд кнопки
-                btn.style.backgroundColor = "#a335ee"; // Фіолетовий
+                // Змінюємо вигляд
+                btn.style.backgroundColor = "#a335ee"; 
                 btn.innerText = "Скопійовано!";
 
-                // 5. Повертаємо назад через 2 секунди
-                setTimeout(() => { 
-                    btn.style.backgroundColor = originalColor; 
-                    // Відновлюємо текст із збереженої змінної
-                    btn.innerText = btn.dataset.originalText; 
-                    btn.dataset.copying = "false"; 
+                // Повертаємо назад через 2 секунди
+                setTimeout(() => {
+                    btn.style.backgroundColor = originalColor;
+                    btn.innerText = defaultText; // Примусово ставимо правильний текст
+                    btn.dataset.copying = "false";
                 }, 2000);
             }
 
