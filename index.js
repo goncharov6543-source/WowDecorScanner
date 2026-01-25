@@ -173,7 +173,7 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
-    // --- (Логіка розрахунку предметів - без змін) ---
+    // --- (Calculation Logic - Unchanged) ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
@@ -234,7 +234,6 @@ async function generateHTML() {
         .filter(data => data.valid)
         .sort((a, b) => b.lumberPrice - a.lumberPrice);
 
-    // --- Stats Generation ---
     const expStats = {};
     sortedItems.forEach(item => {
         if (item.lumberPrice > -999999) {
@@ -273,7 +272,6 @@ async function generateHTML() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
-            /* Reset & Scrollbar */
             html, body { scrollbar-width: thin; scrollbar-color: #2a2b2e transparent; }
             body::-webkit-scrollbar { width: 10px; }
             body::-webkit-scrollbar-track { background: transparent; }
@@ -292,12 +290,7 @@ async function generateHTML() {
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
 
-            /* REMOVE INPUT ARROWS (SPINNERS) */
-            input[type=number]::-webkit-inner-spin-button, 
-            input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-            input[type=number] { -moz-appearance: textfield; }
-
-            /* Icons & Buttons */
+            /* Stats Icon - No yellow bg by default, only hover */
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
             .btn-reset { font-size: 22px; } 
@@ -311,9 +304,10 @@ async function generateHTML() {
             .btn-cart-rect { background: #333; color: #fff; border: 1px solid #555; gap: 8px; }
             .btn-cart-rect:hover { background: #444; border-color: #666; }
             
-            /* Stats Tooltip - Restored Design */
+            /* Info Button Specifics */
             .stats-wrapper { position: relative; display: flex; align-items: center; }
-            .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; background: #ffd700; color: #000; border-color: #ffd700; } 
+            .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; } 
+            /* Tooltip Style */
             .stats-tooltip { visibility: hidden; opacity: 0; position: absolute; top: 120%; left: 0; width: 280px; background: #1a1b1d; border: 1px solid #444; border-radius: 8px; padding: 15px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transition: 0.2s; transform: translateY(-5px); }
             .stats-wrapper:hover .stats-tooltip { visibility: visible; opacity: 1; transform: translateY(0); }
             .stats-title { font-size: 13px; color: #888; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; text-align: center; letter-spacing: 1px; }
@@ -321,10 +315,10 @@ async function generateHTML() {
             .stat-name { color: #ccc; }
             .stat-val { font-weight: bold; }
             
-            /* --- TOP RIGHT SECTION --- */
-            #topRightSection { position: absolute; top: 20px; right: 30px; z-index: 100; display: flex; align-items: flex-start; justify-content: flex-end; }
+            /* --- TOP RIGHT CHARACTERS SECTION --- */
+            #topRightSection { position: absolute; top: 20px; right: 30px; z-index: 100; }
             
-            /* Add Character Circle - Empty State */
+            /* Add Button */
             .add-char-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
             .add-char-circle {
                 width: 60px; height: 60px;
@@ -347,14 +341,18 @@ async function generateHTML() {
             }
             .btn-char-menu:hover { background: #333; color: #fff; }
 
+            /* SMOOTH DROPDOWN ANIMATION */
             .char-dropdown {
-                position: absolute; top: 100%; right: 0; margin-top: 8px;
+                position: absolute; top: 100%; right: 0; margin-top: 10px;
                 background: #111; border: 1px solid #333; border-radius: 8px;
-                width: 320px; padding: 10px;
-                display: none; flex-direction: column; gap: 10px;
+                width: 340px; padding: 10px;
+                display: flex; flex-direction: column; gap: 10px;
                 box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 200;
+                
+                opacity: 0; visibility: hidden; transform: translateY(-10px);
+                transition: all 0.3s ease;
             }
-            .char-dropdown.active { display: flex; }
+            .char-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
 
             .btn-add-new-char {
                 background: transparent; border: 1px dashed #444; color: #888;
@@ -362,19 +360,20 @@ async function generateHTML() {
             }
             .btn-add-new-char:hover { border-color: #666; color: #fff; background: #1a1a1a; }
 
-            /* Character Tile Style */
+            /* Character Tile Style - Extended */
             .char-tile {
-                display: flex; align-items: center;
+                display: flex; flex-direction: column;
                 background: #1a1b1d;
                 border: 2px solid #0070dd;
-                border-radius: 30px;
-                padding: 6px 10px 6px 6px;
-                gap: 10px;
+                border-radius: 12px;
+                padding: 10px;
                 position: relative;
                 transition: all 0.2s;
-                min-height: 42px;
             }
             .char-tile:hover { background: #222; box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); }
+            
+            .char-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding-right: 25px; }
+            
             .char-avatar { 
                 width: 40px; height: 40px; 
                 border-radius: 50%; 
@@ -383,9 +382,16 @@ async function generateHTML() {
                 background-color: #000;
                 flex-shrink: 0;
             }
-            .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; flex-grow: 1; padding-right: 30px; }
+            .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; flex-grow: 1; }
             .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             .char-realm { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+
+            /* Profession Bars inside Tile */
+            .char-profs { display: flex; flex-direction: column; gap: 6px; }
+            .prof-row { display: flex; flex-direction: column; gap: 2px; }
+            .prof-header { display: flex; justify-content: space-between; font-size: 10px; color: #aaa; text-transform: uppercase; }
+            .skill-bar-bg { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
+            .skill-bar-fill { height: 100%; background: linear-gradient(90deg, #0070dd, #a335ee); width: 0%; border-radius: 3px; }
 
             /* Fixed Tile Action Buttons */
             .tile-btn {
@@ -393,8 +399,7 @@ async function generateHTML() {
                 display: flex; align-items: center; justify-content: center;
                 color: white; border: none; cursor: pointer;
                 transition: transform 0.2s; z-index: 10;
-                flex-shrink: 0; /* Prevent stretching */
-                padding: 0; /* Reset padding */
+                flex-shrink: 0; padding: 0;
             }
             .tile-btn:hover { transform: scale(1.15); }
             .tile-btn-edit { top: -6px; left: -6px; background: #007bff; font-size: 12px; } 
@@ -407,7 +412,6 @@ async function generateHTML() {
             .modal-overlay.active .modal-content { transform: scale(1); }
             .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1b1d; }
             .modal-title { font-size: 1.5em; color: #fff; margin: 0; }
-            /* Centered Close Icon */
             .modal-close { 
                 background: transparent; border: 1px solid #444; color: #888; font-size: 26px; 
                 width: 36px; height: 36px; border-radius: 50%; padding: 0; 
@@ -442,7 +446,7 @@ async function generateHTML() {
             .col-lumber.negative span.val { color: #f44336; font-weight: bold; }
             .col-price { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; min-width: 140px; justify-content: flex-end; cursor: pointer; }
             .col-inputs { display: flex; align-items: center; gap: 15px; margin-left: 25px; border-left: 1px solid #333; padding-left: 15px; height: 40px; }
-            .qty-input { background: #0f1011; border: 1px solid #333; color: #fff; width: 50px; padding: 6px; border-radius: 4px; text-align: center; font-weight:bold; }
+            .qty-input { background: #0f1011; border: 1px solid #333; color: #fff; width: 50px; padding: 6px; border-radius: 4px; text-align: center; font-weight:bold; -webkit-appearance: none; -moz-appearance: textfield; }
             .check-input { width: 18px; height: 18px; accent-color: #a335ee; cursor: pointer; }
             .details-row { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; }
             .item-card.active .details-row { max-height: 800px; } 
@@ -646,24 +650,42 @@ async function generateHTML() {
             });
 
             function saveCharacter() {
-                const p1 = document.getElementById('prof1Input').value;
-                const p2 = document.getElementById('prof2Input').value;
+                const p1Str = document.getElementById('prof1Input').value;
+                const p2Str = document.getElementById('prof2Input').value;
                 const editId = parseInt(document.getElementById('editCharId').value);
                 
                 let name = "Unknown";
                 let realm = "Unknown";
                 let charClass = "mage"; 
+                let professions = [];
 
-                try {
-                    const obj = JSON.parse(p1 || p2);
-                    if(obj.character) name = obj.character;
-                    if(obj.realm) realm = obj.realm;
-                    if(obj.class) charClass = obj.class.toLowerCase();
-                } catch(e) {
-                    if (p1 || p2) name = "Imported"; 
+                // Helper to parse prof data
+                function parseProf(str) {
+                    try {
+                        const obj = JSON.parse(str);
+                        if(obj.character) name = obj.character;
+                        if(obj.realm) realm = obj.realm;
+                        if(obj.class) charClass = obj.class.toLowerCase();
+                        
+                        // Assuming standard TSM/Addon json structure like: 
+                        // { "professions": { "Alchemy": { "skill": 100, "max": 100 } } }
+                        // Or flat structure depending on source. Let's assume user pastes simple JSON like:
+                        // { "profession": "Enchanting", "skill": 105, "max": 105 }
+                        
+                        // For this example, let's extract ANY profession data we find
+                        if (obj.profession && obj.skill) {
+                            professions.push({ name: obj.profession, skill: obj.skill, max: obj.max || obj.skill });
+                        }
+                    } catch(e) {}
                 }
 
-                const newChar = { name, realm, class: charClass, p1, p2 };
+                parseProf(p1Str);
+                parseProf(p2Str);
+
+                // Fallback name if nothing parsed but data exists
+                if ((p1Str || p2Str) && name === "Unknown") name = "Imported Char";
+
+                const newChar = { name, realm, class: charClass, p1: p1Str, p2: p2Str, profs: professions };
 
                 if (editId >= 0) {
                     charsList[editId] = newChar;
@@ -692,16 +714,34 @@ async function generateHTML() {
                     const iconKey = CLASS_ICONS[char.class] || "classicon_mage";
                     const iconUrl = \`https://wow.zamimg.com/images/wow/icons/large/\${iconKey}.jpg\`;
                     
+                    let profsHtml = '';
+                    if (char.profs && char.profs.length > 0) {
+                        profsHtml = '<div class="char-profs">';
+                        char.profs.forEach(p => {
+                            const pct = (p.skill / p.max) * 100;
+                            profsHtml += \`
+                                <div class="prof-row">
+                                    <div class="prof-header"><span>\${p.name}</span><span>\${p.skill} / \${p.max}</span></div>
+                                    <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:\${pct}%"></div></div>
+                                </div>
+                            \`;
+                        });
+                        profsHtml += '</div>';
+                    }
+
                     const div = document.createElement('div');
                     div.className = 'char-tile';
                     div.innerHTML = \`
                         <button class="tile-btn tile-btn-edit" onclick="openImportModal(\${index})">✎</button>
                         <button class="tile-btn tile-btn-delete" onclick="deleteCharacter(\${index})">×</button>
-                        <div class="char-avatar" style="background-image: url('\${iconUrl}')"></div>
-                        <div class="char-info">
-                            <div class="char-name">\${char.name}</div>
-                            <div class="char-realm">\${char.realm}</div>
+                        <div class="char-header">
+                            <div class="char-avatar" style="background-image: url('\${iconUrl}')"></div>
+                            <div class="char-info">
+                                <div class="char-name">\${char.name}</div>
+                                <div class="char-realm">\${char.realm}</div>
+                            </div>
                         </div>
+                        \${profsHtml}
                     \`;
                     container.appendChild(div);
                 });
