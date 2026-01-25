@@ -28,5 +28,35 @@
             { "Dragon Isles": 80 },
             { "Khaz Algari": 80 }
         ]
+    },
+    {
+        "Alchemy": [
+            { "Classic": 240 },
+            { "Outland": 60 },
+            { "Northrend": 60 },
+            { "Cataclysm": 60 },
+            { "Pandaria": 60 },
+            { "Draenor": 80 },
+            { "Legion": 80 },
+            { "Zandalari": 140 },
+            { "Shadowlands": 140 },
+            { "Dragon Isles": 80 },
+            { "Khaz Algari": 80 }
+        ]
+    },
+    {
+        "Blacksmithing": [
+            { "Classic": 240 },
+            { "Outland": 60 },
+            { "Northrend": 60 },
+            { "Cataclysm": 60 },
+            { "Pandaria": 60 },
+            { "Draenor": 80 },
+            { "Legion": 80 },
+            { "Zandalari": 140 },
+            { "Shadowlands": 80 },
+            { "Dragon Isles": 80 },
+            { "Khaz Algari": 80 }
+        ]
     }
 ]
