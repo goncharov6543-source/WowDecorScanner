@@ -289,6 +289,8 @@ async function generateHTML() {
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
 
     // --- 2. HTML Template ---
+    // Увага: Я переписав внутрішні JS функції, щоб вони використовували одинарні лапки ' замість зворотних `
+    // Це запобігає помилкам синтаксису при вкладеності.
     const html = `
     <!DOCTYPE html>
     <html lang="uk">
@@ -386,13 +388,13 @@ async function generateHTML() {
             }
             .btn-add-new-char:hover { border-color: #666; color: #fff; background: #1a1a1a; }
 
-            /* CHAR TILE (TASK 1: Spacing added) */
+            /* Character Tile Style */
             .char-tile {
                 display: flex; align-items: center; background: #1a1b1d;
                 border: 2px solid #0070dd; border-radius: 30px;
                 padding: 6px 10px 6px 6px; gap: 10px;
                 position: relative; transition: all 0.2s; min-height: 42px;
-                margin-bottom: 10px; /* Spacing between tiles */
+                margin-bottom: 10px;
             }
             .char-tile:hover { background: #222; box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); }
             
@@ -415,14 +417,13 @@ async function generateHTML() {
             .tile-btn-edit { top: -6px; left: -6px; background: #007bff; font-size: 12px; } 
             .tile-btn-delete { top: -6px; right: -6px; background: #dc3545; font-size: 14px; line-height: 1; } 
 
-            /* MODALS */
+            /* Modal General */
             .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
             .modal-overlay.active { opacity: 1; visibility: visible; }
             .modal-content { background: #151618; width: 90%; max-width: 1200px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s ease; }
             .modal-overlay.active .modal-content { transform: scale(1); }
             .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1b1d; }
             .modal-title { font-size: 1.5em; color: #fff; margin: 0; }
-            
             .modal-close { 
                 background: transparent; border: 1px solid #444; color: #888; font-size: 26px; 
                 width: 36px; height: 36px; border-radius: 50%; padding: 0; 
@@ -432,7 +433,13 @@ async function generateHTML() {
             .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
             .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
             
+            /* Import Modal Specifics */
             .import-modal-content { background: #121212; border: 1px solid #333; max-width: 800px; width: 90%; border-radius: 8px; }
+            .import-modal-header { 
+                display: flex !important; justify-content: space-between !important; 
+                flex-direction: row !important; align-items: center; 
+                padding: 15px 20px; border-bottom: none; width: 100%; box-sizing: border-box;
+            }
             .import-input-group { margin-bottom: 20px; }
             .import-label { display: block; font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
             .import-textarea { width: 100%; height: 80px; background: #080808; border: 1px solid #333; border-radius: 4px; color: #ccc; padding: 10px; font-family: monospace; resize: none; box-sizing: border-box; }
@@ -440,6 +447,7 @@ async function generateHTML() {
             .save-btn { width: 100%; background: #0070dd; color: white; border: none; padding: 12px; font-weight: bold; font-size: 14px; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
             .save-btn:hover { background: #005bb5; }
 
+            /* Character Details Modal */
             .details-modal-content { max-width: 900px; height: auto; max-height: 80%; }
             .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
             .prof-col { display: flex; flex-direction: column; gap: 15px; }
@@ -451,7 +459,6 @@ async function generateHTML() {
             .skill-bar-bg { width: 100%; height: 10px; background: #333; border-radius: 5px; overflow: hidden; border: 1px solid #444; }
             .skill-bar-fill { height: 100%; background: linear-gradient(90deg, #0070dd, #a335ee); width: 0%; border-radius: 5px; transition: width 0.5s ease; }
 
-            /* MAIN LIST ITEMS */
             .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
             .item-card.active { border-color: #ffd700 !important; box-shadow: 0 0 15px rgba(255, 215, 0, 0.15); }
@@ -490,12 +497,12 @@ async function generateHTML() {
             .server-price { color: #ffd700; font-weight: bold; }
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
             .name-text.copied .copy-tooltip { opacity: 1; }
+            #cartBody .col-lumber, #cartBody .col-price { cursor: default; }
             
-            /* LOAD MORE */
+            /* Load More Centering */
             .load-more-container { display: flex; justify-content: center; margin-top: 30px; width: 100%; }
 
-            /* CRAFTER BADGE (TASK 2: Removed specific coloring, now inherits info-badge gray) */
-            /* .crafter-badge { } */
+            .crafter-badge { color: #ffd700; border: 1px solid #ffd700; background: rgba(255, 215, 0, 0.1); } 
         </style>
     </head>
     <body>
@@ -617,9 +624,10 @@ async function generateHTML() {
             function saveCharsToStorage() { 
                 localStorage.setItem('wowScnr_chars_list', JSON.stringify(charsList)); 
                 reparseAllCharacters();
-                updateTopRightSection();
-                // TASK 3: Dynamically update badges on existing list
-                updateVisibleCrafterBadges();
+                // Rerender list to show new matches
+                document.getElementById('list').innerHTML = '';
+                currentIndex = 0;
+                loadMore();
             }
 
             function reparseAllCharacters() {
@@ -701,7 +709,6 @@ async function generateHTML() {
                 return validCrafters.length > 0 ? validCrafters.join(', ') : null;
             }
 
-            // TASK 3: Function to update badges dynamically without full re-render
             function updateVisibleCrafterBadges() {
                 const cards = document.querySelectorAll('.item-card');
                 cards.forEach(card => {
@@ -710,23 +717,14 @@ async function generateHTML() {
                     if (itemData) {
                         const crafterName = findCrafters(itemData.exp, itemData.prof);
                         const leftCol = card.querySelector('.main-row-left');
-                        
-                        // Remove existing
                         const existingBadge = leftCol.querySelector('.crafter-badge');
                         if (existingBadge) existingBadge.remove();
-
-                        // Add new if crafter exists
                         if (crafterName) {
                             const badge = document.createElement('div');
                             badge.className = 'info-badge crafter-badge';
                             badge.textContent = crafterName;
-                            // Insert before other badges (after name)
                             const expBadge = leftCol.querySelector('.info-badge:not(.crafter-badge)');
-                            if (expBadge) {
-                                leftCol.insertBefore(badge, expBadge);
-                            } else {
-                                leftCol.appendChild(badge);
-                            }
+                            if (expBadge) { leftCol.insertBefore(badge, expBadge); } else { leftCol.appendChild(badge); }
                         }
                     }
                 });
@@ -759,11 +757,9 @@ async function generateHTML() {
                 if (card.classList.contains('active')) setTimeout(() => drawChart(itemId), 50);
             }
 
-            // --- CHARACTERS LOGIC ---
             function updateTopRightSection() {
                 const addWrapper = document.getElementById('btnAddCharWrapper');
                 const menuContainer = document.getElementById('charMenuContainer');
-                
                 if (charsList.length === 0) {
                     addWrapper.style.display = 'flex';
                     menuContainer.style.display = 'none';
@@ -808,11 +804,9 @@ async function generateHTML() {
                 const p1Str = document.getElementById('prof1Input').value;
                 const p2Str = document.getElementById('prof2Input').value;
                 const editId = parseInt(document.getElementById('editCharId').value);
-                
                 let name = "Unknown";
                 let realm = "Unknown";
                 let charClass = "unknown"; 
-
                 function parseMeta(str) {
                     try {
                         const obj = JSON.parse(str);
@@ -823,17 +817,9 @@ async function generateHTML() {
                 }
                 parseMeta(p1Str);
                 parseMeta(p2Str);
-
                 if ((p1Str || p2Str) && name === "Unknown") name = "Imported Char";
-
                 const newChar = { name, realm, class: charClass, p1: p1Str, p2: p2Str };
-
-                if (editId >= 0) {
-                    charsList[editId] = newChar;
-                } else {
-                    charsList.push(newChar);
-                }
-                
+                if (editId >= 0) { charsList[editId] = newChar; } else { charsList.push(newChar); }
                 saveCharsToStorage();
                 document.getElementById('importModal').classList.remove('active');
             }
@@ -848,46 +834,26 @@ async function generateHTML() {
             function openCharDetails(index) {
                 const char = charsList[index];
                 if (!char) return;
-
-                document.getElementById('detailsModalTitle').innerText = \`\${char.name} (\${char.realm})\`;
+                document.getElementById('detailsModalTitle').innerText = char.name + ' (' + char.realm + ')';
                 const body = document.getElementById('charDetailsBody');
-                
                 function buildHtmlColumn(data, defaultTitle) {
                     if (!data || data.skills.length === 0) {
-                        return \`<div class="prof-col"><div class="prof-title-wrapper"><span class="prof-title">\${defaultTitle}</span></div><div style="color:#666">No skill data found</div></div>\`;
+                        return '<div class="prof-col"><div class="prof-title-wrapper"><span class="prof-title">' + defaultTitle + '</span></div><div style="color:#666">No skill data found</div></div>';
                     }
-                    
                     const iconName = data.title.toLowerCase().replace(/\\s+/g, '');
-                    const iconUrl = \`prof_class_icons/\${iconName}.jpg\`;
-                    
+                    const iconUrl = 'prof_class_icons/' + iconName + '.jpg';
                     let rows = '';
                     data.skills.forEach(s => {
                         const pct = Math.min(100, (s.skill / s.max) * 100);
-                        rows += \`
-                            <div class="prof-row">
-                                <div class="prof-header"><span>\${s.name}</span><span>\${s.skill} / \${s.max}</span></div>
-                                <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:\${pct}%"></div></div>
-                            </div>
-                        \`;
+                        rows += '<div class="prof-row"><div class="prof-header"><span>' + s.name + '</span><span>' + s.skill + ' / ' + s.max + '</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:' + pct + '%"></div></div></div>';
                     });
-                    
-                    return \`
-                        <div class="prof-col">
-                            <div class="prof-title-wrapper">
-                                <img src="\${iconUrl}" class="prof-icon" onerror="this.style.display='none'">
-                                <span class="prof-title">\${data.title}</span>
-                            </div>
-                            \${rows}
-                        </div>\`;
+                    return '<div class="prof-col"><div class="prof-title-wrapper"><img src="' + iconUrl + '" class="prof-icon" onerror="this.style.display=\\'none\\'"><span class="prof-title">' + data.title + '</span></div>' + rows + '</div>';
                 }
-
                 const data1 = extractSkillData(char.p1);
                 const data2 = extractSkillData(char.p2);
-
                 const leftHtml = buildHtmlColumn(data1, "Profession 1");
                 const rightHtml = buildHtmlColumn(data2, "Profession 2");
-
-                body.innerHTML = \`<div class="details-grid">\${leftHtml}\${rightHtml}</div>\`;
+                body.innerHTML = '<div class="details-grid">' + leftHtml + rightHtml + '</div>';
                 document.getElementById('charDetailsModal').classList.add('active');
             }
             
@@ -898,22 +864,12 @@ async function generateHTML() {
             function renderCharList() {
                 const container = document.getElementById('charList');
                 container.innerHTML = '';
-                
                 charsList.forEach((char, index) => {
                     const iconName = char.class ? char.class.toLowerCase().replace(/\\s+/g, '') : "unknown";
-                    const iconUrl = \`prof_class_icons/\${iconName}.jpg\`;
-                    
+                    const iconUrl = 'prof_class_icons/' + iconName + '.jpg';
                     const div = document.createElement('div');
                     div.className = 'char-tile';
-                    div.innerHTML = \`
-                        <button class="tile-btn tile-btn-edit" onclick="openCharDetails(\${index})">✎</button>
-                        <button class="tile-btn tile-btn-delete" onclick="deleteCharacter(\${index})">×</button>
-                        <div class="char-avatar" style="background-image: url('\${iconUrl}');"></div>
-                        <div class="char-info">
-                            <div class="char-name">\${char.name}</div>
-                            <div class="char-realm">\${char.realm}</div>
-                        </div>
-                    \`;
+                    div.innerHTML = '<button class="tile-btn tile-btn-edit" onclick="openCharDetails(' + index + ')">✎</button><button class="tile-btn tile-btn-delete" onclick="deleteCharacter(' + index + ')">×</button><div class="char-avatar" style="background-image: url(\\'' + iconUrl + '\\');"></div><div class="char-info"><div class="char-name">' + char.name + '</div><div class="char-realm">' + char.realm + '</div></div>';
                     container.appendChild(div);
                 });
             }
@@ -989,12 +945,9 @@ async function generateHTML() {
             }
 
             function handleReset() {
-                if(!confirm("Очистити всі дані?")) return;
+                if(!confirm("Очистити фільтри та вибір? (Персонажі залишаться)")) return;
                 localStorage.removeItem('wowScnr_state');
-                localStorage.removeItem('wowScnr_chars_list');
                 savedState = {};
-                charsList = [];
-                reparseAllCharacters();
                 document.querySelectorAll('.check-input').forEach(el => el.checked = false);
                 document.querySelectorAll('.qty-input').forEach(el => el.value = '');
                 document.getElementById('smartSearchInput').value = '';
@@ -1002,7 +955,6 @@ async function generateHTML() {
                 currentIndex = 0;
                 document.getElementById('list').innerHTML = '';
                 loadMore();
-                updateTopRightSection();
                 updateVisibleCrafterBadges();
             }
 
@@ -1045,7 +997,6 @@ async function generateHTML() {
                             if (!summary[exp]) summary[exp] = { totalLumber: 0, items: [] };
                             summary[exp].totalLumber += totalLumber;
                             
-                            // CRAFTER LOGIC HERE
                             const crafter = findCrafters(itemData.exp, itemData.prof) || "";
                             
                             summary[exp].items.push({ 
@@ -1053,7 +1004,8 @@ async function generateHTML() {
                                 price: itemData.bestPrice, 
                                 count: count,
                                 crafter: crafter,
-                                craftCost: Math.floor(itemData.craftCost)
+                                craftCost: Math.floor(itemData.craftCost),
+                                profession: itemData.prof 
                             });
                         }
                     }
@@ -1084,17 +1036,21 @@ async function generateHTML() {
                     }
                 });
                 if (!hasItems) return alert("Введи кількість!");
-                const listString = Object.entries(reagentsMap).map(([n, q]) => \`\${n} x\${q}\`).join('\\n');
+                const listString = Object.entries(reagentsMap).map(([n, q]) => \`${n} x${q}\`).join('\n');
                 visualCopy(btn, listString);
             }
 
             function visualCopy(btn, text) {
+                if (btn.innerText === "Скопійовано!") return; 
                 navigator.clipboard.writeText(text);
                 const originalText = btn.innerText;
                 const originalColor = btn.style.backgroundColor;
                 btn.style.backgroundColor = "#4caf50";
                 btn.innerText = "Скопійовано!";
-                setTimeout(() => { btn.style.backgroundColor = originalColor; btn.innerText = originalText; }, 2000);
+                setTimeout(() => { 
+                    btn.style.backgroundColor = originalColor; 
+                    btn.innerText = originalText; 
+                }, 2000);
             }
 
             function createItemHTML(item) { return generateItemHtmlString(item, true); }
@@ -1106,35 +1062,32 @@ async function generateHTML() {
                 const isChecked = saved.checked ? 'checked' : '';
                 const qtyVal = saved.qty && saved.qty > 0 ? saved.qty : '';
                 
-                // Logic to check crafters
                 const crafterName = findCrafters(item.exp, item.prof);
-                // Apply same style as info-badge but keep text yellow
-                const crafterHtml = crafterName ? \`<div class="info-badge crafter-badge">\${crafterName}</div>\` : '';
+                const crafterHtml = crafterName ? '<div class="info-badge crafter-badge">' + crafterName + '</div>' : '';
 
-                let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
-                const top10Html = item.top10.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
+                let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => '<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">' + r.count + 'x</span> <img src="' + r.icon + '" class="reag-icon"> <span>' + r.name + '</span></div><div class="reag-right">' + (r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()) + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>').join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
+                const top10Html = item.top10.map(l => '<div class="server-row"><span>' + l.r + '</span><span class="server-price">' + l.p.toLocaleString() + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>').join('');
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
-                const toggleAttr = expandale ? \`onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})"\` : '';
+                const toggleAttr = expandale ? 'onclick="toggleDetails(this.closest(\'.item-card\'), ' + item.itemId + ')"' : '';
 
-                // Note: onclick="copyName(this)" simplifies the escaping issue
-                return \`<div class="item-card" data-id="\${item.itemId}" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}">
-                    <div class="main-row">
-                        <div class="main-row-left">
-                            <div class="col-icon"><img src="\${item.icon}"></div>
-                            <div class="col-name"><div class="name-text" onclick="copyName(this)">\${item.name}<span class="copy-tooltip">Скопійовано!</span></div></div>
-                            \${crafterHtml}
-                            \${item.exp ? \`<div class="info-badge">\${item.exp}</div>\` : ''}
-                            \${item.prof ? \`<div class="info-badge">\${item.prof}</div>\` : ''}
-                        </div>
-                        <div class="main-row-right">
-                            <div class="col-lumber info-badge \${lumberClass}" \${toggleAttr}><span style="margin-right:5px;text-transform:uppercase;font-size:0.8em">1 Lumber = </span><span class="val">\${dispLumber}</span><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs" style="margin-left:4px"></div>
-                            <div class="col-price" \${toggleAttr}><span>\${Math.floor(item.bestPrice).toLocaleString()}</span><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" style="width:18px;border-radius:50%"></div>
-                            <div class="col-inputs"><input type="number" class="qty-input" placeholder="0" min="0" value="\${qtyVal}"><input type="checkbox" class="check-input" \${isChecked}></div>
-                        </div>
-                    </div>
-                    \${expandale ? \`<div class="details-row"><div class="details-content"><div class="details-left"><div class="chart-wrapper"><div class="chart-controls"><button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1w')">1W</button><button class="chart-btn active" onclick="setChartRange(this, '\${item.itemId}', '1m')">1M</button><button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '6m')">6M</button><button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1y')">1Y</button></div><canvas id="chart-\${item.itemId}"></canvas></div><div class="reagents-block"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><h4>Recipe Cost</h4><span style="color:#f44336;font-weight:bold">Total: -\${Math.floor(item.craftCost).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\${recipeHtml}\${item.craftQty > 0 ? \`<div style="margin-top:10px;color:#4caf50;text-align:center;background:#1a3b1a;padding:5px;border-radius:4px">Requires: <b>\${item.craftQty}</b> Lumber</div>\` : ''}</div></div><div class="details-right"><h4>Cheapest Realms (Top 10)</h4>\${top10Html}</div></div></div>\` : ''}
-                </div>\`;
+                return '<div class="item-card" data-id="' + item.itemId + '" data-recipe="' + recipeJson + '" data-exp="' + (item.exp || '') + '" data-lumber="' + (item.craftQty || 0) + '">' +
+                    '<div class="main-row">' +
+                        '<div class="main-row-left">' +
+                            '<div class="col-icon"><img src="' + item.icon + '"></div>' +
+                            '<div class="col-name"><div class="name-text" onclick="copyName(this)">' + item.name + '<span class="copy-tooltip">Скопійовано!</span></div></div>' +
+                            crafterHtml +
+                            (item.exp ? '<div class="info-badge">' + item.exp + '</div>' : '') +
+                            (item.prof ? '<div class="info-badge">' + item.prof + '</div>' : '') +
+                        '</div>' +
+                        '<div class="main-row-right">' +
+                            '<div class="col-lumber info-badge ' + lumberClass + '" ' + toggleAttr + '><span style="margin-right:5px;text-transform:uppercase;font-size:0.8em">1 Lumber = </span><span class="val">' + dispLumber + '</span><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs" style="margin-left:4px"></div>' +
+                            '<div class="col-price" ' + toggleAttr + '><span>' + Math.floor(item.bestPrice).toLocaleString() + '</span><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" style="width:18px;border-radius:50%"></div>' +
+                            '<div class="col-inputs"><input type="number" class="qty-input" placeholder="0" min="0" value="' + qtyVal + '"><input type="checkbox" class="check-input" ' + isChecked + '></div>' +
+                        '</div>' +
+                    '</div>' +
+                    (expandale ? '<div class="details-row"><div class="details-content"><div class="details-left"><div class="chart-wrapper"><div class="chart-controls"><button class="chart-btn" onclick="setChartRange(this, \'' + item.itemId + '\', \'1w\')">1W</button><button class="chart-btn active" onclick="setChartRange(this, \'' + item.itemId + '\', \'1m\')">1M</button><button class="chart-btn" onclick="setChartRange(this, \'' + item.itemId + '\', \'6m\')">6M</button><button class="chart-btn" onclick="setChartRange(this, \'' + item.itemId + '\', \'1y\')">1Y</button></div><canvas id="chart-' + item.itemId + '"></canvas></div><div class="reagents-block"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><h4>Recipe Cost</h4><span style="color:#f44336;font-weight:bold">Total: -' + Math.floor(item.craftCost).toLocaleString() + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>' + recipeHtml + (item.craftQty > 0 ? '<div style="margin-top:10px;color:#4caf50;text-align:center;background:#1a3b1a;padding:5px;border-radius:4px">Requires: <b>' + item.craftQty + '</b> Lumber</div>' : '') + '</div></div><div class="details-right"><h4>Cheapest Realms (Top 10)</h4>' + top10Html + '</div></div></div>' : '') +
+                '</div>';
             }
 
             function loadMore() {
