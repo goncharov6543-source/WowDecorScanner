@@ -186,7 +186,7 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
-    // --- 1. Підготовка даних (Node.js) ---
+    // --- 1. Data Calculation (Server Side) ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
@@ -289,8 +289,7 @@ async function generateHTML() {
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
 
     // --- 2. HTML Template ---
-    // Увага: Я переписав внутрішні JS функції, щоб вони використовували одинарні лапки ' замість зворотних `
-    // Це запобігає помилкам синтаксису при вкладеності.
+    // NOTE: Inside scripts, I use 'single quotes' for JS strings to avoid conflict with `backticks` of the main string.
     const html = `
     <!DOCTYPE html>
     <html lang="uk">
@@ -301,7 +300,7 @@ async function generateHTML() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
-            /* BASE STYLES */
+            /* Base Styles */
             html, body { scrollbar-width: thin; scrollbar-color: #2a2b2e transparent; }
             body::-webkit-scrollbar { width: 10px; }
             body::-webkit-scrollbar-track { background: transparent; }
@@ -320,12 +319,12 @@ async function generateHTML() {
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
 
-            /* FORCE REMOVE INPUT ARROWS */
+            /* Remove Input Arrows */
             input::-webkit-outer-spin-button,
             input::-webkit-inner-spin-button { -webkit-appearance: none !important; margin: 0 !important; }
             input[type=number] { -moz-appearance: textfield !important; }
 
-            /* BUTTONS & ICONS */
+            /* Icons & Buttons */
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
             .btn-reset { font-size: 22px; } 
@@ -339,7 +338,7 @@ async function generateHTML() {
             .btn-cart-rect { background: #333; color: #fff; border: 1px solid #555; gap: 8px; }
             .btn-cart-rect:hover { background: #444; border-color: #666; }
             
-            /* INFO TOOLTIP */
+            /* Info Tooltip */
             .stats-wrapper { position: relative; display: flex; align-items: center; }
             .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; background: #333; color: #fff; border-color: #555; } 
             .stats-icon.info-btn:hover { background: #ffd700; color: #000; border-color: #ffd700; }
@@ -350,7 +349,7 @@ async function generateHTML() {
             .stat-name { color: #ccc; }
             .stat-val { font-weight: bold; }
             
-            /* TOP RIGHT SECTION (CHARACTERS) */
+            /* Top Right Section */
             #topRightSection { position: absolute; top: 20px; right: 30px; z-index: 100; }
             
             .add-char-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
@@ -388,7 +387,7 @@ async function generateHTML() {
             }
             .btn-add-new-char:hover { border-color: #666; color: #fff; background: #1a1a1a; }
 
-            /* Character Tile Style */
+            /* Character Tile */
             .char-tile {
                 display: flex; align-items: center; background: #1a1b1d;
                 border: 2px solid #0070dd; border-radius: 30px;
@@ -397,7 +396,6 @@ async function generateHTML() {
                 margin-bottom: 10px;
             }
             .char-tile:hover { background: #222; box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); }
-            
             .char-avatar { 
                 width: 40px; height: 40px; border-radius: 50%; 
                 border: 2px solid #ffd700; background-color: #222; 
@@ -417,7 +415,7 @@ async function generateHTML() {
             .tile-btn-edit { top: -6px; left: -6px; background: #007bff; font-size: 12px; } 
             .tile-btn-delete { top: -6px; right: -6px; background: #dc3545; font-size: 14px; line-height: 1; } 
 
-            /* Modal General */
+            /* Modals */
             .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
             .modal-overlay.active { opacity: 1; visibility: visible; }
             .modal-content { background: #151618; width: 90%; max-width: 1200px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s ease; }
@@ -433,7 +431,7 @@ async function generateHTML() {
             .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
             .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
             
-            /* Import Modal Specifics */
+            /* Fix: Import Modal Header Layout */
             .import-modal-content { background: #121212; border: 1px solid #333; max-width: 800px; width: 90%; border-radius: 8px; }
             .import-modal-header { 
                 display: flex !important; justify-content: space-between !important; 
@@ -447,7 +445,6 @@ async function generateHTML() {
             .save-btn { width: 100%; background: #0070dd; color: white; border: none; padding: 12px; font-weight: bold; font-size: 14px; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
             .save-btn:hover { background: #005bb5; }
 
-            /* Character Details Modal */
             .details-modal-content { max-width: 900px; height: auto; max-height: 80%; }
             .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
             .prof-col { display: flex; flex-direction: column; gap: 15px; }
@@ -499,7 +496,6 @@ async function generateHTML() {
             .name-text.copied .copy-tooltip { opacity: 1; }
             #cartBody .col-lumber, #cartBody .col-price { cursor: default; }
             
-            /* Load More Centering */
             .load-more-container { display: flex; justify-content: center; margin-top: 30px; width: 100%; }
 
             .crafter-badge { color: #ffd700; border: 1px solid #ffd700; background: rgba(255, 215, 0, 0.1); } 
@@ -602,10 +598,8 @@ async function generateHTML() {
             let savedState = JSON.parse(localStorage.getItem('wowScnr_state')) || {};
             let charsList = JSON.parse(localStorage.getItem('wowScnr_chars_list')) || [];
             
-            // Optimization: Parse all characters once on load/change
             let parsedChars = [];
 
-            // EXPANSION MAPPING: ItemDB Name -> JSON Key / Import Name
             const EXPANSION_MAP = {
                 "Burning Crusade": "Outland",
                 "Wrath of the Lich King": "Northrend",
@@ -624,10 +618,10 @@ async function generateHTML() {
             function saveCharsToStorage() { 
                 localStorage.setItem('wowScnr_chars_list', JSON.stringify(charsList)); 
                 reparseAllCharacters();
-                // Rerender list to show new matches
                 document.getElementById('list').innerHTML = '';
                 currentIndex = 0;
                 loadMore();
+                updateVisibleCrafterBadges();
             }
 
             function reparseAllCharacters() {
@@ -640,15 +634,12 @@ async function generateHTML() {
                 });
             }
 
-            // Recursive parser (reused for both display and matching)
             function extractSkillData(str) {
                 if (!str) return null;
                 let root;
                 try { root = JSON.parse(str); } catch(e) { return null; }
-
                 let title = "Unknown Profession";
                 let skillsFound = [];
-
                 function traverse(node) {
                     if (typeof node !== 'object' || node === null) return;
                     if (node.name && (node.skill !== undefined || node.value !== undefined)) {
@@ -663,11 +654,8 @@ async function generateHTML() {
                             else if(n.includes("leatherworking")) title = "Leatherworking";
                             else if(n.includes("tailoring")) title = "Tailoring";
                         }
-                        
                         let current = node.skill !== undefined ? node.skill : node.value;
-                        let max = node.maxSkill !== undefined ? node.maxSkill : 
-                                  (node.max !== undefined ? node.max : 100);
-                        
+                        let max = node.maxSkill !== undefined ? node.maxSkill : (node.max !== undefined ? node.max : 100);
                         skillsFound.push({ name: node.name, skill: current, max: max });
                     }
                     Object.keys(node).forEach(key => traverse(node[key]));
@@ -678,20 +666,14 @@ async function generateHTML() {
 
             function findCrafters(itemExp, itemProf) {
                 if (!itemExp || !itemProf || parsedChars.length === 0) return null;
-                
                 const profObj = SKILL_REQS.find(p => p[itemProf]);
                 if (!profObj) return null;
-                
                 const mappedExp = EXPANSION_MAP[itemExp] || itemExp;
                 const reqArray = profObj[itemProf];
-                
                 const expReqObj = reqArray.find(r => r[mappedExp] !== undefined);
                 if (!expReqObj) return null;
-                
                 const requiredSkill = expReqObj[mappedExp];
-                
                 let validCrafters = [];
-                
                 parsedChars.forEach(char => {
                     [char.p1, char.p2].forEach(pData => {
                         if (!pData) return;
@@ -705,7 +687,6 @@ async function generateHTML() {
                         }
                     });
                 });
-                
                 return validCrafters.length > 0 ? validCrafters.join(', ') : null;
             }
 
