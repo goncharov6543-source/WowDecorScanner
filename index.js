@@ -291,9 +291,16 @@ async function generateHTML() {
             #smartSearchInput:focus { border-color: #ffd700; }
 
             /* REMOVE INPUT ARROWS (SPINNERS) - FORCE */
-            input[type=number]::-webkit-inner-spin-button, 
-            input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none !important; margin: 0 !important; }
-            input[type=number] { -moz-appearance: textfield !important; }
+            /* Chrome, Safari, Edge, Opera */
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none !important;
+                margin: 0 !important;
+            }
+            /* Firefox */
+            input[type=number] {
+                -moz-appearance: textfield !important;
+            }
 
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
@@ -322,7 +329,7 @@ async function generateHTML() {
             /* --- TOP RIGHT CHARACTERS SECTION --- */
             #topRightSection { position: absolute; top: 20px; right: 30px; z-index: 100; }
             
-            /* Add Button - Centered Plus */
+            /* Add Button */
             .add-char-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
             .add-char-circle {
                 width: 60px; height: 60px;
@@ -333,7 +340,7 @@ async function generateHTML() {
                 transition: all 0.2s;
                 background: transparent;
                 line-height: 1; 
-                padding-bottom: 4px; /* Slightly adjust based on font rendering */
+                padding-bottom: 4px; 
             }
             .add-char-btn:hover .add-char-circle { border-color: #0070dd; color: #0070dd; }
             .add-char-label { margin-top: 10px; font-size: 13px; color: #444; transition: color 0.2s; }
@@ -376,12 +383,13 @@ async function generateHTML() {
                 min-height: 42px;
             }
             .char-tile:hover { background: #222; box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); }
+            
             .char-avatar { 
                 width: 40px; height: 40px; 
                 border-radius: 50%; 
                 border: 2px solid #ffd700; 
                 background-size: cover; background-position: center; background-repeat: no-repeat;
-                background-color: #333; /* Default dark grey if image fails */
+                background-color: #222; /* Neutral dark grey background */
                 flex-shrink: 0;
             }
             .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; flex-grow: 1; padding-right: 30px; }
@@ -416,7 +424,7 @@ async function generateHTML() {
             .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
             .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
             
-            /* Import Modal */
+            /* Import Modal Specifics */
             .import-modal-content { background: #121212; border: 1px solid #333; max-width: 800px; width: 90%; border-radius: 8px; }
             .import-input-group { margin-bottom: 20px; }
             .import-label { display: block; font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
@@ -709,7 +717,7 @@ async function generateHTML() {
                 }
             }
 
-            // --- Character Details Modal (Parsing) ---
+            // --- Character Details Modal (Deep Parsing) ---
             function openCharDetails(index) {
                 const char = charsList[index];
                 if (!char) return;
@@ -717,53 +725,59 @@ async function generateHTML() {
                 document.getElementById('detailsModalTitle').innerText = \`\${char.name} (\${char.realm})\`;
                 const body = document.getElementById('charDetailsBody');
                 
-                // Helper to parse JSON and return HTML string
-                function generateProfHtml(jsonStr, defaultTitle) {
-                    if (!jsonStr) return \`<div class="prof-col"><div class="prof-title">\${defaultTitle}</div><div style="color:#666">No data</div></div>\`;
-                    
-                    let title = defaultTitle;
-                    let rowsHtml = '';
-                    
-                    try {
-                        const obj = JSON.parse(jsonStr);
-                        if (obj.profession) title = obj.profession;
-                        
-                        // Try to find skills object/array
-                        // Case 1: TSM-like nested object "skills": { "Expansion": { skill: x, max: y } }
-                        // Case 2: Array of expansion objects
-                        
-                        let dataContainer = obj.skills || obj.categories || obj.expansions;
-                        
-                        // If root object is the map itself
-                        if (!dataContainer && typeof obj === 'object') dataContainer = obj;
+                // RECURSIVE PARSER: Finds objects with name, skill, maxSkill
+                function extractSkillData(str) {
+                    if (!str) return null;
+                    let root;
+                    try { root = JSON.parse(str); } catch(e) { return null; }
 
-                        // Traverse keys to find skill data
-                        for (const key in dataContainer) {
-                            const val = dataContainer[key];
-                            // Check if value looks like skill data
-                            if (val && typeof val === 'object' && (val.skill !== undefined || val.level !== undefined)) {
-                                const current = val.skill || val.level || 0;
-                                const max = val.max || val.maxSkill || val.cap || 100; // Better max fallback
-                                const pct = Math.min(100, (current / max) * 100);
-                                
-                                rowsHtml += \`
-                                    <div class="prof-row">
-                                        <div class="prof-header"><span>\${key}</span><span>\${current} / \${max}</span></div>
-                                        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:\${pct}%"></div></div>
-                                    </div>\`;
-                            }
+                    let title = root.profession || "Profession";
+                    let skillsFound = [];
+
+                    function traverse(node) {
+                        if (typeof node !== 'object' || node === null) return;
+
+                        // Check if node matches format: { name: "...", skill: 10, maxSkill: 75 }
+                        if (node.name && (node.skill !== undefined || node.value !== undefined)) {
+                            let current = node.skill !== undefined ? node.skill : node.value;
+                            // Prioritize maxSkill, then max, then cap, then 100
+                            let max = node.maxSkill !== undefined ? node.maxSkill : 
+                                      (node.max !== undefined ? node.max : 
+                                      (node.cap !== undefined ? node.cap : 100));
+                            
+                            skillsFound.push({ name: node.name, skill: current, max: max });
                         }
-                    } catch(e) {
-                        rowsHtml = '<div style="color:#f44336">Invalid JSON format</div>';
+
+                        // Recursion
+                        Object.keys(node).forEach(key => traverse(node[key]));
                     }
-                    
-                    if (!rowsHtml) rowsHtml = '<div style="color:#666">No skill data found</div>';
-                    
-                    return \`<div class="prof-col"><div class="prof-title">\${title}</div>\${rowsHtml}</div>\`;
+
+                    traverse(root);
+                    return { title, skills: skillsFound };
                 }
 
-                const leftHtml = generateProfHtml(char.p1, "Profession 1");
-                const rightHtml = generateProfHtml(char.p2, "Profession 2");
+                function buildHtmlColumn(data, defaultTitle) {
+                    if (!data || data.skills.length === 0) {
+                        return \`<div class="prof-col"><div class="prof-title">\${defaultTitle}</div><div style="color:#666">No skill data found</div></div>\`;
+                    }
+                    let rows = '';
+                    data.skills.forEach(s => {
+                        const pct = Math.min(100, (s.skill / s.max) * 100);
+                        rows += \`
+                            <div class="prof-row">
+                                <div class="prof-header"><span>\${s.name}</span><span>\${s.skill} / \${s.max}</span></div>
+                                <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:\${pct}%"></div></div>
+                            </div>
+                        \`;
+                    });
+                    return \`<div class="prof-col"><div class="prof-title">\${data.title}</div>\${rows}</div>\`;
+                }
+
+                const data1 = extractSkillData(char.p1);
+                const data2 = extractSkillData(char.p2);
+
+                const leftHtml = buildHtmlColumn(data1, "Profession 1");
+                const rightHtml = buildHtmlColumn(data2, "Profession 2");
 
                 body.innerHTML = \`<div class="details-grid">\${leftHtml}\${rightHtml}</div>\`;
                 document.getElementById('charDetailsModal').classList.add('active');
@@ -779,11 +793,11 @@ async function generateHTML() {
                 container.innerHTML = '';
                 
                 charsList.forEach((char, index) => {
-                    // Dynamic icon loading
                     const iconKey = CLASS_ICONS[char.class];
                     const iconUrl = iconKey ? \`https://wow.zamimg.com/images/wow/icons/large/\${iconKey}.jpg\` : '';
-                    // Default fallback icon is handled by CSS background-color if url is empty or 404
-                    const bgStyle = iconUrl ? \`background-image: url('\${iconUrl}')\` : 'background-image: url(\\'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg\\')';
+                    // Use a question mark if no class found
+                    const fallbackUrl = 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
+                    const bgStyle = \`background-image: url('\${iconUrl || fallbackUrl}')\`;
 
                     const div = document.createElement('div');
                     div.className = 'char-tile';
@@ -800,7 +814,7 @@ async function generateHTML() {
                 });
             }
 
-            // ... (Rest of chart/filter functions remain exactly as before) ...
+            // ... (Chart and other logic remains same) ...
             function setChartRange(btn, itemId, range) {
                 const parent = btn.parentElement;
                 parent.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
