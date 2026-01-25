@@ -6,6 +6,19 @@ const path = require('path');
 // --- ЗАВАНТАЖУЄМО БАЗУ ПРЕДМЕТІВ ---
 const itemsData = require('./items.json');
 
+// --- ЗАВАНТАЖУЄМО ВИМОГИ ДО СКІЛІВ ---
+let skillNeededData = [];
+try {
+    if (fs.existsSync('./skill_needed.json')) {
+        skillNeededData = require('./skill_needed.json');
+        console.log("📘 Loaded skill_needed.json");
+    } else {
+        console.warn("⚠️ skill_needed.json not found. Crafter matching will not work.");
+    }
+} catch (e) {
+    console.error("❌ Error loading skill_needed.json:", e.message);
+}
+
 // --- КОНФІГУРАЦІЯ ---
 const CLIENT_ID = process.env.BLIZZARD_CLIENT_ID;
 const CLIENT_SECRET = process.env.BLIZZARD_CLIENT_SECRET;
@@ -260,6 +273,7 @@ async function generateHTML() {
     });
 
     const jsonPayload = JSON.stringify(sortedItems);
+    const jsonSkillReq = JSON.stringify(skillNeededData); // PASS DATA TO CLIENT
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
 
     const html = `
@@ -482,6 +496,9 @@ async function generateHTML() {
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
             .name-text.copied .copy-tooltip { opacity: 1; }
             #cartBody .col-lumber, #cartBody .col-price { cursor: default; }
+            
+            /* Crafter Name in List */
+            .crafter-name { color: #ffd700; font-weight: bold; font-size: 0.9em; margin-right: 15px; }
         </style>
     </head>
     <body>
@@ -571,6 +588,7 @@ async function generateHTML() {
 
         <script>
             const ALL_DATA = ${jsonPayload};
+            const SKILL_REQS = ${jsonSkillReq};
             let activeData = ALL_DATA; 
             let currentIndex = 0;
             const ITEMS_PER_PAGE = 20;
@@ -579,9 +597,126 @@ async function generateHTML() {
             
             let savedState = JSON.parse(localStorage.getItem('wowScnr_state')) || {};
             let charsList = JSON.parse(localStorage.getItem('wowScnr_chars_list')) || [];
+            
+            // Optimization: Parse all characters once on load/change
+            let parsedChars = [];
+
+            // EXPANSION MAPPING: ItemDB Name -> JSON Key / Import Name
+            const EXPANSION_MAP = {
+                "Burning Crusade": "Outland",
+                "Wrath of the Lich King": "Northrend",
+                "Cataclysm": "Cataclysm",
+                "Mists of Pandaria": "Pandaria",
+                "Warlords of Draenor": "Draenor",
+                "Legion": "Legion",
+                "Battle for Azeroth": "Zandalari", // or Kul Tiran, checking generic BFA match
+                "Shadowlands": "Shadowlands",
+                "Dragonflight": "Dragon Isles",
+                "The War Within": "Khaz Algari",
+                "Vanilla": "Classic" // sometimes called Classic
+            };
 
             function saveToStorage() { localStorage.setItem('wowScnr_state', JSON.stringify(savedState)); }
-            function saveCharsToStorage() { localStorage.setItem('wowScnr_chars_list', JSON.stringify(charsList)); }
+            function saveCharsToStorage() { 
+                localStorage.setItem('wowScnr_chars_list', JSON.stringify(charsList)); 
+                reparseAllCharacters();
+                // Rerender list to show new matches
+                document.getElementById('list').innerHTML = '';
+                currentIndex = 0;
+                loadMore();
+            }
+
+            function reparseAllCharacters() {
+                parsedChars = charsList.map(char => {
+                    return {
+                        name: char.name,
+                        p1: extractSkillData(char.p1),
+                        p2: extractSkillData(char.p2)
+                    };
+                });
+            }
+
+            // Recursive parser (reused for both display and matching)
+            function extractSkillData(str) {
+                if (!str) return null;
+                let root;
+                try { root = JSON.parse(str); } catch(e) { return null; }
+
+                let title = "Unknown Profession";
+                let skillsFound = [];
+
+                function traverse(node) {
+                    if (typeof node !== 'object' || node === null) return;
+                    if (node.name && (node.skill !== undefined || node.value !== undefined)) {
+                        // Attempt to detect main profession name
+                        const n = node.name.toLowerCase();
+                        if(title === "Unknown Profession") {
+                            if(n.includes("inscription")) title = "Inscription";
+                            else if(n.includes("alchemy")) title = "Alchemy";
+                            else if(n.includes("jewelcrafting")) title = "Jewelcrafting";
+                            else if(n.includes("blacksmithing")) title = "Blacksmithing";
+                            else if(n.includes("enchanting")) title = "Enchanting";
+                            else if(n.includes("engineering")) title = "Engineering";
+                            else if(n.includes("leatherworking")) title = "Leatherworking";
+                            else if(n.includes("tailoring")) title = "Tailoring";
+                        }
+                        
+                        let current = node.skill !== undefined ? node.skill : node.value;
+                        let max = node.maxSkill !== undefined ? node.maxSkill : 
+                                  (node.max !== undefined ? node.max : 100);
+                        
+                        skillsFound.push({ name: node.name, skill: current, max: max });
+                    }
+                    Object.keys(node).forEach(key => traverse(node[key]));
+                }
+                traverse(root);
+                return { title, skills: skillsFound };
+            }
+
+            function findCrafters(itemExp, itemProf) {
+                if (!itemExp || !itemProf || parsedChars.length === 0) return null;
+                
+                // 1. Get required skill from SKILL_REQS
+                // SKILL_REQS structure: [ { "Inscription": [ {"Classic": 240}, ... ] }, ... ]
+                
+                // Find profession object
+                const profObj = SKILL_REQS.find(p => p[itemProf]);
+                if (!profObj) return null;
+                
+                // Find expansion requirement
+                const mappedExp = EXPANSION_MAP[itemExp] || itemExp;
+                const reqArray = profObj[itemProf];
+                
+                // reqArray is [ {"Classic": 240}, {"Outland": 60} ... ]
+                const expReqObj = reqArray.find(r => r[mappedExp] !== undefined);
+                if (!expReqObj) return null;
+                
+                const requiredSkill = expReqObj[mappedExp];
+                
+                // 2. Check Characters
+                let validCrafters = [];
+                
+                parsedChars.forEach(char => {
+                    [char.p1, char.p2].forEach(pData => {
+                        if (!pData) return;
+                        
+                        // Check if profession matches (e.g. Inscription)
+                        if (pData.title === itemProf) {
+                            // Check if they have the specific expansion skill
+                            // pData.skills is array of {name: "Northrend Inscription", skill: 50...}
+                            
+                            const skillEntry = pData.skills.find(s => s.name.includes(mappedExp));
+                            if (skillEntry) {
+                                if (skillEntry.skill >= requiredSkill) {
+                                    validCrafters.push(char.name);
+                                }
+                            }
+                        }
+                    });
+                });
+                
+                return validCrafters.length > 0 ? validCrafters.join(', ') : null;
+            }
 
             document.addEventListener('change', (e) => {
                 if (e.target.classList.contains('check-input')) {
@@ -664,7 +799,6 @@ async function generateHTML() {
                 let realm = "Unknown";
                 let charClass = "unknown"; 
 
-                // Simple parser to extract meta data
                 function parseMeta(str) {
                     try {
                         const obj = JSON.parse(str);
@@ -699,7 +833,6 @@ async function generateHTML() {
                 }
             }
 
-            // --- Character Details Modal (Deep Parsing) ---
             function openCharDetails(index) {
                 const char = charsList[index];
                 if (!char) return;
@@ -707,51 +840,6 @@ async function generateHTML() {
                 document.getElementById('detailsModalTitle').innerText = \`\${char.name} (\${char.realm})\`;
                 const body = document.getElementById('charDetailsBody');
                 
-                // RECURSIVE PARSER
-                function extractSkillData(str) {
-                    if (!str) return null;
-                    let root;
-                    try { root = JSON.parse(str); } catch(e) { return null; }
-
-                    let title = "Unknown Profession";
-                    let skillsFound = [];
-
-                    function traverse(node) {
-                        if (typeof node !== 'object' || node === null) return;
-
-                        // Found a skill category node
-                        if (node.name && (node.skill !== undefined || node.value !== undefined)) {
-                            if(title === "Unknown Profession" && node.name.toLowerCase().includes("inscription")) title = "Inscription";
-                            if(title === "Unknown Profession" && node.name.toLowerCase().includes("alchemy")) title = "Alchemy";
-                            
-                            let current = node.skill !== undefined ? node.skill : node.value;
-                            let max = node.maxSkill !== undefined ? node.maxSkill : 
-                                      (node.max !== undefined ? node.max : 
-                                      (node.cap !== undefined ? node.cap : 100));
-                            
-                            skillsFound.push({ name: node.name, skill: current, max: max });
-                        }
-                        
-                        Object.keys(node).forEach(key => traverse(node[key]));
-                    }
-                    traverse(root);
-                    
-                    if(skillsFound.length > 0) {
-                        const first = skillsFound[0].name.toLowerCase();
-                        if(first.includes('inscription')) title = 'Inscription';
-                        else if(first.includes('jewelcrafting')) title = 'Jewelcrafting';
-                        else if(first.includes('alchemy')) title = 'Alchemy';
-                        else if(first.includes('blacksmithing')) title = 'Blacksmithing';
-                        else if(first.includes('enchanting')) title = 'Enchanting';
-                        else if(first.includes('engineering')) title = 'Engineering';
-                        else if(first.includes('leatherworking')) title = 'Leatherworking';
-                        else if(first.includes('tailoring')) title = 'Tailoring';
-                        else title = skillsFound[0].name.split(' ')[0];
-                    }
-
-                    return { title, skills: skillsFound };
-                }
-
                 function buildHtmlColumn(data, defaultTitle) {
                     if (!data || data.skills.length === 0) {
                         return \`<div class="prof-col"><div class="prof-title-wrapper"><span class="prof-title">\${defaultTitle}</span></div><div style="color:#666">No skill data found</div></div>\`;
@@ -795,7 +883,6 @@ async function generateHTML() {
                 document.getElementById('charDetailsModal').classList.remove('active');
             });
 
-            // --- Render Char List ---
             function renderCharList() {
                 const container = document.getElementById('charList');
                 container.innerHTML = '';
@@ -819,7 +906,6 @@ async function generateHTML() {
                 });
             }
 
-            // ... (Rest of logic: chart, loadMore, search, listeners) ...
             function setChartRange(btn, itemId, range) {
                 const parent = btn.parentElement;
                 parent.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
@@ -897,6 +983,7 @@ async function generateHTML() {
                 localStorage.removeItem('wowScnr_chars_list');
                 savedState = {};
                 charsList = [];
+                reparseAllCharacters();
                 document.querySelectorAll('.check-input').forEach(el => el.checked = false);
                 document.querySelectorAll('.qty-input').forEach(el => el.value = '');
                 document.getElementById('smartSearchInput').value = '';
@@ -995,6 +1082,11 @@ async function generateHTML() {
                 const saved = savedState[item.itemId] || {};
                 const isChecked = saved.checked ? 'checked' : '';
                 const qtyVal = saved.qty && saved.qty > 0 ? saved.qty : '';
+                
+                // Logic to check crafters
+                const crafterName = findCrafters(item.exp, item.prof);
+                const crafterHtml = crafterName ? \`<div class="crafter-name">\${crafterName}</div>\` : '';
+
                 let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
                 const top10Html = item.top10.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
@@ -1006,6 +1098,7 @@ async function generateHTML() {
                         <div class="main-row-left">
                             <div class="col-icon"><img src="\${item.icon}"></div>
                             <div class="col-name"><div class="name-text" onclick="copyName(event, '\${item.name.replace(/'/g, "\\\\'")}')">\${item.name}<span class="copy-tooltip">Скопійовано!</span></div></div>
+                            \${crafterHtml}
                             \${item.exp ? \`<div class="info-badge">\${item.exp}</div>\` : ''}
                             \${item.prof ? \`<div class="info-badge">\${item.prof}</div>\` : ''}
                         </div>
@@ -1040,6 +1133,7 @@ async function generateHTML() {
             }
 
             document.addEventListener('DOMContentLoaded', () => {
+                reparseAllCharacters(); // Parse on load
                 loadMore();
                 updateTopRightSection();
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
