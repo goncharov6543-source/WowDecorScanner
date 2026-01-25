@@ -186,40 +186,31 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
-    // --- 1. Data Calculation (Server Side) ---
+    // --- 1. Підготовка даних (Server Side) ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
-        
         Object.keys(marketData).forEach(realmName => {
             const price = marketData[realmName][itemId];
             if (price) listings.push({ r: realmName, p: price });
         });
-
         if (commoditiesMap[itemId]) {
             for(let i=0; i<3; i++) listings.push({ r: "Region (Commodity)", p: commoditiesMap[itemId] });
         }
-
         if (listings.length === 0) return { valid: false };
-
         listings.sort((a, b) => a.p - b.p);
         const bestListing = listings[0];
-        
         updateHistory(itemId, bestListing.p);
-
         let craftCost = 0;
         let missingReagents = false;
         let reagentsList = [];
-        
         if (item.recipe) {
             item.recipe.forEach(reag => {
                 const reagId = safeId(reag.id);
                 const reagPrice = reag.fixPrice || commoditiesMap[reagId];
                 const reagMeta = metaData[reagId] || { icon: '', name: '?' };
                 if (!reagPrice) missingReagents = true;
-                
                 craftCost += (reagPrice || 0) * reag.count;
-                
                 reagentsList.push({
                     name: reagMeta.name,
                     count: reag.count,
@@ -228,12 +219,10 @@ async function generateHTML() {
                 });
             });
         }
-
         let lumberPrice = -Infinity; 
         if (item.craftQty > 0 && !missingReagents) {
             lumberPrice = (bestListing.p - craftCost) / item.craftQty;
         }
-
         return {
             valid: true,
             itemId,
@@ -258,7 +247,6 @@ async function generateHTML() {
         .filter(data => data.valid)
         .sort((a, b) => b.lumberPrice - a.lumberPrice);
 
-    // --- Stats ---
     const expStats = {};
     sortedItems.forEach(item => {
         if (item.lumberPrice > -999999) {
@@ -289,7 +277,8 @@ async function generateHTML() {
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
 
     // --- 2. HTML Template ---
-    // NOTE: Inside scripts, I use 'single quotes' for JS strings to avoid conflict with `backticks` of the main string.
+    // УВАГА: Всі скрипти нижче використовують конкатенацію (' + var + '), 
+    // щоб Node.js не намагався обробити їх як свої змінні.
     const html = `
     <!DOCTYPE html>
     <html lang="uk">
@@ -300,7 +289,6 @@ async function generateHTML() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
-            /* Base Styles */
             html, body { scrollbar-width: thin; scrollbar-color: #2a2b2e transparent; }
             body::-webkit-scrollbar { width: 10px; }
             body::-webkit-scrollbar-track { background: transparent; }
@@ -319,12 +307,10 @@ async function generateHTML() {
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
 
-            /* Remove Input Arrows */
             input::-webkit-outer-spin-button,
             input::-webkit-inner-spin-button { -webkit-appearance: none !important; margin: 0 !important; }
             input[type=number] { -moz-appearance: textfield !important; }
 
-            /* Icons & Buttons */
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
             .btn-reset { font-size: 22px; } 
@@ -338,7 +324,6 @@ async function generateHTML() {
             .btn-cart-rect { background: #333; color: #fff; border: 1px solid #555; gap: 8px; }
             .btn-cart-rect:hover { background: #444; border-color: #666; }
             
-            /* Info Tooltip */
             .stats-wrapper { position: relative; display: flex; align-items: center; }
             .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; background: #333; color: #fff; border-color: #555; } 
             .stats-icon.info-btn:hover { background: #ffd700; color: #000; border-color: #ffd700; }
@@ -349,95 +334,48 @@ async function generateHTML() {
             .stat-name { color: #ccc; }
             .stat-val { font-weight: bold; }
             
-            /* Top Right Section */
             #topRightSection { position: absolute; top: 20px; right: 30px; z-index: 100; }
-            
             .add-char-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-            .add-char-circle {
-                width: 60px; height: 60px; border: 2px dashed #444; border-radius: 50%;
-                display: flex; align-items: center; justify-content: center;
-                font-size: 32px; color: #444; transition: all 0.2s;
-                background: transparent; line-height: 1; padding-bottom: 4px; 
-            }
+            .add-char-circle { width: 60px; height: 60px; border: 2px dashed #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #444; transition: all 0.2s; background: transparent; line-height: 1; padding-bottom: 4px; }
             .add-char-btn:hover .add-char-circle { border-color: #0070dd; color: #0070dd; }
             .add-char-label { margin-top: 10px; font-size: 13px; color: #444; transition: color 0.2s; }
             .add-char-btn:hover .add-char-label { color: #0070dd; }
 
             .char-menu-container { position: relative; }
-            .btn-char-menu { 
-                background: #2a2b2e; color: #ccc; border: 1px solid #444; 
-                padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;
-            }
+            .btn-char-menu { background: #2a2b2e; color: #ccc; border: 1px solid #444; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; }
             .btn-char-menu:hover { background: #333; color: #fff; }
 
-            .char-dropdown {
-                position: absolute; top: 100%; right: 0; margin-top: 10px;
-                background: #111; border: 1px solid #333; border-radius: 8px;
-                width: 340px; padding: 10px;
-                display: flex; flex-direction: column; gap: 10px;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 200;
-                opacity: 0; visibility: hidden; transform: translateY(-10px);
-                transition: all 0.3s ease;
-            }
+            .char-dropdown { position: absolute; top: 100%; right: 0; margin-top: 10px; background: #111; border: 1px solid #333; border-radius: 8px; width: 340px; padding: 10px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 200; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s ease; }
             .char-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
 
-            .btn-add-new-char {
-                background: transparent; border: 1px dashed #444; color: #888;
-                width: 100%; padding: 10px; border-radius: 6px; cursor: pointer;
-            }
+            .btn-add-new-char { background: transparent; border: 1px dashed #444; color: #888; width: 100%; padding: 10px; border-radius: 6px; cursor: pointer; }
             .btn-add-new-char:hover { border-color: #666; color: #fff; background: #1a1a1a; }
 
-            /* Character Tile */
-            .char-tile {
-                display: flex; align-items: center; background: #1a1b1d;
-                border: 2px solid #0070dd; border-radius: 30px;
-                padding: 6px 10px 6px 6px; gap: 10px;
-                position: relative; transition: all 0.2s; min-height: 42px;
-                margin-bottom: 10px;
-            }
+            .char-tile { display: flex; align-items: center; background: #1a1b1d; border: 2px solid #0070dd; border-radius: 30px; padding: 6px 10px 6px 6px; gap: 10px; position: relative; transition: all 0.2s; min-height: 42px; margin-bottom: 10px; }
             .char-tile:hover { background: #222; box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); }
-            .char-avatar { 
-                width: 40px; height: 40px; border-radius: 50%; 
-                border: 2px solid #ffd700; background-color: #222; 
-                background-size: cover; background-position: center; flex-shrink: 0;
-            }
+            .char-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ffd700; background-color: #222; background-size: cover; background-position: center; flex-shrink: 0; }
             .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; flex-grow: 1; padding-right: 30px; }
             .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             .char-realm { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
 
-            .tile-btn {
-                position: absolute; width: 22px; height: 22px; border-radius: 50%;
-                display: flex; align-items: center; justify-content: center;
-                color: white; border: none; cursor: pointer;
-                transition: transform 0.2s; z-index: 10; flex-shrink: 0; padding: 0;
-            }
+            .tile-btn { position: absolute; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: none; cursor: pointer; transition: transform 0.2s; z-index: 10; flex-shrink: 0; padding: 0; }
             .tile-btn:hover { transform: scale(1.15); }
             .tile-btn-edit { top: -6px; left: -6px; background: #007bff; font-size: 12px; } 
             .tile-btn-delete { top: -6px; right: -6px; background: #dc3545; font-size: 14px; line-height: 1; } 
 
-            /* Modals */
             .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
             .modal-overlay.active { opacity: 1; visibility: visible; }
             .modal-content { background: #151618; width: 90%; max-width: 1200px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s ease; }
             .modal-overlay.active .modal-content { transform: scale(1); }
             .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1b1d; }
             .modal-title { font-size: 1.5em; color: #fff; margin: 0; }
-            .modal-close { 
-                background: transparent; border: 1px solid #444; color: #888; font-size: 26px; 
-                width: 36px; height: 36px; border-radius: 50%; padding: 0; 
-                cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; line-height: 1;
-            }
+            .modal-close { background: transparent; border: 1px solid #444; color: #888; font-size: 26px; width: 36px; height: 36px; border-radius: 50%; padding: 0; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; line-height: 1; }
             .modal-close:hover { background: #333; color: #fff; border-color: #fff; }
             .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
             .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
             
-            /* Fix: Import Modal Header Layout */
             .import-modal-content { background: #121212; border: 1px solid #333; max-width: 800px; width: 90%; border-radius: 8px; }
-            .import-modal-header { 
-                display: flex !important; justify-content: space-between !important; 
-                flex-direction: row !important; align-items: center; 
-                padding: 15px 20px; border-bottom: none; width: 100%; box-sizing: border-box;
-            }
+            .import-modal-header { display: flex !important; justify-content: space-between !important; flex-direction: row !important; align-items: center; padding: 15px 20px; border-bottom: none; width: 100%; box-sizing: border-box; }
             .import-input-group { margin-bottom: 20px; }
             .import-label { display: block; font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
             .import-textarea { width: 100%; height: 80px; background: #080808; border: 1px solid #333; border-radius: 4px; color: #ccc; padding: 10px; font-family: monospace; resize: none; box-sizing: border-box; }
@@ -494,10 +432,8 @@ async function generateHTML() {
             .server-price { color: #ffd700; font-weight: bold; }
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
             .name-text.copied .copy-tooltip { opacity: 1; }
-            #cartBody .col-lumber, #cartBody .col-price { cursor: default; }
             
             .load-more-container { display: flex; justify-content: center; margin-top: 30px; width: 100%; }
-
             .crafter-badge { color: #ffd700; border: 1px solid #ffd700; background: rgba(255, 215, 0, 0.1); } 
         </style>
     </head>
@@ -507,7 +443,6 @@ async function generateHTML() {
                 <div class="add-char-circle">+</div>
                 <div class="add-char-label">Add your first character</div>
             </div>
-
             <div id="charMenuContainer" class="char-menu-container" style="display:none;">
                 <button id="btnCharMenu" class="btn-char-menu">Characters Info</button>
                 <div id="charDropdown" class="char-dropdown">
@@ -540,7 +475,6 @@ async function generateHTML() {
                     </div>
                 </div>
             </div>
-
             <div id="list"></div>
             <div class="load-more-container"><button id="btnLoadMore" class="btn-load-more">Показати ще</button></div>
         </div>
@@ -621,11 +555,10 @@ async function generateHTML() {
                 document.getElementById('list').innerHTML = '';
                 currentIndex = 0;
                 loadMore();
-                updateVisibleCrafterBadges();
             }
 
             function reparseAllCharacters() {
-                parsedChars = charsList.map(char => {
+                parsedChars = charsList.map(function(char) {
                     return {
                         name: char.name,
                         p1: extractSkillData(char.p1),
@@ -640,6 +573,7 @@ async function generateHTML() {
                 try { root = JSON.parse(str); } catch(e) { return null; }
                 let title = "Unknown Profession";
                 let skillsFound = [];
+                
                 function traverse(node) {
                     if (typeof node !== 'object' || node === null) return;
                     if (node.name && (node.skill !== undefined || node.value !== undefined)) {
@@ -658,27 +592,28 @@ async function generateHTML() {
                         let max = node.maxSkill !== undefined ? node.maxSkill : (node.max !== undefined ? node.max : 100);
                         skillsFound.push({ name: node.name, skill: current, max: max });
                     }
-                    Object.keys(node).forEach(key => traverse(node[key]));
+                    Object.keys(node).forEach(function(key) { traverse(node[key]); });
                 }
                 traverse(root);
-                return { title, skills: skillsFound };
+                return { title: title, skills: skillsFound };
             }
 
             function findCrafters(itemExp, itemProf) {
                 if (!itemExp || !itemProf || parsedChars.length === 0) return null;
-                const profObj = SKILL_REQS.find(p => p[itemProf]);
+                const profObj = SKILL_REQS.find(function(p) { return p[itemProf]; });
                 if (!profObj) return null;
                 const mappedExp = EXPANSION_MAP[itemExp] || itemExp;
                 const reqArray = profObj[itemProf];
-                const expReqObj = reqArray.find(r => r[mappedExp] !== undefined);
+                const expReqObj = reqArray.find(function(r) { return r[mappedExp] !== undefined; });
                 if (!expReqObj) return null;
                 const requiredSkill = expReqObj[mappedExp];
+                
                 let validCrafters = [];
-                parsedChars.forEach(char => {
-                    [char.p1, char.p2].forEach(pData => {
+                parsedChars.forEach(function(char) {
+                    [char.p1, char.p2].forEach(function(pData) {
                         if (!pData) return;
                         if (pData.title === itemProf) {
-                            const skillEntry = pData.skills.find(s => s.name.includes(mappedExp));
+                            const skillEntry = pData.skills.find(function(s) { return s.name.includes(mappedExp); });
                             if (skillEntry) {
                                 if (skillEntry.skill >= requiredSkill) {
                                     validCrafters.push(char.name);
@@ -692,9 +627,9 @@ async function generateHTML() {
 
             function updateVisibleCrafterBadges() {
                 const cards = document.querySelectorAll('.item-card');
-                cards.forEach(card => {
+                cards.forEach(function(card) {
                     const itemId = card.dataset.id;
-                    const itemData = ALL_DATA.find(i => i.itemId == itemId);
+                    const itemData = ALL_DATA.find(function(i) { return i.itemId == itemId; });
                     if (itemData) {
                         const crafterName = findCrafters(itemData.exp, itemData.prof);
                         const leftCol = card.querySelector('.main-row-left');
@@ -711,7 +646,7 @@ async function generateHTML() {
                 });
             }
 
-            document.addEventListener('change', (e) => {
+            document.addEventListener('change', function(e) {
                 if (e.target.classList.contains('check-input')) {
                     const card = e.target.closest('.item-card');
                     const itemId = card.dataset.id;
@@ -721,7 +656,7 @@ async function generateHTML() {
                 }
             });
 
-            document.addEventListener('input', (e) => {
+            document.addEventListener('input', function(e) {
                 if (e.target.classList.contains('qty-input')) {
                     const card = e.target.closest('.item-card');
                     const itemId = card.dataset.id;
@@ -735,7 +670,7 @@ async function generateHTML() {
             function toggleDetails(card, itemId) {
                 if (card.closest('#cartBody')) return;
                 card.classList.toggle('active');
-                if (card.classList.contains('active')) setTimeout(() => drawChart(itemId), 50);
+                if (card.classList.contains('active')) setTimeout(function() { drawChart(itemId); }, 50);
             }
 
             function updateTopRightSection() {
@@ -751,12 +686,12 @@ async function generateHTML() {
                 }
             }
 
-            document.getElementById('btnCharMenu').addEventListener('click', (e) => {
+            document.getElementById('btnCharMenu').addEventListener('click', function(e) {
                 e.stopPropagation();
                 document.getElementById('charDropdown').classList.toggle('active');
             });
             
-            document.addEventListener('click', (e) => {
+            document.addEventListener('click', function(e) {
                 const dropdown = document.getElementById('charDropdown');
                 const btn = document.getElementById('btnCharMenu');
                 if (!dropdown.contains(e.target) && e.target !== btn) {
@@ -764,7 +699,8 @@ async function generateHTML() {
                 }
             });
 
-            function openImportModal(editIndex = -1) {
+            function openImportModal(editIndex) {
+                if(typeof editIndex === 'undefined') editIndex = -1;
                 document.getElementById('editCharId').value = editIndex;
                 if (editIndex >= 0 && charsList[editIndex]) {
                     const char = charsList[editIndex];
@@ -777,7 +713,7 @@ async function generateHTML() {
                 document.getElementById('importModal').classList.add('active');
             }
             
-            document.getElementById('btnCloseImport').addEventListener('click', () => {
+            document.getElementById('btnCloseImport').addEventListener('click', function() {
                 document.getElementById('importModal').classList.remove('active');
             });
 
@@ -799,7 +735,7 @@ async function generateHTML() {
                 parseMeta(p1Str);
                 parseMeta(p2Str);
                 if ((p1Str || p2Str) && name === "Unknown") name = "Imported Char";
-                const newChar = { name, realm, class: charClass, p1: p1Str, p2: p2Str };
+                const newChar = { name: name, realm: realm, class: charClass, p1: p1Str, p2: p2Str };
                 if (editId >= 0) { charsList[editId] = newChar; } else { charsList.push(newChar); }
                 saveCharsToStorage();
                 document.getElementById('importModal').classList.remove('active');
@@ -824,7 +760,7 @@ async function generateHTML() {
                     const iconName = data.title.toLowerCase().replace(/\\s+/g, '');
                     const iconUrl = 'prof_class_icons/' + iconName + '.jpg';
                     let rows = '';
-                    data.skills.forEach(s => {
+                    data.skills.forEach(function(s) {
                         const pct = Math.min(100, (s.skill / s.max) * 100);
                         rows += '<div class="prof-row"><div class="prof-header"><span>' + s.name + '</span><span>' + s.skill + ' / ' + s.max + '</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:' + pct + '%"></div></div></div>';
                     });
@@ -838,14 +774,14 @@ async function generateHTML() {
                 document.getElementById('charDetailsModal').classList.add('active');
             }
             
-            document.getElementById('btnCloseDetails').addEventListener('click', () => {
+            document.getElementById('btnCloseDetails').addEventListener('click', function() {
                 document.getElementById('charDetailsModal').classList.remove('active');
             });
 
             function renderCharList() {
                 const container = document.getElementById('charList');
                 container.innerHTML = '';
-                charsList.forEach((char, index) => {
+                charsList.forEach(function(char, index) {
                     const iconName = char.class ? char.class.toLowerCase().replace(/\\s+/g, '') : "unknown";
                     const iconUrl = 'prof_class_icons/' + iconName + '.jpg';
                     const div = document.createElement('div');
@@ -857,7 +793,7 @@ async function generateHTML() {
 
             function setChartRange(btn, itemId, range) {
                 const parent = btn.parentElement;
-                parent.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+                parent.querySelectorAll('.chart-btn').forEach(function(b) { b.classList.remove('active'); });
                 btn.classList.add('active');
                 chartRanges[itemId] = range;
                 if (activeCharts[itemId]) { activeCharts[itemId].destroy(); delete activeCharts[itemId]; }
@@ -867,7 +803,7 @@ async function generateHTML() {
             function drawChart(itemId) {
                 const canvas = document.getElementById('chart-' + itemId);
                 if (!canvas || activeCharts[itemId]) return;
-                const itemData = ALL_DATA.find(i => i.itemId == itemId);
+                const itemData = ALL_DATA.find(function(i) { return i.itemId == itemId; });
                 if (!itemData || !itemData.history || itemData.history.length === 0) return;
                 const ctx = canvas.getContext('2d');
                 const gradient = ctx.createLinearGradient(0, 0, 0, 300);
@@ -883,12 +819,12 @@ async function generateHTML() {
                     case '1y': cutoff = now - (365 * 24 * 60 * 60 * 1000); break;
                     default: cutoff = 0;
                 }
-                const filteredHistory = itemData.history.filter(h => h.t >= cutoff);
-                const labels = filteredHistory.map(h => {
+                const filteredHistory = itemData.history.filter(function(h) { return h.t >= cutoff; });
+                const labels = filteredHistory.map(function(h) {
                     const d = new Date(h.t);
                     return d.toLocaleDateString() + ' ' + d.getHours() + ':00';
                 });
-                const dataPoints = filteredHistory.map(h => h.p);
+                const dataPoints = filteredHistory.map(function(h) { return h.p; });
                 activeCharts[itemId] = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -911,7 +847,7 @@ async function generateHTML() {
                         responsive: true,
                         maintainAspectRatio: false,
                         interaction: { mode: 'index', intersect: false },
-                        plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#fff', bodyColor: '#0070dd', displayColors: false, callbacks: { label: (c) => c.parsed.y.toLocaleString() + ' g' } } },
+                        plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#fff', bodyColor: '#0070dd', displayColors: false, callbacks: { label: function(c) { return c.parsed.y.toLocaleString() + ' g'; } } } },
                         scales: { x: { display: false }, y: { display: false } }
                     }
                 });
@@ -919,9 +855,9 @@ async function generateHTML() {
 
             function copyName(el) {
                 const text = el.firstChild.textContent;
-                navigator.clipboard.writeText(text).then(() => {
+                navigator.clipboard.writeText(text).then(function() {
                     el.classList.add('copied');
-                    setTimeout(() => el.classList.remove('copied'), 1500);
+                    setTimeout(function() { el.classList.remove('copied'); }, 1500);
                 });
             }
 
@@ -929,8 +865,8 @@ async function generateHTML() {
                 if(!confirm("Очистити фільтри та вибір? (Персонажі залишаться)")) return;
                 localStorage.removeItem('wowScnr_state');
                 savedState = {};
-                document.querySelectorAll('.check-input').forEach(el => el.checked = false);
-                document.querySelectorAll('.qty-input').forEach(el => el.value = '');
+                document.querySelectorAll('.check-input').forEach(function(el) { el.checked = false; });
+                document.querySelectorAll('.qty-input').forEach(function(el) { el.value = ''; });
                 document.getElementById('smartSearchInput').value = '';
                 activeData = ALL_DATA;
                 currentIndex = 0;
@@ -943,12 +879,12 @@ async function generateHTML() {
                 const modal = document.getElementById('cartModal');
                 const body = document.getElementById('cartBody');
                 body.innerHTML = '';
-                const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
+                const checkedIds = Object.keys(savedState).filter(function(id) { return savedState[id] && savedState[id].checked; });
                 if (checkedIds.length === 0) {
                     body.innerHTML = '<div class="empty-cart-msg">Кошик порожній.</div>';
                 } else {
-                    const cartItems = ALL_DATA.filter(item => checkedIds.includes(item.itemId.toString()));
-                    body.innerHTML = cartItems.map(createCartItemHTML).join('');
+                    const cartItems = ALL_DATA.filter(function(item) { return checkedIds.includes(item.itemId.toString()); });
+                    body.innerHTML = cartItems.map(function(item) { return createCartItemHTML(item); }).join('');
                 }
                 modal.classList.add('active');
             }
@@ -963,11 +899,11 @@ async function generateHTML() {
 
             function handleAddonImport(e) {
                 const btn = e.currentTarget;
-                const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
+                const checkedIds = Object.keys(savedState).filter(function(id) { return savedState[id] && savedState[id].checked; });
                 if (checkedIds.length === 0) return alert("Вибери предмети!");
                 let summary = {}; 
-                checkedIds.forEach(id => {
-                    const itemData = ALL_DATA.find(i => i.itemId == id);
+                checkedIds.forEach(function(id) {
+                    const itemData = ALL_DATA.find(function(i) { return i.itemId == id; });
                     if (!itemData) return;
                     const count = savedState[id].qty || 0;
                     if (count > 0) {
@@ -986,30 +922,30 @@ async function generateHTML() {
                                 count: count,
                                 crafter: crafter,
                                 craftCost: Math.floor(itemData.craftCost),
-                                profession: itemData.prof 
+                                profession: itemData.prof
                             });
                         }
                     }
                 });
-                const payload = Object.keys(summary).map(exp => ({ "Exp": exp, "craftQty": summary[exp].totalLumber, "items": summary[exp].items }));
+                const payload = Object.keys(summary).map(function(exp) { return { "Exp": exp, "craftQty": summary[exp].totalLumber, "items": summary[exp].items }; });
                 if (payload.length === 0) return alert("Помилка даних.");
                 visualCopy(btn, JSON.stringify(payload));
             }
 
             function handleReagentsImport(e) {
                 const btn = e.currentTarget;
-                const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
+                const checkedIds = Object.keys(savedState).filter(function(id) { return savedState[id] && savedState[id].checked; });
                 if (checkedIds.length === 0) return alert("Вибери предмети!");
                 let reagentsMap = {};
                 let hasItems = false;
-                checkedIds.forEach(id => {
-                    const itemData = ALL_DATA.find(i => i.itemId == id);
+                checkedIds.forEach(function(id) {
+                    const itemData = ALL_DATA.find(function(i) { return i.itemId == id; });
                     if (!itemData) return;
                     const count = savedState[id].qty || 0;
                     if (count > 0) {
                         hasItems = true;
                         if (itemData.recipeRaw && Array.isArray(itemData.recipeRaw)) {
-                            itemData.recipeRaw.forEach(r => {
+                            itemData.recipeRaw.forEach(function(r) {
                                 if (!reagentsMap[r.name]) reagentsMap[r.name] = 0;
                                 reagentsMap[r.name] += (r.count * count);
                             });
@@ -1017,18 +953,18 @@ async function generateHTML() {
                     }
                 });
                 if (!hasItems) return alert("Введи кількість!");
-                const listString = Object.entries(reagentsMap).map(([n, q]) => \`${n} x${q}\`).join('\n');
+                const listString = Object.entries(reagentsMap).map(function(entry) { return entry[0] + " x" + entry[1]; }).join('\\n');
                 visualCopy(btn, listString);
             }
 
             function visualCopy(btn, text) {
-                if (btn.innerText === "Скопійовано!") return; 
+                if (btn.innerText === "Скопійовано!") return;
                 navigator.clipboard.writeText(text);
                 const originalText = btn.innerText;
                 const originalColor = btn.style.backgroundColor;
                 btn.style.backgroundColor = "#4caf50";
                 btn.innerText = "Скопійовано!";
-                setTimeout(() => { 
+                setTimeout(function() { 
                     btn.style.backgroundColor = originalColor; 
                     btn.innerText = originalText; 
                 }, 2000);
@@ -1046,8 +982,8 @@ async function generateHTML() {
                 const crafterName = findCrafters(item.exp, item.prof);
                 const crafterHtml = crafterName ? '<div class="info-badge crafter-badge">' + crafterName + '</div>' : '';
 
-                let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => '<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">' + r.count + 'x</span> <img src="' + r.icon + '" class="reag-icon"> <span>' + r.name + '</span></div><div class="reag-right">' + (r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()) + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>').join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
-                const top10Html = item.top10.map(l => '<div class="server-row"><span>' + l.r + '</span><span class="server-price">' + l.p.toLocaleString() + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>').join('');
+                let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(function(r) { return '<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">' + r.count + 'x</span> <img src="' + r.icon + '" class="reag-icon"> <span>' + r.name + '</span></div><div class="reag-right">' + (r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()) + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>'; }).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
+                const top10Html = item.top10.map(function(l) { return '<div class="server-row"><span>' + l.r + '</span><span class="server-price">' + l.p.toLocaleString() + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>'; }).join('');
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
                 const toggleAttr = expandale ? 'onclick="toggleDetails(this.closest(\'.item-card\'), ' + item.itemId + ')"' : '';
@@ -1075,24 +1011,24 @@ async function generateHTML() {
                 const list = document.getElementById('list');
                 const btn = document.getElementById('btnLoadMore');
                 const nextItems = activeData.slice(currentIndex, currentIndex + ITEMS_PER_PAGE);
-                if (nextItems.length > 0) { list.insertAdjacentHTML('beforeend', nextItems.map(createItemHTML).join('')); currentIndex += nextItems.length; }
+                if (nextItems.length > 0) { list.insertAdjacentHTML('beforeend', nextItems.map(function(item) { return createItemHTML(item); }).join('')); currentIndex += nextItems.length; }
                 if (currentIndex >= activeData.length) btn.classList.add('hidden'); else btn.classList.remove('hidden');
             }
 
             function handleSearch(e) {
                 const term = e.target.value.toLowerCase();
-                const filtered = ALL_DATA.filter(i => {
+                const filtered = ALL_DATA.filter(function(i) {
                     const inName = i.name.toLowerCase().includes(term);
                     const inExp = i.exp && i.exp.toLowerCase().includes(term);
                     const inProf = i.prof && i.prof.toLowerCase().includes(term);
                     return inName || inExp || inProf;
                 });
-                filtered.sort((a, b) => b.lumberPrice - a.lumberPrice);
+                filtered.sort(function(a, b) { return b.lumberPrice - a.lumberPrice; });
                 activeData = filtered; currentIndex = 0; document.getElementById('list').innerHTML = ''; loadMore();
             }
 
             document.addEventListener('DOMContentLoaded', () => {
-                reparseAllCharacters(); // Parse on load
+                reparseAllCharacters(); 
                 loadMore();
                 updateTopRightSection();
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
@@ -1101,10 +1037,10 @@ async function generateHTML() {
                 document.querySelector('.btn-import').addEventListener('click', handleReagentsImport);
                 document.getElementById('btnOpenCart').addEventListener('click', openCart);
                 document.getElementById('btnCloseCart').addEventListener('click', closeCart);
-                document.getElementById('cartModal').addEventListener('click', (e) => { if (e.target.id === 'cartModal') closeCart(); });
+                document.getElementById('cartModal').addEventListener('click', function(e) { if (e.target.id === 'cartModal') closeCart(); });
                 document.getElementById('btnReset').addEventListener('click', handleReset);
-                document.getElementById('importModal').addEventListener('click', (e) => { if (e.target.id === 'importModal') document.getElementById('importModal').classList.remove('active'); });
-                document.getElementById('charDetailsModal').addEventListener('click', (e) => { if (e.target.id === 'charDetailsModal') document.getElementById('charDetailsModal').classList.remove('active'); });
+                document.getElementById('importModal').addEventListener('click', function(e) { if (e.target.id === 'importModal') document.getElementById('importModal').classList.remove('active'); });
+                document.getElementById('charDetailsModal').addEventListener('click', function(e) { if (e.target.id === 'charDetailsModal') document.getElementById('charDetailsModal').classList.remove('active'); });
             });
         </script>
         <script src="import.js"></script>
