@@ -290,6 +290,11 @@ async function generateHTML() {
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
 
+            /* REMOVE INPUT ARROWS (SPINNERS) - FORCE */
+            input[type=number]::-webkit-inner-spin-button, 
+            input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none !important; margin: 0 !important; }
+            input[type=number] { -moz-appearance: textfield !important; }
+
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
             .btn-reset { font-size: 22px; } 
@@ -303,9 +308,10 @@ async function generateHTML() {
             .btn-cart-rect { background: #333; color: #fff; border: 1px solid #555; gap: 8px; }
             .btn-cart-rect:hover { background: #444; border-color: #666; }
             
-            /* Info Button Specifics */
             .stats-wrapper { position: relative; display: flex; align-items: center; }
-            .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; } 
+            .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; background: #333; color: #fff; border-color: #555; } 
+            .stats-icon.info-btn:hover { background: #ffd700; color: #000; border-color: #ffd700; }
+            
             .stats-tooltip { visibility: hidden; opacity: 0; position: absolute; top: 120%; left: 0; width: 280px; background: #1a1b1d; border: 1px solid #444; border-radius: 8px; padding: 15px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transition: 0.2s; transform: translateY(-5px); }
             .stats-wrapper:hover .stats-tooltip { visibility: visible; opacity: 1; transform: translateY(0); }
             .stats-title { font-size: 13px; color: #888; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; text-align: center; letter-spacing: 1px; }
@@ -326,13 +332,13 @@ async function generateHTML() {
                 font-size: 32px; color: #444;
                 transition: all 0.2s;
                 background: transparent;
-                line-height: 1; padding-bottom: 2px; /* Fine-tuning center */
+                line-height: 1; 
+                padding-bottom: 4px; /* Slightly adjust based on font rendering */
             }
             .add-char-btn:hover .add-char-circle { border-color: #0070dd; color: #0070dd; }
             .add-char-label { margin-top: 10px; font-size: 13px; color: #444; transition: color 0.2s; }
             .add-char-btn:hover .add-char-label { color: #0070dd; }
 
-            /* Characters Info Menu */
             .char-menu-container { position: relative; }
             .btn-char-menu { 
                 background: #2a2b2e; color: #ccc; border: 1px solid #444; 
@@ -340,7 +346,6 @@ async function generateHTML() {
             }
             .btn-char-menu:hover { background: #333; color: #fff; }
 
-            /* SMOOTH DROPDOWN ANIMATION */
             .char-dropdown {
                 position: absolute; top: 100%; right: 0; margin-top: 10px;
                 background: #111; border: 1px solid #333; border-radius: 8px;
@@ -358,7 +363,7 @@ async function generateHTML() {
             }
             .btn-add-new-char:hover { border-color: #666; color: #fff; background: #1a1a1a; }
 
-            /* Character Tile Style - Compact again */
+            /* Character Tile Style */
             .char-tile {
                 display: flex; align-items: center;
                 background: #1a1b1d;
@@ -376,14 +381,13 @@ async function generateHTML() {
                 border-radius: 50%; 
                 border: 2px solid #ffd700; 
                 background-size: cover; background-position: center; background-repeat: no-repeat;
-                background-color: #000;
+                background-color: #333; /* Default dark grey if image fails */
                 flex-shrink: 0;
             }
             .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; flex-grow: 1; padding-right: 30px; }
             .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             .char-realm { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
 
-            /* Fixed Tile Action Buttons */
             .tile-btn {
                 position: absolute; width: 22px; height: 22px; border-radius: 50%;
                 display: flex; align-items: center; justify-content: center;
@@ -392,7 +396,6 @@ async function generateHTML() {
                 flex-shrink: 0; padding: 0;
             }
             .tile-btn:hover { transform: scale(1.15); }
-            /* Edit button now opens details modal */
             .tile-btn-edit { top: -6px; left: -6px; background: #007bff; font-size: 12px; } 
             .tile-btn-delete { top: -6px; right: -6px; background: #dc3545; font-size: 14px; line-height: 1; } 
 
@@ -401,7 +404,6 @@ async function generateHTML() {
             .modal-overlay.active { opacity: 1; visibility: visible; }
             .modal-content { background: #151618; width: 90%; max-width: 1200px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s ease; }
             .modal-overlay.active .modal-content { transform: scale(1); }
-            /* Header Flex Fix */
             .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1b1d; }
             .modal-title { font-size: 1.5em; color: #fff; margin: 0; }
             .modal-close { 
@@ -414,7 +416,7 @@ async function generateHTML() {
             .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
             .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
             
-            /* Import Modal Specifics */
+            /* Import Modal */
             .import-modal-content { background: #121212; border: 1px solid #333; max-width: 800px; width: 90%; border-radius: 8px; }
             .import-input-group { margin-bottom: 20px; }
             .import-label { display: block; font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
@@ -423,9 +425,12 @@ async function generateHTML() {
             .save-btn { width: 100%; background: #0070dd; color: white; border: none; padding: 12px; font-weight: bold; font-size: 14px; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
             .save-btn:hover { background: #005bb5; }
 
-            /* Character Details Modal Specifics */
-            .details-modal-content { max-width: 500px; height: auto; max-height: 80%; }
-            .prof-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; }
+            /* Character Details Modal */
+            .details-modal-content { max-width: 900px; height: auto; max-height: 80%; }
+            .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+            .prof-col { display: flex; flex-direction: column; gap: 15px; }
+            .prof-title { color: #ffd700; font-size: 1.1em; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px; }
+            .prof-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
             .prof-header { display: flex; justify-content: space-between; font-size: 14px; color: #fff; }
             .skill-bar-bg { width: 100%; height: 10px; background: #333; border-radius: 5px; overflow: hidden; border: 1px solid #444; }
             .skill-bar-fill { height: 100%; background: linear-gradient(90deg, #0070dd, #a335ee); width: 0%; border-radius: 5px; transition: width 0.5s ease; }
@@ -445,7 +450,7 @@ async function generateHTML() {
             .col-lumber.negative span.val { color: #f44336; font-weight: bold; }
             .col-price { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.2em; color: #f0f0f0; min-width: 140px; justify-content: flex-end; cursor: pointer; }
             .col-inputs { display: flex; align-items: center; gap: 15px; margin-left: 25px; border-left: 1px solid #333; padding-left: 15px; height: 40px; }
-            .qty-input { background: #0f1011; border: 1px solid #333; color: #fff; width: 50px; padding: 6px; border-radius: 4px; text-align: center; font-weight:bold; -webkit-appearance: none; -moz-appearance: textfield; }
+            .qty-input { background: #0f1011; border: 1px solid #333; color: #fff; width: 50px; padding: 6px; border-radius: 4px; text-align: center; font-weight:bold; }
             .check-input { width: 18px; height: 18px; accent-color: #a335ee; cursor: pointer; }
             .details-row { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; }
             .item-card.active .details-row { max-height: 800px; } 
@@ -527,8 +532,8 @@ async function generateHTML() {
 
         <div id="importModal" class="modal-overlay">
             <div class="import-modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">IMPORT CHARACTER</div>
+                <div class="import-modal-header">
+                    <div class="import-modal-title">IMPORT CHARACTER</div>
                     <button id="btnCloseImport" class="modal-close">×</button>
                 </div>
                 <div class="modal-body" style="padding: 20px;">
@@ -667,19 +672,19 @@ async function generateHTML() {
                 
                 let name = "Unknown";
                 let realm = "Unknown";
-                let charClass = "mage"; 
+                let charClass = ""; 
 
-                // Improved parsing function
-                function parseCharInfo(str) {
+                // Simple parser to extract meta data
+                function parseMeta(str) {
                     try {
                         const obj = JSON.parse(str);
                         if(obj.character) name = obj.character;
                         if(obj.realm) realm = obj.realm;
-                        if(obj.class) charClass = obj.class.toLowerCase(); // Lowercase for key lookup
+                        if(obj.class) charClass = obj.class.toLowerCase();
                     } catch(e) {}
                 }
-                parseCharInfo(p1Str);
-                parseCharInfo(p2Str);
+                parseMeta(p1Str);
+                parseMeta(p2Str);
 
                 if ((p1Str || p2Str) && name === "Unknown") name = "Imported Char";
 
@@ -704,68 +709,88 @@ async function generateHTML() {
                 }
             }
 
-            // --- Character Details Modal (Pencil Click) ---
+            // --- Character Details Modal (Parsing) ---
             function openCharDetails(index) {
                 const char = charsList[index];
                 if (!char) return;
 
                 document.getElementById('detailsModalTitle').innerText = \`\${char.name} (\${char.realm})\`;
                 const body = document.getElementById('charDetailsBody');
-                body.innerHTML = '';
-
-                let professions = [];
-                function parseProf(str) {
+                
+                // Helper to parse JSON and return HTML string
+                function generateProfHtml(jsonStr, defaultTitle) {
+                    if (!jsonStr) return \`<div class="prof-col"><div class="prof-title">\${defaultTitle}</div><div style="color:#666">No data</div></div>\`;
+                    
+                    let title = defaultTitle;
+                    let rowsHtml = '';
+                    
                     try {
-                        const obj = JSON.parse(str);
-                        // Assuming TSM structure: { "professions": { "Alchemy": { "skill": 100, "max": 100 }, ... } }
-                        if (obj.professions) {
-                            for (const [profName, details] of Object.entries(obj.professions)) {
-                                professions.push({ name: profName, skill: details.skill || 0, max: details.max || details.skill || 100 });
+                        const obj = JSON.parse(jsonStr);
+                        if (obj.profession) title = obj.profession;
+                        
+                        // Try to find skills object/array
+                        // Case 1: TSM-like nested object "skills": { "Expansion": { skill: x, max: y } }
+                        // Case 2: Array of expansion objects
+                        
+                        let dataContainer = obj.skills || obj.categories || obj.expansions;
+                        
+                        // If root object is the map itself
+                        if (!dataContainer && typeof obj === 'object') dataContainer = obj;
+
+                        // Traverse keys to find skill data
+                        for (const key in dataContainer) {
+                            const val = dataContainer[key];
+                            // Check if value looks like skill data
+                            if (val && typeof val === 'object' && (val.skill !== undefined || val.level !== undefined)) {
+                                const current = val.skill || val.level || 0;
+                                const max = val.max || val.maxSkill || val.cap || 100; // Better max fallback
+                                const pct = Math.min(100, (current / max) * 100);
+                                
+                                rowsHtml += \`
+                                    <div class="prof-row">
+                                        <div class="prof-header"><span>\${key}</span><span>\${current} / \${max}</span></div>
+                                        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:\${pct}%"></div></div>
+                                    </div>\`;
                             }
                         }
-                    } catch(e) {}
-                }
-                parseProf(char.p1);
-                parseProf(char.p2);
-
-                if (professions.length === 0) {
-                    body.innerHTML = '<p style="color:#888;text-align:center;">No profession data found in imports.</p>';
-                } else {
-                    professions.forEach(p => {
-                        const pct = (p.skill / p.max) * 100;
-                        body.innerHTML += \`
-                            <div class="prof-row">
-                                <div class="prof-header"><span>\${p.name}</span><span>\${p.skill} / \${p.max}</span></div>
-                                <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:\${pct}%"></div></div>
-                            </div>
-                        \`;
-                    });
+                    } catch(e) {
+                        rowsHtml = '<div style="color:#f44336">Invalid JSON format</div>';
+                    }
+                    
+                    if (!rowsHtml) rowsHtml = '<div style="color:#666">No skill data found</div>';
+                    
+                    return \`<div class="prof-col"><div class="prof-title">\${title}</div>\${rowsHtml}</div>\`;
                 }
 
+                const leftHtml = generateProfHtml(char.p1, "Profession 1");
+                const rightHtml = generateProfHtml(char.p2, "Profession 2");
+
+                body.innerHTML = \`<div class="details-grid">\${leftHtml}\${rightHtml}</div>\`;
                 document.getElementById('charDetailsModal').classList.add('active');
             }
             
             document.getElementById('btnCloseDetails').addEventListener('click', () => {
                 document.getElementById('charDetailsModal').classList.remove('active');
             });
-            // ----------------------------------------------
 
-
+            // --- Render Char List in Dropdown ---
             function renderCharList() {
                 const container = document.getElementById('charList');
                 container.innerHTML = '';
                 
                 charsList.forEach((char, index) => {
-                    // Improved icon key lookup with fallback
-                    const iconKey = CLASS_ICONS[char.class] || "classicon_mage";
-                    const iconUrl = \`https://wow.zamimg.com/images/wow/icons/large/\${iconKey}.jpg\`;
-                    
+                    // Dynamic icon loading
+                    const iconKey = CLASS_ICONS[char.class];
+                    const iconUrl = iconKey ? \`https://wow.zamimg.com/images/wow/icons/large/\${iconKey}.jpg\` : '';
+                    // Default fallback icon is handled by CSS background-color if url is empty or 404
+                    const bgStyle = iconUrl ? \`background-image: url('\${iconUrl}')\` : 'background-image: url(\\'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg\\')';
+
                     const div = document.createElement('div');
                     div.className = 'char-tile';
                     div.innerHTML = \`
                         <button class="tile-btn tile-btn-edit" onclick="openCharDetails(\${index})">✎</button>
                         <button class="tile-btn tile-btn-delete" onclick="deleteCharacter(\${index})">×</button>
-                        <div class="char-avatar" style="background-image: url('\${iconUrl}')"></div>
+                        <div class="char-avatar" style="\${bgStyle}"></div>
                         <div class="char-info">
                             <div class="char-name">\${char.name}</div>
                             <div class="char-realm">\${char.realm}</div>
@@ -775,6 +800,7 @@ async function generateHTML() {
                 });
             }
 
+            // ... (Rest of chart/filter functions remain exactly as before) ...
             function setChartRange(btn, itemId, range) {
                 const parent = btn.parentElement;
                 parent.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
