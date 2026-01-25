@@ -1160,78 +1160,59 @@ async function generateHTML() {
 
             function handleReagentsImport(e) {
                 const btn = e.currentTarget;
-                
-                const checkedIds = Object.keys(savedState).filter(function(id) {
-                    return savedState[id] && savedState[id].checked;
-                });
-                
+                const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
                 if (checkedIds.length === 0) return alert("Вибери предмети!");
-                
                 let reagentsMap = {};
                 let hasItems = false;
-                
-                checkedIds.forEach(function(id) {
-                    const itemData = ALL_DATA.find(function(i) { return i.itemId == id; });
+                checkedIds.forEach(id => {
+                    const itemData = ALL_DATA.find(i => i.itemId == id);
                     if (!itemData) return;
-                    
                     const count = savedState[id].qty || 0;
                     if (count > 0) {
                         hasItems = true;
                         if (itemData.recipeRaw && Array.isArray(itemData.recipeRaw)) {
-                            itemData.recipeRaw.forEach(function(r) {
+                            itemData.recipeRaw.forEach(r => {
                                 if (!reagentsMap[r.name]) reagentsMap[r.name] = 0;
                                 reagentsMap[r.name] += (r.count * count);
                             });
                         }
                     }
                 });
-                
                 if (!hasItems) return alert("Введи кількість!");
-                
-                // ТУТ БУЛА ПОМИЛКА: Замінив шаблонний рядок на звичайне додавання
-                const listString = Object.entries(reagentsMap).map(function(entry) {
-                    return entry[0] + " x" + entry[1];
-                }).join('\n');
-                
+                const listString = Object.entries(reagentsMap).map(([n, q]) => \`\${n} x\${q}\`).join('\\n');
                 visualCopy(btn, listString);
             }
 
             function visualCopy(btn, text) {
-                // 1. ВБИВАЄМО старий таймер, якщо він існує. Це лікує "миготіння".
-                if (btn.dataset.timerId) {
-                    clearTimeout(parseInt(btn.dataset.timerId));
-                    btn.dataset.timerId = "";
+                // 1. Якщо таймер вже йде (швидкий клік), скасовуємо його, щоб не було глюків
+                if (btn.dataset.timer) {
+                    clearTimeout(btn.dataset.timer);
                 }
 
-                // 2. Визначаємо правильну назву НЕ читаючи кнопку, а перевіряючи її тип
-                let correctLabel = "Import"; 
+                // 2. Жорстко визначаємо, який текст має повернутись
+                let defaultLabel = "Import"; 
                 
                 if (btn.classList.contains('btn-import')) {
-                    correctLabel = "Reagents Import";
+                    defaultLabel = "Reagents Import";
                 } else if (btn.classList.contains('btn-import-addon')) {
-                    correctLabel = "Lumber Import";
+                    defaultLabel = "Lumber Import";
                 } else if (btn.id === 'btnOpenCart') {
-                    correctLabel = "🛒 Cart";
+                    defaultLabel = "🛒 Cart";
                 }
 
                 // 3. Копіюємо текст
-                navigator.clipboard.writeText(text).catch(function(err) {
-                    console.error(err);
-                });
+                navigator.clipboard.writeText(text).catch(err => console.error(err));
 
-                // 4. Ставимо статус "Скопійовано"
+                // 4. Ставимо статус "Успіх"
                 btn.innerText = "Скопійовано!";
-                btn.style.backgroundColor = "#a335ee"; 
+                btn.style.backgroundColor = "#a335ee"; // Фіолетовий
 
-                // 5. Запускаємо НОВИЙ таймер
-                const newTimer = setTimeout(function() {
-                    btn.innerText = correctLabel; // Повертаємо захардкоджену назву
-                    btn.style.backgroundColor = ""; // Скидаємо колір
-                    btn.dataset.timerId = "";
+                // 5. Запускаємо новий таймер відновлення
+                btn.dataset.timer = setTimeout(() => {
+                    btn.innerText = defaultLabel; // Повертаємо правильний текст
+                    btn.style.backgroundColor = ""; // ВАЖЛИВО: Просто скидаємо колір, щоб повернувся ваш CSS (зелений/синій)
+                    delete btn.dataset.timer;
                 }, 2000);
-                
-                // Зберігаємо ID таймера в кнопку
-                btn.dataset.timerId = newTimer.toString();
             }
 
             function createItemHTML(item) { return generateItemHtmlString(item, true); }
