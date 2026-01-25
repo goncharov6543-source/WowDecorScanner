@@ -274,6 +274,18 @@ async function generateHTML() {
     const jsonPayload = JSON.stringify(sortedItems);
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
 
+    // Список професій для генерації модалки імпорту
+    const professionsList = ['Alchemy', 'Blacksmithing', 'Enchanting', 'Engineering', 'Inscription', 'Jewelcrafting', 'Leatherworking', 'Tailoring'];
+    let profImportInputsHtml = '';
+    professionsList.forEach(prof => {
+        profImportInputsHtml += `
+            <div class="prof-input-group">
+                <label for="prof-input-${prof}">${prof}</label>
+                <textarea id="prof-input-${prof}" class="prof-textarea" placeholder="CharacterName - 100/100 (один на рядок)"></textarea>
+            </div>
+        `;
+    });
+
     const html = `
     <!DOCTYPE html>
     <html lang="uk">
@@ -284,6 +296,14 @@ async function generateHTML() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
+            /* Стилізація головного скролбару сторінки */
+            html, body { scrollbar-width: thin; scrollbar-color: #2a2b2e transparent; }
+            body::-webkit-scrollbar { width: 10px; }
+            body::-webkit-scrollbar-track { background: transparent; }
+            body::-webkit-scrollbar-thumb { background: #2a2b2e; border-radius: 5px; border: 2px solid #0f1011; }
+            body::-webkit-scrollbar-thumb:hover { background: #333; }
+            body::-webkit-scrollbar-button { display: none; }
+
             body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
             .container { max-width: 1300px; margin: 0 auto; padding-bottom: 50px; }
             .header-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; gap: 5px; }
@@ -295,7 +315,6 @@ async function generateHTML() {
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
 
-            /* Загальний стиль для круглих сірих кнопок (i, reset) */
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
 
@@ -307,10 +326,11 @@ async function generateHTML() {
             .btn-import:hover { background: #8a2be2; }
             .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
-            
-            /* Повертаємо стиль прямокутної кнопки Cart */
             .btn-cart { background: #ff9800; display: flex; align-items: center; gap: 8px; }
             .btn-cart:hover { background: #f57c00; }
+            /* Стиль нової кнопки Professions */
+            .btn-professions { background: #673ab7; display: flex; align-items: center; gap: 8px; }
+            .btn-professions:hover { background: #5e35b1; }
             
             .stats-wrapper { position: relative; display: flex; align-items: center; }
             .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; } 
@@ -354,7 +374,6 @@ async function generateHTML() {
             .chart-wrapper { background: #111; border: 1px solid #2a2b2e; border-radius: 8px; padding: 10px; height: 250px; position: relative; }
             .chart-controls { position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; gap: 5px; }
             .chart-btn { background: #222; border: 1px solid #333; color: #888; padding: 2px 8px; border-radius: 3px; font-size: 11px; cursor: pointer; height: auto; }
-            .chart-btn:hover { color: #fff; background: #333; }
             .chart-btn.active { background: #0070dd; color: #fff; border-color: #0070dd; }
             h4 { margin: 0 0 15px 0; color: #888; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }
             .recipe-list { list-style: none; padding: 0; margin: 0; }
@@ -367,19 +386,52 @@ async function generateHTML() {
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
             .name-text.copied .copy-tooltip { opacity: 1; }
 
+            /* Стилі для модальних вікон */
             .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
             .modal-overlay.active { opacity: 1; visibility: visible; }
-
             .modal-content { background: #151618; width: 90%; max-width: 1200px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s ease; }
             .modal-overlay.active .modal-content { transform: scale(1); }
-
             .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1b1d; }
             .modal-title { font-size: 1.5em; color: #fff; margin: 0; }
             .modal-close { background: transparent; border: 1px solid #444; color: #888; font-size: 26px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; padding: 0; cursor: pointer; transition: 0.2s; }
             .modal-close:hover { background: #333; color: #fff; border-color: #fff; }
             .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
             .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
+            
+            /* Стилі для модалки імпорту професій */
+            #profModal .modal-content { max-width: 800px; height: auto; max-height: 90%; }
+            .prof-import-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+            .prof-input-group { display: flex; flex-direction: column; gap: 8px; }
+            .prof-input-group label { font-weight: bold; color: #a335ee; }
+            .prof-textarea { background: #1a1a1a; border: 1px solid #333; color: #e0e0e0; padding: 10px; border-radius: 6px; resize: vertical; height: 100px; font-family: monospace; }
+            .prof-textarea:focus { border-color: #673ab7; outline: none; }
+            .modal-footer { padding: 20px; border-top: 1px solid #333; background: #1a1b1d; display: flex; justify-content: flex-end; }
+            .btn-save-prof { background: #4caf50; }
+            .btn-save-prof:hover { background: #43a047; }
 
+            /* Стилі для Profession Summary Card */
+            .prof-summary-container { margin-bottom: 20px; display: none; } /* Приховано за замовчуванням */
+            .prof-summary-card { background: #1a1b1d; border: 1px solid #2a2b2e; border-radius: 8px; overflow: hidden; transition: all 0.3s ease; }
+            .prof-summary-card:hover { border-color: #444; background: #202124; }
+            .prof-summary-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+            .prof-summary-title { display: flex; align-items: center; gap: 10px; font-size: 1.1em; font-weight: bold; }
+            .prof-badges { display: flex; gap: 8px; }
+            .prof-badge { background: #252629; padding: 4px 10px; border-radius: 4px; font-size: 0.9em; color: #aaa; border: 1px solid #333; }
+            .prof-toggle-icon { transition: transform 0.3s ease; font-size: 1.2em; color: #888; }
+            .prof-summary-card.active .prof-toggle-icon { transform: rotate(180deg); }
+            .prof-summary-details { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; }
+            .prof-summary-card.active .prof-summary-details { max-height: 1000px; } /* Достатня висота для розкриття */
+            .prof-details-content { padding: 20px; }
+            .prof-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+            .prof-list-item { background: #111; padding: 10px 15px; border-radius: 6px; border: 1px solid #333; display: flex; flex-direction: column; gap: 5px; }
+            .prof-char-name { color: #fff; font-weight: bold; }
+            .prof-skill-row { display: flex; align-items: center; justify-content: space-between; font-size: 0.9em; }
+            .prof-name { color: #a335ee; }
+            .skill-bar-container { flex-grow: 1; height: 8px; background: #222; border-radius: 4px; margin: 0 10px; overflow: hidden; position: relative; border: 1px solid #333; }
+            .skill-bar-fill { height: 100%; background: linear-gradient(90deg, #673ab7, #a335ee); width: 0%; transition: width 0.5s ease; }
+            .skill-text { font-family: monospace; color: #ccc; font-size: 0.85em; }
+
+            /* Скролбар для модалок */
             .modal-body::-webkit-scrollbar { width: 10px; }
             .modal-body::-webkit-scrollbar-track { background: transparent; } 
             .modal-body::-webkit-scrollbar-thumb { background: #2a2b2e; border-radius: 5px; border: 2px solid #0f1011; } 
@@ -408,13 +460,30 @@ async function generateHTML() {
                     <div class="buttons-group">
                         <div id="btnReset" class="stats-icon btn-reset" title="Очистити все">↻</div>
                         
+                        <button id="btnOpenProfImport" class="btn-professions">🔨 Professions</button>
+
                         <button id="btnOpenCart" class="btn-cart">🛒 Cart</button>
-                        
                         <button class="btn-import-addon">Lumber Import</button>
                         <button class="btn-import">Reagents Import</button>
                     </div>
                 </div>
             </div>
+
+            <div id="profSummaryContainer" class="prof-summary-container">
+                <div class="prof-summary-card" onclick="toggleProfSummary(this)">
+                    <div class="prof-summary-header">
+                        <div class="prof-summary-title">
+                            <span>🔨 Imported Professions</span>
+                            <div id="profBadges" class="prof-badges"></div>
+                        </div>
+                        <div class="prof-toggle-icon">▼</div>
+                    </div>
+                    <div class="prof-summary-details">
+                        <div id="profDetailsContent" class="prof-details-content"></div>
+                    </div>
+                </div>
+            </div>
+
             <div id="list"></div>
             <div class="load-more-container"><button id="btnLoadMore" class="btn-load-more">Показати ще</button></div>
         </div>
@@ -429,6 +498,24 @@ async function generateHTML() {
             </div>
         </div>
 
+        <div id="profModal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">🔨 Import Professions</h2>
+                    <button id="btnCloseProf" class="modal-close">×</button>
+                </div>
+                <div class="modal-body">
+                    <p style="color:#888; margin-bottom: 20px;">Вставте дані у форматі: <code>CharacterName - Skill/MaxSkill</code> (наприклад: <code>Twarisc - 100/100</code>) або просто <code>CharacterName</code>. Кожен запис з нового рядка.</p>
+                    <div class="prof-import-grid">
+                        ${profImportInputsHtml}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnSaveProfs" class="btn-save-prof">Save Professions</button>
+                </div>
+            </div>
+        </div>
+
         <script>
             const ALL_DATA = ${jsonPayload};
             let activeData = ALL_DATA; 
@@ -438,9 +525,15 @@ async function generateHTML() {
             let chartRanges = {}; 
             
             let savedState = JSON.parse(localStorage.getItem('wowScnr_state')) || {};
+            // Стан для збережених професій
+            let importedProfs = JSON.parse(localStorage.getItem('wowScnr_profs')) || {};
 
             function saveToStorage() {
                 localStorage.setItem('wowScnr_state', JSON.stringify(savedState));
+            }
+            
+            function saveProfsToStorage() {
+                localStorage.setItem('wowScnr_profs', JSON.stringify(importedProfs));
             }
 
             document.addEventListener('change', (e) => {
@@ -472,6 +565,110 @@ async function generateHTML() {
                     setTimeout(() => drawChart(itemId), 50);
                 }
             }
+
+            // --- Функції для Професій ---
+            function openProfImport() {
+                // Заповнюємо textarea збереженими даними
+                for (const prof in importedProfs) {
+                    const textarea = document.getElementById(\`prof-input-\${prof}\`);
+                    if (textarea) {
+                        textarea.value = importedProfs[prof].map(p => {
+                            let line = p.char;
+                            if (p.skill && p.max) line += \` - \${p.skill}/\${p.max}\`;
+                            return line;
+                        }).join('\\n');
+                    }
+                }
+                document.getElementById('profModal').classList.add('active');
+            }
+
+            function closeProfImport() {
+                document.getElementById('profModal').classList.remove('active');
+            }
+
+            function handleSaveProfs() {
+                const textareas = document.querySelectorAll('.prof-textarea');
+                let newProfs = {};
+                let hasData = false;
+
+                textareas.forEach(ta => {
+                    const profName = ta.id.replace('prof-input-', '');
+                    const lines = ta.value.split('\\n').map(l => l.trim()).filter(l => l);
+                    
+                    if (lines.length > 0) {
+                        hasData = true;
+                        newProfs[profName] = [];
+                        lines.forEach(line => {
+                            // Парсинг рядка: "Name - 100/100" або "Name"
+                            const match = line.match(/^(.+?)(?:\\s*-\\s*(\\d+)\\/(\\d+))?$/);
+                            if (match) {
+                                newProfs[profName].push({
+                                    char: match[1].trim(),
+                                    skill: match[2] || null,
+                                    max: match[3] || null
+                                });
+                            }
+                        });
+                    }
+                });
+
+                importedProfs = newProfs;
+                saveProfsToStorage();
+                closeProfImport();
+                renderProfSummary();
+                if (hasData) {
+                    // alert("Професії збережено!");
+                }
+            }
+
+            function toggleProfSummary(card) {
+                card.classList.toggle('active');
+            }
+
+            function renderProfSummary() {
+                const container = document.getElementById('profSummaryContainer');
+                const badgesContainer = document.getElementById('profBadges');
+                const contentContainer = document.getElementById('profDetailsContent');
+                
+                const profKeys = Object.keys(importedProfs);
+                if (profKeys.length === 0) {
+                    container.style.display = 'none';
+                    return;
+                }
+
+                // 1. Рендеримо бейджі (collapsed view)
+                badgesContainer.innerHTML = profKeys.map(prof => {
+                    const count = importedProfs[prof].length;
+                    return \`<span class="prof-badge">\${prof} x\${count}</span>\`;
+                }).join('');
+
+                // 2. Рендеримо детальний список (expanded view)
+                let detailsHtml = '<ul class="prof-list">';
+                profKeys.forEach(prof => {
+                    importedProfs[prof].forEach(p => {
+                        const skillPercent = (p.skill && p.max) ? (p.skill / p.max * 100) : 0;
+                        const skillText = (p.skill && p.max) ? \`\${p.skill}/\${p.max}\` : 'N/A';
+                        
+                        detailsHtml += \`
+                            <li class="prof-list-item">
+                                <div class="prof-char-name">\${p.char}</div>
+                                <div class="prof-skill-row">
+                                    <span class="prof-name">\${prof}</span>
+                                    <div class="skill-bar-container">
+                                        <div class="skill-bar-fill" style="width: \${skillPercent}%"></div>
+                                    </div>
+                                    <span class="skill-text">\${skillText}</span>
+                                </div>
+                            </li>
+                        \`;
+                    });
+                });
+                detailsHtml += '</ul>';
+                contentContainer.innerHTML = detailsHtml;
+                
+                container.style.display = 'block';
+            }
+            // ---------------------------
             
             function setChartRange(btn, itemId, range) {
                 const parent = btn.parentElement;
@@ -568,16 +765,22 @@ async function generateHTML() {
             }
 
             function handleReset() {
-                if(!confirm("Очистити всі фільтри та вибрані предмети?")) return;
+                if(!confirm("Очистити всі фільтри, вибрані предмети та імпортовані професії?")) return;
+                // Очищаємо обидва сторейджа
                 localStorage.removeItem('wowScnr_state');
+                localStorage.removeItem('wowScnr_profs');
                 savedState = {};
+                importedProfs = {};
+                
                 document.querySelectorAll('.check-input').forEach(el => el.checked = false);
                 document.querySelectorAll('.qty-input').forEach(el => el.value = '');
                 document.getElementById('smartSearchInput').value = '';
+                
                 activeData = ALL_DATA;
                 currentIndex = 0;
                 document.getElementById('list').innerHTML = '';
                 loadMore();
+                renderProfSummary(); // Оновлюємо summary (воно сховається)
             }
 
             function openCart() {
@@ -793,6 +996,9 @@ async function generateHTML() {
 
             document.addEventListener('DOMContentLoaded', () => {
                 loadMore();
+                // Відображаємо summary, якщо є збережені дані
+                renderProfSummary();
+
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
                 document.getElementById('smartSearchInput').addEventListener('input', handleSearch);
                 document.querySelector('.btn-import-addon').addEventListener('click', handleAddonImport);
@@ -800,11 +1006,15 @@ async function generateHTML() {
                 
                 document.getElementById('btnOpenCart').addEventListener('click', openCart);
                 document.getElementById('btnCloseCart').addEventListener('click', closeCart);
-                document.getElementById('btnReset').addEventListener('click', handleReset);
+                document.getElementById('cartModal').addEventListener('click', (e) => { if (e.target.id === 'cartModal') closeCart(); });
                 
-                document.getElementById('cartModal').addEventListener('click', (e) => {
-                    if (e.target.id === 'cartModal') closeCart();
-                });
+                document.getElementById('btnReset').addEventListener('click', handleReset);
+
+                // Лісенери для Професій
+                document.getElementById('btnOpenProfImport').addEventListener('click', openProfImport);
+                document.getElementById('btnCloseProf').addEventListener('click', closeProfImport);
+                document.getElementById('btnSaveProfs').addEventListener('click', handleSaveProfs);
+                document.getElementById('profModal').addEventListener('click', (e) => { if (e.target.id === 'profModal') closeProfImport(); });
             });
         </script>
         <script src="import.js"></script>
