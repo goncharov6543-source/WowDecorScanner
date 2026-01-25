@@ -315,10 +315,13 @@ async function generateHTML() {
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
 
+            /* Загальний стиль для круглих сірих кнопок */
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
 
             .btn-reset { font-size: 22px; } 
+            .btn-cart-icon { font-size: 20px; }
+            .btn-prof-icon { font-size: 20px; }
 
             .buttons-group { display: flex; gap: 15px; align-items: center; }
             button { border: none; padding: 0 20px; border-radius: 4px; cursor: pointer; font-weight: bold; height: 42px; color: white; transition: 0.2s; }
@@ -326,11 +329,7 @@ async function generateHTML() {
             .btn-import:hover { background: #8a2be2; }
             .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
-            .btn-cart { background: #ff9800; display: flex; align-items: center; gap: 8px; }
-            .btn-cart:hover { background: #f57c00; }
-            /* Стиль нової кнопки Professions */
-            .btn-professions { background: #673ab7; display: flex; align-items: center; gap: 8px; }
-            .btn-professions:hover { background: #5e35b1; }
+            /* Старі стилі кнопок видалено */
             
             .stats-wrapper { position: relative; display: flex; align-items: center; }
             .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; } 
@@ -374,6 +373,7 @@ async function generateHTML() {
             .chart-wrapper { background: #111; border: 1px solid #2a2b2e; border-radius: 8px; padding: 10px; height: 250px; position: relative; }
             .chart-controls { position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; gap: 5px; }
             .chart-btn { background: #222; border: 1px solid #333; color: #888; padding: 2px 8px; border-radius: 3px; font-size: 11px; cursor: pointer; height: auto; }
+            .chart-btn:hover { color: #fff; background: #333; }
             .chart-btn.active { background: #0070dd; color: #fff; border-color: #0070dd; }
             h4 { margin: 0 0 15px 0; color: #888; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }
             .recipe-list { list-style: none; padding: 0; margin: 0; }
@@ -410,7 +410,7 @@ async function generateHTML() {
             .btn-save-prof:hover { background: #43a047; }
 
             /* Стилі для Profession Summary Card */
-            .prof-summary-container { margin-bottom: 20px; display: none; } /* Приховано за замовчуванням */
+            .prof-summary-container { margin-bottom: 20px; display: none; } 
             .prof-summary-card { background: #1a1b1d; border: 1px solid #2a2b2e; border-radius: 8px; overflow: hidden; transition: all 0.3s ease; }
             .prof-summary-card:hover { border-color: #444; background: #202124; }
             .prof-summary-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
@@ -420,7 +420,7 @@ async function generateHTML() {
             .prof-toggle-icon { transition: transform 0.3s ease; font-size: 1.2em; color: #888; }
             .prof-summary-card.active .prof-toggle-icon { transform: rotate(180deg); }
             .prof-summary-details { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #151618; border-top: 1px solid #2a2b2e; }
-            .prof-summary-card.active .prof-summary-details { max-height: 1000px; } /* Достатня висота для розкриття */
+            .prof-summary-card.active .prof-summary-details { max-height: 1000px; } 
             .prof-details-content { padding: 20px; }
             .prof-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
             .prof-list-item { background: #111; padding: 10px 15px; border-radius: 6px; border: 1px solid #333; display: flex; flex-direction: column; gap: 5px; }
@@ -460,9 +460,10 @@ async function generateHTML() {
                     <div class="buttons-group">
                         <div id="btnReset" class="stats-icon btn-reset" title="Очистити все">↻</div>
                         
-                        <button id="btnOpenProfImport" class="btn-professions">🔨 Professions</button>
+                        <div id="btnOpenProfImport" class="stats-icon btn-prof-icon" title="Імпорт професій (Import Professions)">👤</div>
 
-                        <button id="btnOpenCart" class="btn-cart">🛒 Cart</button>
+                        <div id="btnOpenCart" class="stats-icon btn-cart-icon" title="Відкрити кошик">🛒</div>
+
                         <button class="btn-import-addon">Lumber Import</button>
                         <button class="btn-import">Reagents Import</button>
                     </div>
@@ -616,9 +617,6 @@ async function generateHTML() {
                 saveProfsToStorage();
                 closeProfImport();
                 renderProfSummary();
-                if (hasData) {
-                    // alert("Професії збережено!");
-                }
             }
 
             function toggleProfSummary(card) {
@@ -996,7 +994,6 @@ async function generateHTML() {
 
             document.addEventListener('DOMContentLoaded', () => {
                 loadMore();
-                // Відображаємо summary, якщо є збережені дані
                 renderProfSummary();
 
                 document.getElementById('btnLoadMore').addEventListener('click', loadMore);
@@ -1010,7 +1007,6 @@ async function generateHTML() {
                 
                 document.getElementById('btnReset').addEventListener('click', handleReset);
 
-                // Лісенери для Професій
                 document.getElementById('btnOpenProfImport').addEventListener('click', openProfImport);
                 document.getElementById('btnCloseProf').addEventListener('click', closeProfImport);
                 document.getElementById('btnSaveProfs').addEventListener('click', handleSaveProfs);
