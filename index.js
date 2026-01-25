@@ -186,31 +186,40 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
-    // --- (Calculation Logic - Unchanged) ---
+    // --- 1. Підготовка даних (Node.js) ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
+        
         Object.keys(marketData).forEach(realmName => {
             const price = marketData[realmName][itemId];
             if (price) listings.push({ r: realmName, p: price });
         });
+
         if (commoditiesMap[itemId]) {
             for(let i=0; i<3; i++) listings.push({ r: "Region (Commodity)", p: commoditiesMap[itemId] });
         }
+
         if (listings.length === 0) return { valid: false };
+
         listings.sort((a, b) => a.p - b.p);
         const bestListing = listings[0];
+        
         updateHistory(itemId, bestListing.p);
+
         let craftCost = 0;
         let missingReagents = false;
         let reagentsList = [];
+        
         if (item.recipe) {
             item.recipe.forEach(reag => {
                 const reagId = safeId(reag.id);
                 const reagPrice = reag.fixPrice || commoditiesMap[reagId];
                 const reagMeta = metaData[reagId] || { icon: '', name: '?' };
                 if (!reagPrice) missingReagents = true;
+                
                 craftCost += (reagPrice || 0) * reag.count;
+                
                 reagentsList.push({
                     name: reagMeta.name,
                     count: reag.count,
@@ -219,10 +228,12 @@ async function generateHTML() {
                 });
             });
         }
+
         let lumberPrice = -Infinity; 
         if (item.craftQty > 0 && !missingReagents) {
             lumberPrice = (bestListing.p - craftCost) / item.craftQty;
         }
+
         return {
             valid: true,
             itemId,
@@ -247,6 +258,7 @@ async function generateHTML() {
         .filter(data => data.valid)
         .sort((a, b) => b.lumberPrice - a.lumberPrice);
 
+    // --- Stats ---
     const expStats = {};
     sortedItems.forEach(item => {
         if (item.lumberPrice > -999999) {
@@ -273,9 +285,10 @@ async function generateHTML() {
     });
 
     const jsonPayload = JSON.stringify(sortedItems);
-    const jsonSkillReq = JSON.stringify(skillNeededData); // PASS DATA TO CLIENT
+    const jsonSkillReq = JSON.stringify(skillNeededData);
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
 
+    // --- 2. HTML Template ---
     const html = `
     <!DOCTYPE html>
     <html lang="uk">
@@ -286,6 +299,7 @@ async function generateHTML() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
+            /* BASE STYLES */
             html, body { scrollbar-width: thin; scrollbar-color: #2a2b2e transparent; }
             body::-webkit-scrollbar { width: 10px; }
             body::-webkit-scrollbar-track { background: transparent; }
@@ -304,11 +318,12 @@ async function generateHTML() {
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
 
-            /* REMOVE INPUT ARROWS (SPINNERS) - FORCE */
+            /* FORCE REMOVE INPUT ARROWS */
             input::-webkit-outer-spin-button,
             input::-webkit-inner-spin-button { -webkit-appearance: none !important; margin: 0 !important; }
             input[type=number] { -moz-appearance: textfield !important; }
 
+            /* BUTTONS & ICONS */
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
             .btn-reset { font-size: 22px; } 
@@ -322,10 +337,10 @@ async function generateHTML() {
             .btn-cart-rect { background: #333; color: #fff; border: 1px solid #555; gap: 8px; }
             .btn-cart-rect:hover { background: #444; border-color: #666; }
             
+            /* INFO TOOLTIP */
             .stats-wrapper { position: relative; display: flex; align-items: center; }
             .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; background: #333; color: #fff; border-color: #555; } 
             .stats-icon.info-btn:hover { background: #ffd700; color: #000; border-color: #ffd700; }
-            
             .stats-tooltip { visibility: hidden; opacity: 0; position: absolute; top: 120%; left: 0; width: 280px; background: #1a1b1d; border: 1px solid #444; border-radius: 8px; padding: 15px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transition: 0.2s; transform: translateY(-5px); }
             .stats-wrapper:hover .stats-tooltip { visibility: visible; opacity: 1; transform: translateY(0); }
             .stats-title { font-size: 13px; color: #888; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; text-align: center; letter-spacing: 1px; }
@@ -333,20 +348,15 @@ async function generateHTML() {
             .stat-name { color: #ccc; }
             .stat-val { font-weight: bold; }
             
-            /* --- TOP RIGHT CHARACTERS SECTION --- */
+            /* TOP RIGHT SECTION (CHARACTERS) */
             #topRightSection { position: absolute; top: 20px; right: 30px; z-index: 100; }
             
-            /* Add Button */
             .add-char-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
             .add-char-circle {
-                width: 60px; height: 60px;
-                border: 2px dashed #444;
-                border-radius: 50%;
+                width: 60px; height: 60px; border: 2px dashed #444; border-radius: 50%;
                 display: flex; align-items: center; justify-content: center;
-                font-size: 32px; color: #444;
-                transition: all 0.2s;
-                background: transparent;
-                line-height: 1; padding-bottom: 4px; 
+                font-size: 32px; color: #444; transition: all 0.2s;
+                background: transparent; line-height: 1; padding-bottom: 4px; 
             }
             .add-char-btn:hover .add-char-circle { border-color: #0070dd; color: #0070dd; }
             .add-char-label { margin-top: 10px; font-size: 13px; color: #444; transition: color 0.2s; }
@@ -376,27 +386,19 @@ async function generateHTML() {
             }
             .btn-add-new-char:hover { border-color: #666; color: #fff; background: #1a1a1a; }
 
-            /* Character Tile Style */
+            /* CHAR TILE */
             .char-tile {
-                display: flex; align-items: center;
-                background: #1a1b1d;
-                border: 2px solid #0070dd;
-                border-radius: 30px;
-                padding: 6px 10px 6px 6px;
-                gap: 10px;
-                position: relative;
-                transition: all 0.2s;
-                min-height: 42px;
+                display: flex; align-items: center; background: #1a1b1d;
+                border: 2px solid #0070dd; border-radius: 30px;
+                padding: 6px 10px 6px 6px; gap: 10px;
+                position: relative; transition: all 0.2s; min-height: 42px;
             }
             .char-tile:hover { background: #222; box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); }
             
             .char-avatar { 
-                width: 40px; height: 40px; 
-                border-radius: 50%; 
-                border: 2px solid #ffd700; 
-                background-size: cover; background-position: center; background-repeat: no-repeat;
-                background-color: #222; 
-                flex-shrink: 0;
+                width: 40px; height: 40px; border-radius: 50%; 
+                border: 2px solid #ffd700; background-color: #222; 
+                background-size: cover; background-position: center; flex-shrink: 0;
             }
             .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; flex-grow: 1; padding-right: 30px; }
             .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -406,14 +408,13 @@ async function generateHTML() {
                 position: absolute; width: 22px; height: 22px; border-radius: 50%;
                 display: flex; align-items: center; justify-content: center;
                 color: white; border: none; cursor: pointer;
-                transition: transform 0.2s; z-index: 10;
-                flex-shrink: 0; padding: 0;
+                transition: transform 0.2s; z-index: 10; flex-shrink: 0; padding: 0;
             }
             .tile-btn:hover { transform: scale(1.15); }
             .tile-btn-edit { top: -6px; left: -6px; background: #007bff; font-size: 12px; } 
             .tile-btn-delete { top: -6px; right: -6px; background: #dc3545; font-size: 14px; line-height: 1; } 
 
-            /* Modal General */
+            /* MODALS */
             .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
             .modal-overlay.active { opacity: 1; visibility: visible; }
             .modal-content { background: #151618; width: 90%; max-width: 1200px; height: 85%; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s ease; }
@@ -423,14 +424,12 @@ async function generateHTML() {
             .modal-close { 
                 background: transparent; border: 1px solid #444; color: #888; font-size: 26px; 
                 width: 36px; height: 36px; border-radius: 50%; padding: 0; 
-                cursor: pointer; transition: 0.2s;
-                display: flex; align-items: center; justify-content: center; line-height: 1;
+                cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; line-height: 1;
             }
             .modal-close:hover { background: #333; color: #fff; border-color: #fff; }
             .modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #0f1011; }
             .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
             
-            /* Import Modal Specifics */
             .import-modal-content { background: #121212; border: 1px solid #333; max-width: 800px; width: 90%; border-radius: 8px; }
             .import-input-group { margin-bottom: 20px; }
             .import-label { display: block; font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
@@ -439,24 +438,18 @@ async function generateHTML() {
             .save-btn { width: 100%; background: #0070dd; color: white; border: none; padding: 12px; font-weight: bold; font-size: 14px; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
             .save-btn:hover { background: #005bb5; }
 
-            /* Character Details Modal */
             .details-modal-content { max-width: 900px; height: auto; max-height: 80%; }
             .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
             .prof-col { display: flex; flex-direction: column; gap: 15px; }
-            
-            /* Updated Profession Title Styles */
-            .prof-title-wrapper {
-                display: flex; align-items: center; gap: 10px;
-                border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px;
-            }
+            .prof-title-wrapper { display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px; }
             .prof-icon { width: 32px; height: 32px; border-radius: 4px; border: 1px solid #444; }
             .prof-title { color: #ffd700; font-size: 1.1em; font-weight: bold; text-transform: uppercase; }
-            
             .prof-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
             .prof-header { display: flex; justify-content: space-between; font-size: 14px; color: #fff; }
             .skill-bar-bg { width: 100%; height: 10px; background: #333; border-radius: 5px; overflow: hidden; border: 1px solid #444; }
             .skill-bar-fill { height: 100%; background: linear-gradient(90deg, #0070dd, #a335ee); width: 0%; border-radius: 5px; transition: width 0.5s ease; }
 
+            /* MAIN LIST ITEMS */
             .item-card { background: #1a1b1d; border-radius: 8px; margin-bottom: 12px; border: 1px solid #2a2b2e; transition: all 0.2s ease; }
             .item-card:hover { border-color: #444; background: #202124; }
             .item-card.active { border-color: #ffd700 !important; box-shadow: 0 0 15px rgba(255, 215, 0, 0.15); }
@@ -495,10 +488,12 @@ async function generateHTML() {
             .server-price { color: #ffd700; font-weight: bold; }
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
             .name-text.copied .copy-tooltip { opacity: 1; }
-            #cartBody .col-lumber, #cartBody .col-price { cursor: default; }
             
-            /* Crafter Name in List */
-            .crafter-name { color: #ffd700; font-weight: bold; font-size: 0.9em; margin-right: 15px; }
+            /* LOAD MORE */
+            .load-more-container { display: flex; justify-content: center; margin-top: 30px; width: 100%; }
+
+            /* CRAFTER BADGE */
+            .crafter-badge { color: #ffd700; border: 1px solid #ffd700; background: rgba(255, 215, 0, 0.1); } 
         </style>
     </head>
     <body>
@@ -609,11 +604,11 @@ async function generateHTML() {
                 "Mists of Pandaria": "Pandaria",
                 "Warlords of Draenor": "Draenor",
                 "Legion": "Legion",
-                "Battle for Azeroth": "Zandalari", // or Kul Tiran, checking generic BFA match
+                "Battle for Azeroth": "Zandalari", 
                 "Shadowlands": "Shadowlands",
                 "Dragonflight": "Dragon Isles",
                 "The War Within": "Khaz Algari",
-                "Vanilla": "Classic" // sometimes called Classic
+                "Vanilla": "Classic" 
             };
 
             function saveToStorage() { localStorage.setItem('wowScnr_state', JSON.stringify(savedState)); }
@@ -648,7 +643,6 @@ async function generateHTML() {
                 function traverse(node) {
                     if (typeof node !== 'object' || node === null) return;
                     if (node.name && (node.skill !== undefined || node.value !== undefined)) {
-                        // Attempt to detect main profession name
                         const n = node.name.toLowerCase();
                         if(title === "Unknown Profession") {
                             if(n.includes("inscription")) title = "Inscription";
@@ -676,35 +670,23 @@ async function generateHTML() {
             function findCrafters(itemExp, itemProf) {
                 if (!itemExp || !itemProf || parsedChars.length === 0) return null;
                 
-                // 1. Get required skill from SKILL_REQS
-                // SKILL_REQS structure: [ { "Inscription": [ {"Classic": 240}, ... ] }, ... ]
-                
-                // Find profession object
                 const profObj = SKILL_REQS.find(p => p[itemProf]);
                 if (!profObj) return null;
                 
-                // Find expansion requirement
                 const mappedExp = EXPANSION_MAP[itemExp] || itemExp;
                 const reqArray = profObj[itemProf];
                 
-                // reqArray is [ {"Classic": 240}, {"Outland": 60} ... ]
                 const expReqObj = reqArray.find(r => r[mappedExp] !== undefined);
                 if (!expReqObj) return null;
                 
                 const requiredSkill = expReqObj[mappedExp];
                 
-                // 2. Check Characters
                 let validCrafters = [];
                 
                 parsedChars.forEach(char => {
                     [char.p1, char.p2].forEach(pData => {
                         if (!pData) return;
-                        
-                        // Check if profession matches (e.g. Inscription)
                         if (pData.title === itemProf) {
-                            // Check if they have the specific expansion skill
-                            // pData.skills is array of {name: "Northrend Inscription", skill: 50...}
-                            
                             const skillEntry = pData.skills.find(s => s.name.includes(mappedExp));
                             if (skillEntry) {
                                 if (skillEntry.skill >= requiredSkill) {
@@ -968,10 +950,11 @@ async function generateHTML() {
                 });
             }
 
-            function copyName(event, text) {
-                event.stopPropagation();
+            function copyName(el) {
+                // Get the text content of the element's first child (the name text)
+                // This ignores the tooltip span
+                const text = el.firstChild.textContent;
                 navigator.clipboard.writeText(text).then(() => {
-                    const el = event.currentTarget;
                     el.classList.add('copied');
                     setTimeout(() => el.classList.remove('copied'), 1500);
                 });
@@ -1031,7 +1014,17 @@ async function generateHTML() {
                         if (exp && totalLumber > 0) {
                             if (!summary[exp]) summary[exp] = { totalLumber: 0, items: [] };
                             summary[exp].totalLumber += totalLumber;
-                            summary[exp].items.push({ name: itemData.name, price: itemData.bestPrice, count: count });
+                            
+                            // CRAFTER LOGIC HERE
+                            const crafter = findCrafters(itemData.exp, itemData.prof) || "";
+                            
+                            summary[exp].items.push({ 
+                                name: itemData.name, 
+                                price: itemData.bestPrice, 
+                                count: count,
+                                crafter: crafter,
+                                craftCost: Math.floor(itemData.craftCost)
+                            });
                         }
                     }
                 });
@@ -1085,7 +1078,8 @@ async function generateHTML() {
                 
                 // Logic to check crafters
                 const crafterName = findCrafters(item.exp, item.prof);
-                const crafterHtml = crafterName ? \`<div class="crafter-name">\${crafterName}</div>\` : '';
+                // Apply same style as info-badge but keep text yellow
+                const crafterHtml = crafterName ? \`<div class="info-badge crafter-badge">\${crafterName}</div>\` : '';
 
                 let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
                 const top10Html = item.top10.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
@@ -1093,11 +1087,12 @@ async function generateHTML() {
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
                 const toggleAttr = expandale ? \`onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})"\` : '';
 
+                // Note: onclick="copyName(this)" simplifies the escaping issue
                 return \`<div class="item-card" data-id="\${item.itemId}" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}">
                     <div class="main-row">
                         <div class="main-row-left">
                             <div class="col-icon"><img src="\${item.icon}"></div>
-                            <div class="col-name"><div class="name-text" onclick="copyName(event, '\${item.name.replace(/'/g, "\\\\'")}')">\${item.name}<span class="copy-tooltip">Скопійовано!</span></div></div>
+                            <div class="col-name"><div class="name-text" onclick="copyName(this)">\${item.name}<span class="copy-tooltip">Скопійовано!</span></div></div>
                             \${crafterHtml}
                             \${item.exp ? \`<div class="info-badge">\${item.exp}</div>\` : ''}
                             \${item.prof ? \`<div class="info-badge">\${item.prof}</div>\` : ''}
