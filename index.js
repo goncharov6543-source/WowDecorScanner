@@ -496,6 +496,52 @@ async function generateHTML() {
 
             /* CRAFTER BADGE (TASK 2: Removed specific coloring, now inherits info-badge gray) */
             /* .crafter-badge { } */
+            /* --- ОНОВЛЕНИЙ СТИЛЬ ПЛИТОЧОК (Issue 4: Темне золото) --- */
+            .char-tile {
+                display: flex; align-items: center; 
+                background: linear-gradient(145deg, #2b2515, #1a1a1a); /* Темний золотий відтінок */
+                border: 1px solid #7c6a28; /* Золота рамка */
+                border-radius: 30px;
+                padding: 6px 10px 6px 6px; gap: 10px;
+                position: relative; transition: all 0.2s; min-height: 42px;
+                margin-bottom: 10px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            }
+            .char-tile:hover { 
+                background: linear-gradient(145deg, #3d341a, #222);
+                border-color: #ffd700; 
+                box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); 
+            }
+            .char-name { font-weight: bold; color: #e6c85e; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+            /* --- ВИПРАВЛЕННЯ ІМПОРТ МОДАЛКИ (Issue 3: Хрестик праворуч) --- */
+            .import-modal-header {
+                display: flex;
+                justify-content: space-between; /* Розсовує заголовок і хрестик по краях */
+                align-items: center;
+                padding: 15px 20px;
+                background: #1a1b1d;
+                border-bottom: 1px solid #333;
+                width: 100%;
+                box-sizing: border-box; 
+            }
+            .import-modal-title { font-size: 1.2em; color: #fff; font-weight: bold; letter-spacing: 1px; margin: 0; }
+
+            /* --- КОШИК (Issue 2: Ширина + Видимість інпутів) --- */
+            #cartModal .modal-content {
+                max-width: 1400px; /* Широкий кошик */
+                width: 95%;
+            }
+
+            /* Приховуємо ТІЛЬКИ галочку всередині кошика */
+            #cartBody .check-input {
+                display: none !important; 
+            }
+            
+            /* (Опціонально) Трохи посунути поле кількості в кошику, щоб виглядало гарно без галочки */
+            #cartBody .qty-input {
+                margin-right: 0; 
+            }
         </style>
     </head>
     <body>
@@ -1111,23 +1157,31 @@ async function generateHTML() {
             }
 
             function visualCopy(btn, text) {
-                // Захист від подвійного кліку (щоб текст не застряг)
-                if (btn.dataset.copying) return;
-                btn.dataset.copying = "true";
+                // 1. Захист від подвійного кліку
+                if (btn.dataset.copying === "true") return;
+                
+                // 2. Запам'ятовуємо оригінальний текст ПРИ ПЕРШОМУ КЛІЦІ
+                // Це гарантує, що ми запам'ятаємо "Reagents Import", а не "Скопійовано!"
+                if (!btn.dataset.originalText) {
+                    btn.dataset.originalText = btn.innerText;
+                }
 
-                const originalText = btn.innerText;
+                btn.dataset.copying = "true";
                 const originalColor = btn.style.backgroundColor;
 
-                // Спробувати скопіювати, навіть якщо API поверне помилку, анімація спрацює
+                // 3. Копіюємо
                 navigator.clipboard.writeText(text).catch(err => console.error("Clipboard error:", err));
 
-                btn.style.backgroundColor = "#a335ee"; // Фіолетовий колір як на скріншоті (або #4caf50 для зеленого)
+                // 4. Змінюємо вигляд кнопки
+                btn.style.backgroundColor = "#a335ee"; // Фіолетовий
                 btn.innerText = "Скопійовано!";
 
+                // 5. Повертаємо назад через 2 секунди
                 setTimeout(() => { 
                     btn.style.backgroundColor = originalColor; 
-                    btn.innerText = originalText; 
-                    delete btn.dataset.copying;
+                    // Відновлюємо текст із збереженої змінної
+                    btn.innerText = btn.dataset.originalText; 
+                    btn.dataset.copying = "false"; 
                 }, 2000);
             }
 
