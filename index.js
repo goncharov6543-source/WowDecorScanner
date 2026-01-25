@@ -173,7 +173,7 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
-    // --- (Логіка розрахунку предметів - без змін) ---
+    // --- (Логіка розрахунку предметів залишається без змін) ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
@@ -280,8 +280,8 @@ async function generateHTML() {
             body::-webkit-scrollbar-thumb:hover { background: #333; }
             body::-webkit-scrollbar-button { display: none; }
 
-            body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; }
-            .container { max-width: 1300px; margin: 0 auto; padding-bottom: 50px; position: relative; }
+            body { background: #0f1011; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; color-scheme: dark; position: relative; }
+            .container { max-width: 1300px; margin: 0 auto; padding-bottom: 50px; }
             .header-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; gap: 5px; position: relative; }
             h1 { margin: 0; color: #fff; font-weight: 300; letter-spacing: 1px; font-size: 2.5em; }
             .update-time { font-size: 0.9em; color: #666; margin-bottom: 15px; }
@@ -291,35 +291,38 @@ async function generateHTML() {
             #smartSearchInput { background-color: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 6px; width: 300px; outline: none; height: 42px; }
             #smartSearchInput:focus { border-color: #ffd700; }
 
-            /* Stats / Cart / Reset Icons */
+            /* Stats / Reset Icons (Round) */
             .stats-icon { width: 36px; height: 36px; background: #333; border: 1px solid #555; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 18px; cursor: pointer; transition: 0.2s; user-select: none; padding: 0; line-height: 1; }
             .stats-icon:hover { background: #ffd700; color: #000; border-color: #ffd700; }
             .btn-reset { font-size: 22px; } 
-            .btn-cart-icon { font-size: 20px; } /* Cart is now grey */
-
+            
+            /* General Buttons */
             .buttons-group { display: flex; gap: 15px; align-items: center; }
-            button { border: none; padding: 0 20px; border-radius: 4px; cursor: pointer; font-weight: bold; height: 42px; color: white; transition: 0.2s; }
+            button { border: none; padding: 0 20px; border-radius: 4px; cursor: pointer; font-weight: bold; height: 42px; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
             .btn-import { background: #a335ee; }
             .btn-import:hover { background: #8a2be2; }
             .btn-import-addon { background: #00bcd4; }
             .btn-import-addon:hover { background: #00acc1; }
+
+            /* Rectangular Gray Cart Button */
+            .btn-cart-rect { background: #333; color: #fff; border: 1px solid #555; gap: 8px; }
+            .btn-cart-rect:hover { background: #444; border-color: #666; }
             
             .stats-wrapper { position: relative; display: flex; align-items: center; }
             .stats-icon.info-btn { font-family: serif; font-weight: bold; font-style: italic; cursor: help; } 
             .stats-tooltip { visibility: hidden; opacity: 0; position: absolute; top: 120%; left: 0; width: 250px; background: #1a1b1d; border: 1px solid #444; border-radius: 8px; padding: 15px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transition: 0.2s; transform: translateY(-5px); }
             .stats-wrapper:hover .stats-tooltip { visibility: visible; opacity: 1; transform: translateY(0); }
             
-            /* --- TOP RIGHT ADD CHARACTER SECTION --- */
-            #topRightSection { position: absolute; top: 0; right: 0; z-index: 50; }
+            /* --- TOP RIGHT ADD CHARACTER SECTION (Moved outside container) --- */
+            #topRightSection { position: absolute; top: 20px; right: 30px; z-index: 100; }
             
-            /* Add Button Style */
-            .add-char-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; }
-            .add-char-btn:hover { transform: scale(1.05); }
+            /* Add Button Style (No hover scale, centered plus) */
+            .add-char-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
             .add-char-circle {
                 width: 50px; height: 50px;
                 border: 2px dashed #444;
                 border-radius: 50%;
-                display: flex; align-items: center; justify-content: center;
+                display: flex; align-items: center; justify-content: center; /* Flex centering holds the plus in place */
                 font-size: 24px; color: #444;
                 transition: all 0.2s;
             }
@@ -351,7 +354,8 @@ async function generateHTML() {
             .char-realm { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
 
             /* --- IMPORT MODAL STYLES --- */
-            .import-modal-content { background: #121212; border: 1px solid #333; max-width: 600px; border-radius: 8px; }
+            /* Wider modal */
+            .import-modal-content { background: #121212; border: 1px solid #333; max-width: 800px; width: 90%; border-radius: 8px; }
             .import-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: none; }
             .import-modal-title { font-size: 16px; font-weight: bold; color: #fff; letter-spacing: 1px; }
             .import-input-group { margin-bottom: 20px; }
@@ -432,15 +436,15 @@ async function generateHTML() {
         </style>
     </head>
     <body>
-        <div class="container">
-            <div id="topRightSection">
-                <div id="btnAddCharWrapper" class="add-char-btn" onclick="openImportModal()">
-                    <div class="add-char-circle">+</div>
-                    <div class="add-char-label">Add your first character</div>
-                </div>
-                <div id="charTileContainer" style="display:none;"></div>
+        <div id="topRightSection">
+            <div id="btnAddCharWrapper" class="add-char-btn" onclick="openImportModal()">
+                <div class="add-char-circle">+</div>
+                <div class="add-char-label">Add your first character</div>
             </div>
+            <div id="charTileContainer" style="display:none;"></div>
+        </div>
 
+        <div class="container">
             <div class="header-container">
                 <h1>💎 WoW Decor Scanner</h1>
                 <div class="update-time">Оновлено: ${updateTime}</div>
@@ -457,7 +461,7 @@ async function generateHTML() {
                     </div>
                     <div class="buttons-group">
                         <div id="btnReset" class="stats-icon btn-reset" title="Очистити все">↻</div>
-                        <div id="btnOpenCart" class="stats-icon btn-cart-icon" title="Відкрити кошик">🛒</div>
+                        <button id="btnOpenCart" class="btn-cart-rect" title="Відкрити кошик">🛒 Cart</button>
                         <button class="btn-import-addon">Lumber Import</button>
                         <button class="btn-import">Reagents Import</button>
                     </div>
@@ -507,7 +511,6 @@ async function generateHTML() {
             let chartRanges = {}; 
             
             let savedState = JSON.parse(localStorage.getItem('wowScnr_state')) || {};
-            // Зберігаємо дані персонажа
             let charData = JSON.parse(localStorage.getItem('wowScnr_char')) || null;
 
             function saveToStorage() { localStorage.setItem('wowScnr_state', JSON.stringify(savedState)); }
@@ -553,12 +556,10 @@ async function generateHTML() {
                 const p1 = document.getElementById('prof1Input').value;
                 const p2 = document.getElementById('prof2Input').value;
                 
-                // Пробуємо розпарсити JSON, якщо ні - ставимо дефолт
                 let name = "Kevvinn";
                 let realm = "Tarren Mill";
                 
                 try {
-                    // Якщо користувач вставить JSON з аддона
                     const obj = JSON.parse(p1 || p2);
                     if(obj.character) name = obj.character;
                     if(obj.realm) realm = obj.realm;
