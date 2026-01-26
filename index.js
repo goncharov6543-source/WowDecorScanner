@@ -612,6 +612,42 @@ async function generateHTML() {
             .prof-mini-icon:hover {
                 transform: scale(1.15); /* Ефект збільшення при наведенні */
                 z-index: 10;
+            }
+            /* --- ВИПРАВЛЕННЯ ВІДСТУПІВ ТА ХОВЕРА --- */
+            
+            /* 1. Зменшуємо внутрішній відступ плитки справа, щоб іконки могли підійти до краю */
+            .char-tile {
+                padding: 6px 6px 6px 6px; /* Справа тепер 6px, як і зліва */
+            }
+
+            /* 2. Притискаємо блок професій максимально вправо */
+            .char-profs {
+                display: flex;
+                align-items: center;
+                gap: 4px; /* Зменшив відступ між самими іконками, щоб було акуратніше */
+                margin-left: auto; /* Притискає вправо */
+                margin-right: 0; /* ПРИБРАВ відступ, тепер впритул до краю */
+                padding-right: 0;
+                z-index: 5;
+            }
+            
+            /* 3. Стиль іконок (без ховер-ефекту) */
+            .prof-mini-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                border: 2px solid #ffd700;
+                background-color: #111;
+                object-fit: cover;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+                /* transition прибрано, щоб не було анімації */
+            }
+            
+            /* Переписуємо ховер, щоб він нічого не робив */
+            .prof-mini-icon:hover {
+                transform: none; 
+                z-index: auto;
+                cursor: default;
             }            
         </style>
     </head>
