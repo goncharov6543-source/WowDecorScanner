@@ -1324,22 +1324,29 @@ async function generateHTML() {
             function handleReagentsImport(e) {
                 const btn = e.currentTarget;
 
-                // --- ПОЧАТОК ФІКСУ (Захист від подвійного кліку) ---
-                const now = Date.now();
-                // Якщо в кнопці записаний час і пройшло менше 500мс - виходимо
-                if (btn.lastClickTime && (now - btn.lastClickTime < 500)) return;
-                btn.lastClickTime = now;
-                // --- КІНЕЦЬ ФІКСУ ---
+                // --- ФІКС: БЛОКУВАННЯ ПОДВІЙНОГО КЛІКУ ---
+                // Якщо на кнопці висить "замок" - ми нічого не робимо
+                if (btn.dataset.locked === "true") return;
+                
+                // Вішаємо "замок"
+                btn.dataset.locked = "true";
+                // Знімаємо "замок" через 0.5 секунди
+                setTimeout(() => { delete btn.dataset.locked; }, 500);
+                // -------------------------------------------
 
                 const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
                 if (checkedIds.length === 0) return alert("Вибери предмети!");
+                
                 let reagentsMap = {};
                 let hasItems = false;
+                
                 checkedIds.forEach(id => {
                     const itemData = ALL_DATA.find(i => i.itemId == id);
                     if (!itemData) return;
-                    // Додав parseInt, щоб гарантувати число (структуру не порушує)
+                    
+                    // parseInt для надійності (структуру не ламає)
                     const count = parseInt(savedState[id].qty) || 0;
+                    
                     if (count > 0) {
                         hasItems = true;
                         if (itemData.recipeRaw && Array.isArray(itemData.recipeRaw)) {
@@ -1350,55 +1357,35 @@ async function generateHTML() {
                         }
                     }
                 });
+                
                 if (!hasItems) return alert("Введи кількість!");
                 
-                // Твій оригінальний рядок (не змінений)
+                // Твій оригінальний рядок без змін
                 const listString = Object.entries(reagentsMap).map(([n, q]) => \`\${n} x\${q}\`).join('\\n');
+                
                 visualCopy(btn, listString);
             }
 
             function visualCopy(btn, text) {
-                // 1. Якщо таймер вже йде (швидкий клік), скасовуємо його, щоб не було глюків
-                if (btn.dataset.timer) {
-                    clearTimeout(btn.dataset.timer);
-                }
+                if (btn.dataset.timer) clearTimeout(btn.dataset.timer);
 
-                // 2. Жорстко визначаємо, який текст має повернутись
-                let defaultLabel = "Import"; 
-                
-                if (btn.classList.contains('btn-import')) {
-                    defaultLabel = "Reagents Import";
-                } else if (btn.classList.contains('btn-import-addon')) {
-                    defaultLabel = "Lumber Import";
-                } else if (btn.id === 'btnOpenCart') {
-                    defaultLabel = "🛒 Cart";
-                }
-
-                // 3. Копіюємо текст
                 navigator.clipboard.writeText(text).catch(err => console.error(err));
 
-                // 4. Ставимо статус "Успіх"
                 btn.innerText = "Скопійовано!";
-                btn.style.backgroundColor = "#a335ee"; // Фіолетовий
+                btn.style.backgroundColor = "#a335ee"; 
 
-                // 5. Запускаємо новий таймер відновлення
-                // Встав це в кінець функції visualCopy замість старого setTimeout
-                btn.dataset.timerId = setTimeout(function() {
-                    btn.style.backgroundColor = ""; // Скидаємо колір
+                // Таймер відновлення
+                const timer = setTimeout(() => {
+                    btn.style.backgroundColor = ""; 
+                    // Жорстке повернення назви
+                    if (btn.classList.contains('btn-import')) btn.innerText = "Reagents Import";
+                    else if (btn.classList.contains('btn-import-addon')) btn.innerText = "Lumber Import";
+                    else btn.innerText = "Import";
                     
-                    // Жорстка перевірка: яка це кнопка, такий текст і вертаємо
-                    if (btn.classList.contains('btn-import')) {
-                        btn.innerText = "Reagents Import";
-                    } else if (btn.classList.contains('btn-import-addon')) {
-                        btn.innerText = "Lumber Import";
-                    } else if (btn.id === 'btnOpenCart') {
-                        btn.innerText = "🛒 Cart";
-                    } else {
-                        btn.innerText = "Import";
-                    }
-                    
-                    delete btn.dataset.timerId;
+                    delete btn.dataset.timer;
                 }, 2000);
+                
+                btn.dataset.timer = timer;
             }
 
             function createItemHTML(item) { return generateItemHtmlString(item, true); }
