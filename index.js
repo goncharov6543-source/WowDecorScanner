@@ -586,7 +586,33 @@ async function generateHTML() {
                 background-color: #111;
                 object-fit: cover;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            }        
+            }
+            /* --- ОНОВЛЕНИЙ СТИЛЬ ДЛЯ ПРОФЕСІЙ (Великі та праворуч) --- */
+            .char-profs {
+                display: flex;
+                align-items: center;
+                gap: 8px; /* Невеликий відступ між іконками */
+                margin-left: auto; /* Ця команда притискає блок до правого краю */
+                margin-right: 10px; /* Відступ від самого краю плитки */
+                z-index: 5;
+                padding-right: 10px; /* Додатковий простір, щоб не зачіпати кнопку видалення */
+            }
+            
+            .prof-mini-icon {
+                width: 40px;  /* Розмір як у іконки класу */
+                height: 40px; /* Розмір як у іконки класу */
+                border-radius: 50%;
+                border: 2px solid #ffd700; /* Золота рамка */
+                background-color: #111;
+                object-fit: cover;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.5); /* Тінь для об'єму */
+                transition: transform 0.2s;
+            }
+            
+            .prof-mini-icon:hover {
+                transform: scale(1.15); /* Ефект збільшення при наведенні */
+                z-index: 10;
+            }            
         </style>
     </head>
     <body>
