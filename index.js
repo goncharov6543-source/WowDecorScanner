@@ -989,12 +989,11 @@ async function generateHTML() {
             function renderCharList() {
                 const container = document.getElementById('charList');
                 container.innerHTML = '';
-                
-                // Допоміжна функція: перетворює "Khaz Algar Alchemy" -> "alchemy"
+
+                // Допоміжна функція для пошуку картинки (Вбудована)
                 const getProfFilename = (fullTitle) => {
                     if (!fullTitle) return "unknown";
                     const t = fullTitle.toLowerCase();
-                    
                     if (t.includes("alchemy")) return "alchemy";
                     if (t.includes("blacksmithing")) return "blacksmithing";
                     if (t.includes("enchanting")) return "enchanting";
@@ -1008,48 +1007,41 @@ async function generateHTML() {
                     if (t.includes("tailoring")) return "tailoring";
                     if (t.includes("cooking")) return "cooking";
                     if (t.includes("fishing")) return "fishing";
-                    
                     return t.replace(/\s+/g, '');
                 };
-
+                
                 charsList.forEach((char, index) => {
-                    // 1. Іконка класу
+                    // 1. Клас персонажа (з екрануванням)
                     const iconName = char.class ? char.class.toLowerCase().replace(/\s+/g, '') : "unknown";
-                    const iconUrl = "prof_class_icons/" + iconName + ".jpg";
+                    const iconUrl = \`prof_class_icons/\${iconName}.jpg\`;
                     
-                    // 2. Іконки професій
+                    // 2. Логіка професій
                     const p1Data = extractSkillData(char.p1);
                     const p2Data = extractSkillData(char.p2);
-                    
                     let profsHtml = '<div class="char-profs">';
                     
                     [p1Data, p2Data].forEach(p => {
                         if (p && p.title && p.title !== "Unknown Profession") {
-                            // Отримуємо "чисту" назву файлу
                             const simpleName = getProfFilename(p.title);
-                            const pImgUrl = "prof_class_icons/" + simpleName + ".jpg";
-                            
-                            // Використовуємо this.hidden=true (без лапок), щоб уникнути помилок синтаксису
-                            profsHtml += '<img src="' + pImgUrl + '" class="prof-mini-icon" title="' + p.title + '" onerror="this.hidden=true">';
+                            // Тут використовуємо звичайні лапки ', щоб не конфліктувати
+                            profsHtml += '<img src="prof_class_icons/' + simpleName + '.jpg" class="prof-mini-icon" title="' + p.title + '" onerror="this.hidden=true">';
                         }
                     });
                     profsHtml += '</div>';
 
-                    // 3. Створення плитки (Безпечна конкатенація для Node.js)
+                    // 3. Створення плитки (З екрануванням \` та \${)
                     const div = document.createElement('div');
                     div.className = 'char-tile';
-                    
-                    let html = '';
-                    html += '<button class="tile-btn tile-btn-edit" onclick="openCharDetails(' + index + ')">✎</button>';
-                    html += '<button class="tile-btn tile-btn-delete" onclick="deleteCharacter(' + index + ')">×</button>';
-                    html += '<div class="char-avatar" style="background-image: url(\'' + iconUrl + '\');"></div>';
-                    html += '<div class="char-info">';
-                    html +=   '<div class="char-name">' + char.name + '</div>';
-                    html +=   '<div class="char-realm">' + char.realm + '</div>';
-                    html += '</div>';
-                    html += profsHtml; 
-                    
-                    div.innerHTML = html;
+                    div.innerHTML = \`
+                        <button class="tile-btn tile-btn-edit" onclick="openCharDetails(\${index})">✎</button>
+                        <button class="tile-btn tile-btn-delete" onclick="deleteCharacter(\${index})">×</button>
+                        <div class="char-avatar" style="background-image: url('\${iconUrl}');"></div>
+                        <div class="char-info">
+                            <div class="char-name">\${char.name}</div>
+                            <div class="char-realm">\${char.realm}</div>
+                        </div>
+                        \${profsHtml}
+                    \`;
                     container.appendChild(div);
                 });
             }
