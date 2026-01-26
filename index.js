@@ -1367,25 +1367,26 @@ async function generateHTML() {
             }
 
             function visualCopy(btn, text) {
-                if (btn.dataset.timer) clearTimeout(btn.dataset.timer);
+                // Використовуємо пряму властивість таймера, а не dataset (надійніше)
+                if (btn.copyTimer) clearTimeout(btn.copyTimer);
 
                 navigator.clipboard.writeText(text).catch(err => console.error(err));
 
                 btn.innerText = "Скопійовано!";
                 btn.style.backgroundColor = "#a335ee"; 
 
-                // Таймер відновлення
-                const timer = setTimeout(() => {
+                // Зберігаємо таймер у властивість кнопки
+                btn.copyTimer = setTimeout(() => {
                     btn.style.backgroundColor = ""; 
+                    
                     // Жорстке повернення назви
                     if (btn.classList.contains('btn-import')) btn.innerText = "Reagents Import";
                     else if (btn.classList.contains('btn-import-addon')) btn.innerText = "Lumber Import";
+                    else if (btn.id === 'btnOpenCart') btn.innerText = "🛒 Cart";
                     else btn.innerText = "Import";
                     
-                    delete btn.dataset.timer;
+                    btn.copyTimer = null;
                 }, 2000);
-                
-                btn.dataset.timer = timer;
             }
 
             function createItemHTML(item) { return generateItemHtmlString(item, true); }
@@ -1468,22 +1469,27 @@ async function generateHTML() {
             }
 
             document.addEventListener('DOMContentLoaded', () => {
-                reparseAllCharacters(); // Parse on load
+                reparseAllCharacters(); 
                 loadMore();
                 updateTopRightSection();
-                document.getElementById('btnLoadMore').addEventListener('click', loadMore);
-                document.getElementById('smartSearchInput').addEventListener('input', handleSearch);
-                document.querySelector('.btn-import-addon').addEventListener('click', handleAddonImport);
-                document.querySelector('.btn-import').addEventListener('click', handleReagentsImport);
-                document.getElementById('btnOpenCart').addEventListener('click', openCart);
-                document.getElementById('btnCloseCart').addEventListener('click', closeCart);
+                
+                // --- ЗАМІНИВ addEventListener НА onclick (ЩОБ УНИКНУТИ ДУБЛІВ) ---
+                document.getElementById('btnLoadMore').onclick = loadMore;
+                document.getElementById('smartSearchInput').oninput = handleSearch;
+                document.querySelector('.btn-import-addon').onclick = handleAddonImport;
+                
+                // Ось тут був головний баг. onclick гарантує, що функція буде одна.
+                document.querySelector('.btn-import').onclick = handleReagentsImport;
+                
+                document.getElementById('btnOpenCart').onclick = openCart;
+                document.getElementById('btnCloseCart').onclick = closeCart;
+                // ... решту можна залишити як є
                 document.getElementById('cartModal').addEventListener('click', (e) => { if (e.target.id === 'cartModal') closeCart(); });
                 document.getElementById('btnReset').addEventListener('click', handleReset);
                 document.getElementById('importModal').addEventListener('click', (e) => { if (e.target.id === 'importModal') document.getElementById('importModal').classList.remove('active'); });
                 document.getElementById('charDetailsModal').addEventListener('click', (e) => { if (e.target.id === 'charDetailsModal') document.getElementById('charDetailsModal').classList.remove('active'); });
             });
         </script>
-        <script src="import.js"></script>
     </body>
     </html>`;
     
