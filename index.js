@@ -1321,31 +1321,25 @@ async function generateHTML() {
                 visualCopy(btn, JSON.stringify(payload));
             }
 
-            // 1. Додай цю змінну ПЕРЕД функцією (це важливо!)
-            let lastImportClick = 0;
-
             function handleReagentsImport(e) {
-                // --- ДОДАНИЙ ЗАХИСТ (Початок) ---
-                const now = Date.now();
-                if (now - lastImportClick < 500) return; // Якщо клікнули двічі за 0.5 сек - ігноруємо
-                lastImportClick = now;
-                // --- ДОДАНИЙ ЗАХИСТ (Кінець) ---
-
                 const btn = e.currentTarget;
+
+                // --- ПОЧАТОК ФІКСУ (Захист від подвійного кліку) ---
+                const now = Date.now();
+                // Якщо в кнопці записаний час і пройшло менше 500мс - виходимо
+                if (btn.lastClickTime && (now - btn.lastClickTime < 500)) return;
+                btn.lastClickTime = now;
+                // --- КІНЕЦЬ ФІКСУ ---
+
                 const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
-                
                 if (checkedIds.length === 0) return alert("Вибери предмети!");
-                
                 let reagentsMap = {};
                 let hasItems = false;
-                
                 checkedIds.forEach(id => {
                     const itemData = ALL_DATA.find(i => i.itemId == id);
                     if (!itemData) return;
-                    
-                    // Тут я додав parseInt, щоб гарантувати, що це число
-                    const count = parseInt(savedState[id].qty) || 0; 
-                    
+                    // Додав parseInt, щоб гарантувати число (структуру не порушує)
+                    const count = parseInt(savedState[id].qty) || 0;
                     if (count > 0) {
                         hasItems = true;
                         if (itemData.recipeRaw && Array.isArray(itemData.recipeRaw)) {
@@ -1356,12 +1350,10 @@ async function generateHTML() {
                         }
                     }
                 });
-                
                 if (!hasItems) return alert("Введи кількість!");
                 
-                // Тут я замінив шаблонні рядки на звичайні, щоб не було помилок в Node.js
-                const listString = Object.entries(reagentsMap).map(entry => entry[0] + " x" + entry[1]).join('\n');
-                
+                // Твій оригінальний рядок (не змінений)
+                const listString = Object.entries(reagentsMap).map(([n, q]) => \`\${n} x\${q}\`).join('\\n');
                 visualCopy(btn, listString);
             }
 
