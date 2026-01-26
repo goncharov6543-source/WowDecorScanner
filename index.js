@@ -1321,28 +1321,56 @@ async function generateHTML() {
                 visualCopy(btn, JSON.stringify(payload));
             }
 
+            // 1. Ця змінна має бути ЗЗОВНІ функції (щоб пам'ятати час останнього кліку)
+            let lastImportTime = 0; 
+
             function handleReagentsImport(e) {
+                // --- БЛОКУВАННЯ ПОДВІЙНОГО КЛІКУ ---
+                const now = Date.now();
+                // Якщо з минулого кліку пройшло менше 500 мілісекунд (пів секунди) - СТОП
+                if (now - lastImportTime < 500) {
+                    return; 
+                }
+                lastImportTime = now;
+                // ------------------------------------
+
                 const btn = e.currentTarget;
-                const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
-                if (checkedIds.length === 0) return alert("Вибери предмети!");
+                
+                // Фільтруємо вибрані (checked) предмети
+                const checkedIds = Object.keys(savedState).filter(function(id) {
+                    return savedState[id] && savedState[id].checked;
+                });
+                
+                if (checkedIds.length === 0) return alert("Вибери предмети галочкою!");
+                
                 let reagentsMap = {};
                 let hasItems = false;
-                checkedIds.forEach(id => {
-                    const itemData = ALL_DATA.find(i => i.itemId == id);
+                
+                checkedIds.forEach(function(id) {
+                    const itemData = ALL_DATA.find(function(i) { return i.itemId == id; });
                     if (!itemData) return;
-                    const count = savedState[id].qty || 0;
-                    if (count > 0) {
+                    
+                    // parseInt гарантує, що береться саме число, яке ти бачиш очима
+                    const userCount = parseInt(savedState[id].qty) || 0;
+                    
+                    if (userCount > 0) {
                         hasItems = true;
                         if (itemData.recipeRaw && Array.isArray(itemData.recipeRaw)) {
-                            itemData.recipeRaw.forEach(r => {
+                            itemData.recipeRaw.forEach(function(r) {
                                 if (!reagentsMap[r.name]) reagentsMap[r.name] = 0;
-                                reagentsMap[r.name] += (r.count * count);
+                                // Математика: реагентів на 1 шт * кількість предметів
+                                reagentsMap[r.name] += (r.count * userCount);
                             });
                         }
                     }
                 });
-                if (!hasItems) return alert("Введи кількість!");
-                const listString = Object.entries(reagentsMap).map(([n, q]) => \`\${n} x\${q}\`).join('\\n');
+                
+                if (!hasItems) return alert("Введи кількість предметів!");
+                
+                const listString = Object.entries(reagentsMap).map(function(entry) {
+                    return entry[0] + " x" + entry[1];
+                }).join('\n');
+                
                 visualCopy(btn, listString);
             }
 
