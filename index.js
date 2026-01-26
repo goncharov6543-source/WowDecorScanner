@@ -974,9 +974,25 @@ async function generateHTML() {
                 container.innerHTML = '';
                 
                 charsList.forEach((char, index) => {
-                    const iconName = char.class ? char.class.toLowerCase().replace(/\\s+/g, '') : "unknown";
+                    // 1. Клас персонажа
+                    const iconName = char.class ? char.class.toLowerCase().replace(/\s+/g, '') : "unknown";
                     const iconUrl = \`prof_class_icons/\${iconName}.jpg\`;
                     
+                    // 2. Логіка професій (Безпечна збірка HTML)
+                    const p1Data = extractSkillData(char.p1);
+                    const p2Data = extractSkillData(char.p2);
+                    let profsHtml = '<div class="char-profs">';
+                    
+                    [p1Data, p2Data].forEach(p => {
+                        if (p && p.title && p.title !== "Unknown Profession") {
+                            const pName = p.title.toLowerCase().replace(/\s+/g, '');
+                            // Використовуємо звичайні лапки та плюси, щоб не зламати Node.js шаблон
+                            profsHtml += '<img src="prof_class_icons/' + pName + '.jpg" class="prof-mini-icon" title="' + p.title + '" onerror="this.hidden=true">';
+                        }
+                    });
+                    profsHtml += '</div>';
+
+                    // 3. Створення плитки
                     const div = document.createElement('div');
                     div.className = 'char-tile';
                     div.innerHTML = \`
@@ -987,6 +1003,7 @@ async function generateHTML() {
                             <div class="char-name">\${char.name}</div>
                             <div class="char-realm">\${char.realm}</div>
                         </div>
+                        \${profsHtml}
                     \`;
                     container.appendChild(div);
                 });
