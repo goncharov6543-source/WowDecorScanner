@@ -973,21 +973,41 @@ async function generateHTML() {
                 const container = document.getElementById('charList');
                 container.innerHTML = '';
                 
-                charsList.forEach((char, index) => {
-                    const iconName = char.class ? char.class.toLowerCase().replace(/\\s+/g, '') : "unknown";
-                    const iconUrl = \`prof_class_icons/\${iconName}.jpg\`;
+                charsList.forEach(function(char, index) {
+                    // 1. Іконка класу
+                    const iconName = char.class ? char.class.toLowerCase().replace(/\s+/g, '') : "unknown";
+                    const iconUrl = "prof_class_icons/" + iconName + ".jpg";
                     
+                    // 2. Іконки професій
+                    const p1Data = extractSkillData(char.p1);
+                    const p2Data = extractSkillData(char.p2);
+                    
+                    let profsHtml = '<div class="char-profs">';
+                    
+                    [p1Data, p2Data].forEach(function(p) {
+                        if (p && p.title && p.title !== "Unknown Profession") {
+                            const pName = p.title.toLowerCase().replace(/\s+/g, '');
+                            const pUrl = "prof_class_icons/" + pName + ".jpg";
+                            
+                            // ВИПРАВЛЕННЯ: Використовуємо this.hidden=true, щоб уникнути конфлікту лапок 'none'
+                            profsHtml += '<img src="' + pUrl + '" class="prof-mini-icon" title="' + p.title + '" onerror="this.hidden=true">';
+                        }
+                    });
+                    profsHtml += '</div>';
+
+                    // 3. Формуємо плитку
                     const div = document.createElement('div');
                     div.className = 'char-tile';
-                    div.innerHTML = \`
-                        <button class="tile-btn tile-btn-edit" onclick="openCharDetails(\${index})">✎</button>
-                        <button class="tile-btn tile-btn-delete" onclick="deleteCharacter(\${index})">×</button>
-                        <div class="char-avatar" style="background-image: url('\${iconUrl}');"></div>
-                        <div class="char-info">
-                            <div class="char-name">\${char.name}</div>
-                            <div class="char-realm">\${char.realm}</div>
-                        </div>
-                    \`;
+                    div.innerHTML = 
+                        '<button class="tile-btn tile-btn-edit" onclick="openCharDetails(' + index + ')">✎</button>' +
+                        '<button class="tile-btn tile-btn-delete" onclick="deleteCharacter(' + index + ')">×</button>' +
+                        '<div class="char-avatar" style="background-image: url(\'' + iconUrl + '\');"></div>' +
+                        '<div class="char-info">' +
+                            '<div class="char-name">' + char.name + '</div>' +
+                            '<div class="char-realm">' + char.realm + '</div>' +
+                        '</div>' +
+                        profsHtml;
+                    
                     container.appendChild(div);
                 });
             }
