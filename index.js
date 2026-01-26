@@ -569,7 +569,24 @@ async function generateHTML() {
                 box-shadow: 0 2px 5px rgba(0,0,0,0.4);
                 font-weight: bold;
             }
-                    
+            /* Якщо раптом зникло, додай це в кінець CSS */
+            .char-profs {
+                display: flex;
+                align-items: center;
+                gap: -5px;
+                margin-left: auto; /* Притискає вправо */
+                margin-right: 25px;
+                z-index: 5;
+            }
+            .prof-mini-icon {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                border: 2px solid #ffd700;
+                background-color: #111;
+                object-fit: cover;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            }        
         </style>
     </head>
     <body>
