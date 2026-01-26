@@ -1324,17 +1324,14 @@ async function generateHTML() {
             function handleReagentsImport(e) {
                 const btn = e.currentTarget;
 
-                // --- ФІКС: БЛОКУВАННЯ ПОДВІЙНОГО КЛІКУ ---
-                // Якщо на кнопці висить "замок" - ми нічого не робимо
+                // --- ЗАХИСТ ВІД ПОДВІЙНОГО КЛІКУ ---
                 if (btn.dataset.locked === "true") return;
-                
-                // Вішаємо "замок"
                 btn.dataset.locked = "true";
-                // Знімаємо "замок" через 0.5 секунди
                 setTimeout(() => { delete btn.dataset.locked; }, 500);
-                // -------------------------------------------
+                // -----------------------------------
 
                 const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
+                
                 if (checkedIds.length === 0) return alert("Вибери предмети!");
                 
                 let reagentsMap = {};
@@ -1344,7 +1341,6 @@ async function generateHTML() {
                     const itemData = ALL_DATA.find(i => i.itemId == id);
                     if (!itemData) return;
                     
-                    // parseInt для надійності (структуру не ламає)
                     const count = parseInt(savedState[id].qty) || 0;
                     
                     if (count > 0) {
@@ -1360,10 +1356,18 @@ async function generateHTML() {
                 
                 if (!hasItems) return alert("Введи кількість!");
                 
-                // Твій оригінальний рядок без змін
-                const listString = Object.entries(reagentsMap).map(([n, q]) => \`\${n} x\${q}\`).join('\\n');
+                // --- 3. ФОРМУВАННЯ СТРІЧКИ (З ЕКРАНУВАННЯМ) ---
+                let importString = "Decor Shopping List";
+
+                Object.entries(reagentsMap).forEach(([name, qty]) => {
+                    // Екрануємо лапки для JS
+                    const cleanName = name.replace(/"/g, '\\"');
+                    
+                    // УВАГА: Тут використано \` та \${ для сумісності з Node.js
+                    importString += \`^"\${cleanName}";;0;0;0;0;0;0;0;0;;#;;\${qty}\`;
+                });
                 
-                visualCopy(btn, listString);
+                visualCopy(btn, importString);
             }
 
             function visualCopy(btn, text) {
