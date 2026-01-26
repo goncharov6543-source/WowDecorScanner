@@ -648,7 +648,49 @@ async function generateHTML() {
                 transform: none; 
                 z-index: auto;
                 cursor: default;
-            }            
+            }
+            /* --- 1. КНОПКИ НА ПЛИТЦІ (З'являються при наведенні) --- */
+            .tile-btn {
+                position: absolute; 
+                width: 22px; height: 22px; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                color: white; border: none; cursor: pointer;
+                transition: all 0.2s ease; /* Плавна поява */
+                z-index: 10; flex-shrink: 0; padding: 0;
+                
+                /* Ховаємо за замовчуванням */
+                opacity: 0; 
+                transform: scale(0.8);
+            }
+            .tile-btn:hover { transform: scale(1.15) !important; }
+            .tile-btn-edit { top: -6px; left: -6px; background: #007bff; font-size: 12px; } 
+            .tile-btn-delete { top: -6px; right: -6px; background: #dc3545; font-size: 14px; line-height: 1; } 
+
+            /* Показуємо кнопки, коли мишка наведена на плитку */
+            .char-tile:hover .tile-btn {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            /* --- 2. КНОПКА CHARACTERS (Округлена) --- */
+            .btn-char-menu { 
+                background: #2a2b2e; color: #ccc; border: 1px solid #444; 
+                padding: 8px 20px; /* Трохи більше відступів */
+                border-radius: 20px; /* Сильне заокруглення */
+                cursor: pointer; font-weight: bold; font-size: 14px;
+                transition: 0.2s;
+            }
+            .btn-char-menu:hover { background: #333; color: #fff; border-color: #666; }
+
+            /* --- 3. КНОПКА "ПОКАЗАТИ ЩЕ" (Стиль) --- */
+            .btn-load-more {
+                background: #333; border: 1px solid #555; color: #ccc;
+                padding: 10px 30px; border-radius: 4px; cursor: pointer;
+                font-size: 14px; transition: 0.2s;
+            }
+            .btn-load-more:hover { background: #444; color: #fff; }
+            /* Клас для приховування */
+            .hidden { display: none !important; }            
         </style>
     </head>
     <body>
@@ -659,7 +701,7 @@ async function generateHTML() {
             </div>
 
             <div id="charMenuContainer" class="char-menu-container" style="display:none;">
-                <button id="btnCharMenu" class="btn-char-menu">Characters Info</button>
+                <button id="btnCharMenu" class="btn-char-menu">Characters</button>
                 <div id="charDropdown" class="char-dropdown">
                     <div id="charList"></div>
                     <button class="btn-add-new-char" onclick="openImportModal()">+ Add Character</button>
@@ -1379,9 +1421,28 @@ async function generateHTML() {
             function loadMore() {
                 const list = document.getElementById('list');
                 const btn = document.getElementById('btnLoadMore');
+                
+                // Беремо наступну порцію
                 const nextItems = activeData.slice(currentIndex, currentIndex + ITEMS_PER_PAGE);
-                if (nextItems.length > 0) { list.insertAdjacentHTML('beforeend', nextItems.map(createItemHTML).join('')); currentIndex += nextItems.length; }
-                if (currentIndex >= activeData.length) btn.classList.add('hidden'); else btn.classList.remove('hidden');
+                
+                // Якщо є що показувати - рендеримо
+                if (nextItems.length > 0) { 
+                    // Використовуємо + для рядків, щоб Node.js не лаявся
+                    const htmlItems = nextItems.map(function(item) {
+                        return createItemHTML(item);
+                    }).join('');
+                    
+                    list.insertAdjacentHTML('beforeend', htmlItems); 
+                    currentIndex += nextItems.length;
+                }
+                
+                // ЛОГІКА ВИДИМОСТІ КНОПКИ
+                // Якщо ми показали всі елементи, які є в activeData - ховаємо кнопку
+                if (currentIndex >= activeData.length) {
+                    btn.style.display = 'none';
+                } else {
+                    btn.style.display = 'block';
+                }
             }
 
             function handleSearch(e) {
