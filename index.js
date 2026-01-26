@@ -1323,59 +1323,84 @@ async function generateHTML() {
 
             function handleReagentsImport(e) {
                 const btn = e.currentTarget;
-                const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
-                if (checkedIds.length === 0) return alert("Вибери предмети!");
+                
+                // 1. Беремо тільки ті предмети, де стоїть галочка
+                const checkedIds = Object.keys(savedState).filter(function(id) {
+                    return savedState[id] && savedState[id].checked;
+                });
+                
+                if (checkedIds.length === 0) return alert("Вибери предмети галочкою!");
+                
                 let reagentsMap = {};
                 let hasItems = false;
-                checkedIds.forEach(id => {
-                    const itemData = ALL_DATA.find(i => i.itemId == id);
+                
+                // 2. Проходимо по кожному вибраному предмету
+                checkedIds.forEach(function(id) {
+                    const itemData = ALL_DATA.find(function(i) { return i.itemId == id; });
                     if (!itemData) return;
-                    const count = savedState[id].qty || 0;
-                    if (count > 0) {
+                    
+                    // Беремо кількість, яку ввів користувач (за замовчуванням 0)
+                    const userCount = savedState[id].qty || 0;
+                    
+                    // Рахуємо ТІЛЬКИ якщо кількість > 0
+                    if (userCount > 0) {
                         hasItems = true;
+                        
+                        // Якщо у предмета є рецепт
                         if (itemData.recipeRaw && Array.isArray(itemData.recipeRaw)) {
-                            itemData.recipeRaw.forEach(r => {
+                            itemData.recipeRaw.forEach(function(r) {
+                                // Ініціалізуємо реагент в мапі, якщо його ще немає
                                 if (!reagentsMap[r.name]) reagentsMap[r.name] = 0;
-                                reagentsMap[r.name] += (r.count * count);
+                                
+                                // МАТЕМАТИКА: (Кількість реагента на 1 шт) * (Кількість предметів)
+                                // Ніяких додаткових додавань
+                                reagentsMap[r.name] += (r.count * userCount);
                             });
                         }
                     }
                 });
-                if (!hasItems) return alert("Введи кількість!");
-                const listString = Object.entries(reagentsMap).map(([n, q]) => \`\${n} x\${q}\`).join('\\n');
+                
+                if (!hasItems) return alert("Введи кількість предметів (цифру)!");
+                
+                // 3. Формуємо рядок: "Назва xКількість"
+                const listString = Object.entries(reagentsMap).map(function(entry) {
+                    return entry[0] + " x" + entry[1]; // Наприклад: "Gloom Dust x20"
+                }).join('\n');
+                
                 visualCopy(btn, listString);
             }
 
             function visualCopy(btn, text) {
-                // 1. Якщо таймер вже йде (швидкий клік), скасовуємо його, щоб не було глюків
-                if (btn.dataset.timer) {
-                    clearTimeout(btn.dataset.timer);
+                // 1. Скидаємо старий таймер
+                if (btn.dataset.timerId) {
+                    clearTimeout(parseInt(btn.dataset.timerId));
                 }
 
-                // 2. Жорстко визначаємо, який текст має повернутись
-                let defaultLabel = "Import"; 
-                
-                if (btn.classList.contains('btn-import')) {
-                    defaultLabel = "Reagents Import";
-                } else if (btn.classList.contains('btn-import-addon')) {
-                    defaultLabel = "Lumber Import";
-                } else if (btn.id === 'btnOpenCart') {
-                    defaultLabel = "🛒 Cart";
+                // 2. Запам'ятовуємо ОРИГІНАЛЬНИЙ текст кнопки один раз
+                // Якщо це перший клік, зберігаємо текст у атрибут. 
+                // Якщо це вже другий клік (і там написано "Скопійовано!"), ми не перезаписуємо оригінал.
+                if (!btn.dataset.originalLabel) {
+                    btn.dataset.originalLabel = btn.innerText;
                 }
 
-                // 3. Копіюємо текст
-                navigator.clipboard.writeText(text).catch(err => console.error(err));
+                // 3. Копіюємо
+                navigator.clipboard.writeText(text).catch(function(err) {
+                    console.error(err);
+                });
 
-                // 4. Ставимо статус "Успіх"
+                // 4. Змінюємо вигляд
                 btn.innerText = "Скопійовано!";
-                btn.style.backgroundColor = "#a335ee"; // Фіолетовий
+                btn.style.backgroundColor = "#a335ee"; 
 
-                // 5. Запускаємо новий таймер відновлення
-                btn.dataset.timer = setTimeout(() => {
-                    btn.innerText = defaultLabel; // Повертаємо правильний текст
-                    btn.style.backgroundColor = ""; // ВАЖЛИВО: Просто скидаємо колір, щоб повернувся ваш CSS (зелений/синій)
-                    delete btn.dataset.timer;
+                // 5. Таймер відновлення
+                const timerId = setTimeout(function() {
+                    // Відновлюємо текст із збереженого атрибуту
+                    btn.innerText = btn.dataset.originalLabel; 
+                    btn.style.backgroundColor = ""; // Скидаємо колір
+                    delete btn.dataset.timerId;
                 }, 2000);
+
+                btn.dataset.timerId = timerId.toString();
             }
 
             function createItemHTML(item) { return generateItemHtmlString(item, true); }
