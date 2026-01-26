@@ -990,32 +990,35 @@ async function generateHTML() {
                 const container = document.getElementById('charList');
                 container.innerHTML = '';
 
-                // Допоміжна функція для пошуку картинки (Вбудована)
+                // Допоміжна функція: тепер повертає назви з Великої Літери (як твої файли)
                 const getProfFilename = (fullTitle) => {
-                    if (!fullTitle) return "unknown";
+                    if (!fullTitle) return "Unknown";
                     const t = fullTitle.toLowerCase();
-                    if (t.includes("alchemy")) return "alchemy";
-                    if (t.includes("blacksmithing")) return "blacksmithing";
-                    if (t.includes("enchanting")) return "enchanting";
-                    if (t.includes("engineering")) return "engineering";
-                    if (t.includes("herbalism")) return "herbalism";
-                    if (t.includes("inscription")) return "inscription";
-                    if (t.includes("jewelcrafting")) return "jewelcrafting";
-                    if (t.includes("leatherworking")) return "leatherworking";
-                    if (t.includes("mining")) return "mining";
-                    if (t.includes("skinning")) return "skinning";
-                    if (t.includes("tailoring")) return "tailoring";
-                    if (t.includes("cooking")) return "cooking";
-                    if (t.includes("fishing")) return "fishing";
-                    return t.replace(/\s+/g, '');
+                    
+                    // ЗМІНА ТУТ: Повертаємо назву точно як файл (Alchemy.jpg)
+                    if (t.includes("alchemy")) return "Alchemy";
+                    if (t.includes("blacksmithing")) return "Blacksmithing";
+                    if (t.includes("enchanting")) return "Enchanting";
+                    if (t.includes("engineering")) return "Engineering";
+                    if (t.includes("herbalism")) return "Herbalism";
+                    if (t.includes("inscription")) return "Inscription";
+                    if (t.includes("jewelcrafting")) return "Jewelcrafting";
+                    if (t.includes("leatherworking")) return "Leatherworking";
+                    if (t.includes("mining")) return "Mining";
+                    if (t.includes("skinning")) return "Skinning";
+                    if (t.includes("tailoring")) return "Tailoring";
+                    if (t.includes("cooking")) return "Cooking";
+                    if (t.includes("fishing")) return "Fishing";
+                    
+                    return "Unknown"; 
                 };
                 
                 charsList.forEach((char, index) => {
-                    // 1. Клас персонажа (з екрануванням)
+                    // 1. Клас (залишаємо як було, бо воно працює)
                     const iconName = char.class ? char.class.toLowerCase().replace(/\s+/g, '') : "unknown";
                     const iconUrl = \`prof_class_icons/\${iconName}.jpg\`;
                     
-                    // 2. Логіка професій
+                    // 2. Професії
                     const p1Data = extractSkillData(char.p1);
                     const p2Data = extractSkillData(char.p2);
                     let profsHtml = '<div class="char-profs">';
@@ -1023,13 +1026,14 @@ async function generateHTML() {
                     [p1Data, p2Data].forEach(p => {
                         if (p && p.title && p.title !== "Unknown Profession") {
                             const simpleName = getProfFilename(p.title);
-                            // Тут використовуємо звичайні лапки ', щоб не конфліктувати
+                            
+                            // Тут формується шлях: prof_class_icons/Alchemy.jpg
                             profsHtml += '<img src="prof_class_icons/' + simpleName + '.jpg" class="prof-mini-icon" title="' + p.title + '" onerror="this.hidden=true">';
                         }
                     });
                     profsHtml += '</div>';
 
-                    // 3. Створення плитки (З екрануванням \` та \${)
+                    // 3. Плитка (з екрануванням для безпеки)
                     const div = document.createElement('div');
                     div.className = 'char-tile';
                     div.innerHTML = \`
