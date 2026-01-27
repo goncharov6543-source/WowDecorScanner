@@ -97,7 +97,7 @@
         "name": "Kirin Tor Glass Table",
         "id": "258211",
         "Prof": "Jewelcrafting",
-        "Exp": "Burning Crusade",
+        "Exp": "Wrath of the Lich King",
         "craftQty": 22,
         "recipe": [
             { "name": "Dragon's Eye", "id": "42225", "count": 4},
