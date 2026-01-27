@@ -795,7 +795,7 @@
         "Exp": "Shadowlands",
         "craftQty": 20,
         "recipe": [
-            { "name": "Umbral Ink", "id": "173058", "count": 20},
+            { "name": "Umbral Ink", "id": "173058", "count": 10},
             { "name": "Sinvyr Ore", "id": "171832", "count": 5}
         ]
     },
