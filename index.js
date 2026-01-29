@@ -293,6 +293,16 @@ async function generateHTML() {
     <!DOCTYPE html>
     <html lang="uk">
     <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-QYCN5HCRXY"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-QYCN5HCRXY');
+        </script>
+        
         <meta charset="UTF-8">
         <title>WoW Decor Scanner</title>
         <link rel="icon" type="image/jpeg" href="${FAVICON_NAME}">
