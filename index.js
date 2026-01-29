@@ -814,7 +814,7 @@ async function generateHTML() {
                 "Battle for Azeroth": "Zandalari", 
                 "Shadowlands": "Shadowlands",
                 "Dragonflight": "Dragon Isles",
-                "The War Within": "Khaz Algari",
+                "The War Within": "Khaz Algar",
                 "Vanilla": "Classic" 
             };
 
