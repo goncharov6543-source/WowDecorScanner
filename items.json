@@ -325,7 +325,7 @@
         "name": "Snowfall Tribe Scare-Totem",
         "id": "257693",
         "Prof": "Leatherworking",
-        "Exp": "Vanilla",
+        "Exp": "Wrath of the Lich King",
         "craftQty": 12,
         "recipe": [
             { "name": "Arctic Fur", "id": "44128", "count": 2},
@@ -385,7 +385,7 @@
         "name": "Wolvar Postbag",
         "id": "258205",
         "Prof": "Leatherworking",
-        "Exp": "Vanilla",
+        "Exp": "Wrath of the Lich King",
         "craftQty": 18,
         "recipe": [
             { "name": "Heavy Borean Leather", "id": "38425", "count": 14},
