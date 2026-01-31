@@ -176,7 +176,7 @@ async function scanServer(realmId, realmName, token, mainItemIdsSet) {
 
 // --- GENERATE HTML ---
 async function generateHTML() {
-    console.log("📝 Генерую звіт...");
+    console.log("📝 Генерую звіт з інтеграцією Sales Tracker...");
     
     const FAVICON_NAME = 'homestone.jpg'; 
 
@@ -287,13 +287,15 @@ async function generateHTML() {
     const jsonPayload = JSON.stringify(sortedItems);
     const jsonSkillReq = JSON.stringify(skillNeededData);
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
+    
+    // Твій Master Key для сайту
+    const MASTER_KEY_JS = '$2a$10$XsaEGChQRacvy3Zymhgl4e2T0lq3eRgHTin6EuwGztMpDjOPyFa3q';
 
     // --- 2. HTML Template ---
     const html = `
     <!DOCTYPE html>
     <html lang="uk">
     <head>
-        <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-QYCN5HCRXY"></script>
         <script>
         window.dataLayer = window.dataLayer || [];
@@ -361,6 +363,19 @@ async function generateHTML() {
             /* TOP RIGHT SECTION (CHARACTERS) */
             #topRightSection { position: absolute; top: 20px; right: 30px; z-index: 100; }
             
+            /* NEW: TOP LEFT SECTION (SALES HISTORY) */
+            #topLeftSection { position: absolute; top: 20px; left: 30px; z-index: 100; }
+            
+            .btn-history-login {
+                background: linear-gradient(135deg, #f8b700, #d49b00);
+                color: #000; border: none; 
+                padding: 10px 20px; border-radius: 30px; 
+                cursor: pointer; font-weight: bold; font-size: 14px;
+                box-shadow: 0 4px 10px rgba(248, 183, 0, 0.3);
+                transition: transform 0.2s;
+            }
+            .btn-history-login:hover { transform: scale(1.05); }
+
             .add-char-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
             .add-char-circle {
                 width: 60px; height: 60px; border: 2px dashed #444; border-radius: 50%;
@@ -375,9 +390,10 @@ async function generateHTML() {
             .char-menu-container { position: relative; }
             .btn-char-menu { 
                 background: #2a2b2e; color: #ccc; border: 1px solid #444; 
-                padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;
+                padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 14px;
+                transition: 0.2s;
             }
-            .btn-char-menu:hover { background: #333; color: #fff; }
+            .btn-char-menu:hover { background: #333; color: #fff; border-color: #666; }
 
             .char-dropdown {
                 position: absolute; top: 100%; right: 0; margin-top: 10px;
@@ -396,34 +412,53 @@ async function generateHTML() {
             }
             .btn-add-new-char:hover { border-color: #666; color: #fff; background: #1a1a1a; }
 
-            /* CHAR TILE (TASK 1: Spacing added) */
             .char-tile {
                 display: flex; align-items: center; background: #1a1b1d;
-                border: 2px solid #0070dd; border-radius: 30px;
-                padding: 6px 10px 6px 6px; gap: 10px;
+                border: 2px solid #0070dd; 
+                border-radius: 30px;
+                padding: 6px 6px 6px 6px; gap: 10px;
                 position: relative; transition: all 0.2s; min-height: 42px;
-                margin-bottom: 10px; /* Spacing between tiles */
+                margin-bottom: 10px;
+                box-shadow: none;
             }
-            .char-tile:hover { background: #222; box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); }
-            
+            .char-tile:hover { 
+                background: #222; 
+                border-color: #0070dd;
+                box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); 
+            }
+            .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .char-realm { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+
             .char-avatar { 
                 width: 40px; height: 40px; border-radius: 50%; 
                 border: 2px solid #ffd700; background-color: #222; 
                 background-size: cover; background-position: center; flex-shrink: 0;
             }
-            .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; flex-grow: 1; padding-right: 30px; }
-            .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-            .char-realm { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+            .char-info { display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; flex-grow: 1; padding-right: 0px; }
+            
+            .char-profs {
+                display: flex; align-items: center; gap: 4px; 
+                margin-left: auto; margin-right: 0; padding-right: 0;
+                z-index: 5;
+            }
+            
+            .prof-mini-icon {
+                width: 40px; height: 40px; border-radius: 50%;
+                border: 2px solid #ffd700; background-color: #111;
+                object-fit: cover; box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+            }
 
             .tile-btn {
                 position: absolute; width: 22px; height: 22px; border-radius: 50%;
                 display: flex; align-items: center; justify-content: center;
                 color: white; border: none; cursor: pointer;
-                transition: transform 0.2s; z-index: 10; flex-shrink: 0; padding: 0;
+                transition: all 0.2s ease; z-index: 10; flex-shrink: 0; padding: 0;
+                opacity: 0; transform: scale(0.8);
             }
-            .tile-btn:hover { transform: scale(1.15); }
+            .tile-btn:hover { transform: scale(1.15) !important; }
             .tile-btn-edit { top: -6px; left: -6px; background: #007bff; font-size: 12px; } 
             .tile-btn-delete { top: -6px; right: -6px; background: #dc3545; font-size: 14px; line-height: 1; } 
+            .char-tile:hover .tile-btn { opacity: 1; transform: scale(1); }
 
             /* MODALS */
             .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
@@ -443,6 +478,9 @@ async function generateHTML() {
             .empty-cart-msg { text-align: center; color: #666; font-size: 1.2em; margin-top: 50px; }
             
             .import-modal-content { background: #121212; border: 1px solid #333; max-width: 800px; width: 90%; border-radius: 8px; }
+            .import-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #1a1b1d; border-bottom: 1px solid #333; width: 100%; box-sizing: border-box; }
+            .import-modal-title { font-size: 1.2em; color: #fff; font-weight: bold; letter-spacing: 1px; margin: 0; }
+            
             .import-input-group { margin-bottom: 20px; }
             .import-label { display: block; font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
             .import-textarea { width: 100%; height: 80px; background: #080808; border: 1px solid #333; border-radius: 4px; color: #ccc; padding: 10px; font-family: monospace; resize: none; box-sizing: border-box; }
@@ -472,6 +510,8 @@ async function generateHTML() {
             .col-name { flex-grow: 1; padding-left: 20px; display: flex; align-items: center; }
             .name-text { font-weight: 600; font-size: 1.1em; color: #a335ee; cursor: pointer; position: relative; }
             .info-badge { height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.9em; padding: 0 15px; margin-right: 10px; background: #252629; color: #888; }
+            .info-badge.crafter-badge { background: linear-gradient(145deg, #2b2515, #1a1a1a); border: 1px solid #7c6a28; color: #ffd700; text-shadow: 0 1px 2px rgba(0,0,0,0.8); box-shadow: 0 2px 5px rgba(0,0,0,0.4); font-weight: bold; }
+
             .col-lumber { cursor: pointer; background: rgba(255,255,255,0.05); user-select: none; display: flex; align-items: center; }
             .col-lumber.positive span.val { color: #4caf50; font-weight: bold; }
             .col-lumber.negative span.val { color: #f44336; font-weight: bold; }
@@ -501,209 +541,36 @@ async function generateHTML() {
             .copy-tooltip { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); background: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
             .name-text.copied .copy-tooltip { opacity: 1; }
             
-            /* LOAD MORE */
             .load-more-container { display: flex; justify-content: center; margin-top: 30px; width: 100%; }
-
-            /* CRAFTER BADGE (TASK 2: Removed specific coloring, now inherits info-badge gray) */
-            /* .crafter-badge { } */
-            /* --- ОНОВЛЕНИЙ СТИЛЬ ПЛИТОЧОК (Issue 4: Темне золото) --- */
-            .char-tile {
-                display: flex; align-items: center; 
-                background: linear-gradient(145deg, #2b2515, #1a1a1a); /* Темний золотий відтінок */
-                border: 1px solid #7c6a28; /* Золота рамка */
-                border-radius: 30px;
-                padding: 6px 10px 6px 6px; gap: 10px;
-                position: relative; transition: all 0.2s; min-height: 42px;
-                margin-bottom: 10px;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            }
-            .char-tile:hover { 
-                background: linear-gradient(145deg, #3d341a, #222);
-                border-color: #ffd700; 
-                box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); 
-            }
-            .char-name { font-weight: bold; color: #e6c85e; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-            /* --- ВИПРАВЛЕННЯ ІМПОРТ МОДАЛКИ (Issue 3: Хрестик праворуч) --- */
-            .import-modal-header {
-                display: flex;
-                justify-content: space-between; /* Розсовує заголовок і хрестик по краях */
-                align-items: center;
-                padding: 15px 20px;
-                background: #1a1b1d;
-                border-bottom: 1px solid #333;
-                width: 100%;
-                box-sizing: border-box; 
-            }
-            .import-modal-title { font-size: 1.2em; color: #fff; font-weight: bold; letter-spacing: 1px; margin: 0; }
-
-            /* --- КОШИК (Issue 2: Ширина + Видимість інпутів) --- */
-            #cartModal .modal-content {
-                max-width: 1400px; /* Широкий кошик */
-                width: 95%;
-            }
-
-            /* Приховуємо ТІЛЬКИ галочку всередині кошика */
-            #cartBody .check-input {
-                display: none !important; 
-            }
-            
-            /* (Опціонально) Трохи посунути поле кількості в кошику, щоб виглядало гарно без галочки */
-            #cartBody .qty-input {
-                margin-right: 0; 
-            }
-            /* --- 1. ПОВЕРТАЄМО СИНІЙ СТИЛЬ ПЛИТОЧОК ПЕРСОНАЖІВ (як було спочатку) --- */
-            .char-tile {
-                display: flex; align-items: center; background: #1a1b1d;
-                border: 2px solid #0070dd; /* Синя рамка */
-                border-radius: 30px;
-                padding: 6px 10px 6px 6px; gap: 10px;
-                position: relative; transition: all 0.2s; min-height: 42px;
-                margin-bottom: 10px;
-                box-shadow: none;
-            }
-            .char-tile:hover { 
-                background: #222; 
-                border-color: #0070dd;
-                box-shadow: 0 0 10px rgba(0, 112, 221, 0.3); 
-            }
-            .char-name { font-weight: bold; color: #fff; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-            /* --- 2. НОВИЙ СТИЛЬ ДЛЯ КРАФТЕРА В ЛОТІ (Золотий, як просили) --- */
-            /* Це застосується до елемента, виділеного червоним на скріншоті */
-            .info-badge.crafter-badge {
-                background: linear-gradient(145deg, #2b2515, #1a1a1a); /* Темне золото фон */
-                border: 1px solid #7c6a28; /* Золота рамка */
-                color: #ffd700; /* Яскравий золотий текст */
-                text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-                box-shadow: 0 2px 5px rgba(0,0,0,0.4);
-                font-weight: bold;
-            }
-            /* Якщо раптом зникло, додай це в кінець CSS */
-            .char-profs {
-                display: flex;
-                align-items: center;
-                gap: -5px;
-                margin-left: auto; /* Притискає вправо */
-                margin-right: 25px;
-                z-index: 5;
-            }
-            .prof-mini-icon {
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                border: 2px solid #ffd700;
-                background-color: #111;
-                object-fit: cover;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            }
-            /* --- ОНОВЛЕНИЙ СТИЛЬ ДЛЯ ПРОФЕСІЙ (Великі та праворуч) --- */
-            .char-profs {
-                display: flex;
-                align-items: center;
-                gap: 8px; /* Невеликий відступ між іконками */
-                margin-left: auto; /* Ця команда притискає блок до правого краю */
-                margin-right: 10px; /* Відступ від самого краю плитки */
-                z-index: 5;
-                padding-right: 10px; /* Додатковий простір, щоб не зачіпати кнопку видалення */
-            }
-            
-            .prof-mini-icon {
-                width: 40px;  /* Розмір як у іконки класу */
-                height: 40px; /* Розмір як у іконки класу */
-                border-radius: 50%;
-                border: 2px solid #ffd700; /* Золота рамка */
-                background-color: #111;
-                object-fit: cover;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.5); /* Тінь для об'єму */
-                transition: transform 0.2s;
-            }
-            
-            .prof-mini-icon:hover {
-                transform: scale(1.15); /* Ефект збільшення при наведенні */
-                z-index: 10;
-            }
-            /* --- ВИПРАВЛЕННЯ ВІДСТУПІВ ТА ХОВЕРА --- */
-            
-            /* 1. Зменшуємо внутрішній відступ плитки справа, щоб іконки могли підійти до краю */
-            .char-tile {
-                padding: 6px 6px 6px 6px; /* Справа тепер 6px, як і зліва */
-            }
-
-            /* 2. Притискаємо блок професій максимально вправо */
-            .char-profs {
-                display: flex;
-                align-items: center;
-                gap: 4px; /* Зменшив відступ між самими іконками, щоб було акуратніше */
-                margin-left: auto; /* Притискає вправо */
-                margin-right: 0; /* ПРИБРАВ відступ, тепер впритул до краю */
-                padding-right: 0;
-                z-index: 5;
-            }
-            
-            /* 3. Стиль іконок (без ховер-ефекту) */
-            .prof-mini-icon {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                border: 2px solid #ffd700;
-                background-color: #111;
-                object-fit: cover;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.5);
-                /* transition прибрано, щоб не було анімації */
-            }
-            
-            /* Переписуємо ховер, щоб він нічого не робив */
-            .prof-mini-icon:hover {
-                transform: none; 
-                z-index: auto;
-                cursor: default;
-            }
-            /* --- 1. КНОПКИ НА ПЛИТЦІ (З'являються при наведенні) --- */
-            .tile-btn {
-                position: absolute; 
-                width: 22px; height: 22px; border-radius: 50%;
-                display: flex; align-items: center; justify-content: center;
-                color: white; border: none; cursor: pointer;
-                transition: all 0.2s ease; /* Плавна поява */
-                z-index: 10; flex-shrink: 0; padding: 0;
-                
-                /* Ховаємо за замовчуванням */
-                opacity: 0; 
-                transform: scale(0.8);
-            }
-            .tile-btn:hover { transform: scale(1.15) !important; }
-            .tile-btn-edit { top: -6px; left: -6px; background: #007bff; font-size: 12px; } 
-            .tile-btn-delete { top: -6px; right: -6px; background: #dc3545; font-size: 14px; line-height: 1; } 
-
-            /* Показуємо кнопки, коли мишка наведена на плитку */
-            .char-tile:hover .tile-btn {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            /* --- 2. КНОПКА CHARACTERS (Округлена) --- */
-            .btn-char-menu { 
-                background: #2a2b2e; color: #ccc; border: 1px solid #444; 
-                padding: 8px 20px; /* Трохи більше відступів */
-                border-radius: 20px; /* Сильне заокруглення */
-                cursor: pointer; font-weight: bold; font-size: 14px;
-                transition: 0.2s;
-            }
-            .btn-char-menu:hover { background: #333; color: #fff; border-color: #666; }
-
-            /* --- 3. КНОПКА "ПОКАЗАТИ ЩЕ" (Стиль) --- */
-            .btn-load-more {
-                background: #333; border: 1px solid #555; color: #ccc;
-                padding: 10px 30px; border-radius: 4px; cursor: pointer;
-                font-size: 14px; transition: 0.2s;
-            }
+            .btn-load-more { background: #333; border: 1px solid #555; color: #ccc; padding: 10px 30px; border-radius: 4px; cursor: pointer; font-size: 14px; transition: 0.2s; }
             .btn-load-more:hover { background: #444; color: #fff; }
-            /* Клас для приховування */
-            .hidden { display: none !important; }            
+            .hidden { display: none !important; }
+
+            #cartModal .modal-content { max-width: 1400px; width: 95%; }
+            #cartBody .check-input { display: none !important; }
+            #cartBody .qty-input { margin-right: 0; }
+            
+            /* HISTORY STYLES */
+            .history-login-box { text-align: center; padding: 40px 20px; }
+            .history-input { background: #2d2d2d; border: 1px solid #444; color: white; padding: 15px; width: 300px; border-radius: 6px; font-size: 16px; outline: none; text-align: center; margin-bottom: 20px; }
+            .history-input:focus { border-color: #f8b700; }
+            .history-btn { background: #f8b700; color: #000; border: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+            .history-btn:hover { background: #e0a800; }
+            
+            .history-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #1a1a1a; }
+            .history-table th { background: #333; color: #f8b700; padding: 12px; text-align: left; }
+            .history-table td { padding: 12px; border-bottom: 1px solid #333; color: #ddd; }
+            .h-price { color: #00ff9d; font-family: monospace; font-weight: bold; }
+            .h-total { color: #ffd700; font-family: monospace; font-weight: bold; }
+            .loader { border: 4px solid #333; border-top: 4px solid #f8b700; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         </style>
     </head>
     <body>
+        <div id="topLeftSection">
+             <button id="btnHistoryLogin" class="btn-history-login">Tracker Login</button>
+        </div>
+
         <div id="topRightSection">
             <div id="btnAddCharWrapper" class="add-char-btn" onclick="openImportModal()">
                 <div class="add-char-circle">+</div>
@@ -756,6 +623,38 @@ async function generateHTML() {
                 <div id="cartBody" class="modal-body"></div>
             </div>
         </div>
+        
+        <div id="historyModal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 900px;">
+                <div class="modal-header">
+                    <h2 id="historyTitle" class="modal-title">💰 Sales History</h2>
+                    <button id="btnCloseHistory" class="modal-close">×</button>
+                </div>
+                <div class="modal-body">
+                    <div id="historyLoginState" class="history-login-box">
+                         <p>Введіть ваш Bin ID з програми WoW Tracker:</p>
+                         <input type="text" id="historyBinInput" class="history-input" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                         <br>
+                         <button onclick="loginHistory()" class="history-btn">Увійти</button>
+                         <p id="historyError" style="color:#ff5555; display:none; margin-top:10px;"></p>
+                    </div>
+                    <div id="historyDataState" style="display:none;">
+                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                             <span id="historyUserLabel" style="color:#888;"></span>
+                             <button onclick="logoutHistory()" class="btn-load-more" style="padding: 5px 15px;">Logout</button>
+                         </div>
+                         <div id="historyLoader" class="loader" style="display:none;"></div>
+                         <table class="history-table" id="historyTable" style="display:none;">
+                             <thead>
+                                 <tr><th>Дата</th><th>Предмет</th><th>К-сть</th><th>Ціна</th><th>Сума</th></tr>
+                             </thead>
+                             <tbody id="historyTableBody"></tbody>
+                         </table>
+                         <div id="historyEmpty" style="text-align:center; padding:30px; color:#666; display:none;">Історія пуста.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div id="importModal" class="modal-overlay">
             <div class="import-modal-content">
@@ -791,6 +690,8 @@ async function generateHTML() {
         <script>
             const ALL_DATA = ${jsonPayload};
             const SKILL_REQS = ${jsonSkillReq};
+            const MASTER_KEY = '${MASTER_KEY_JS}'; // Інтеграція ключа
+            
             let activeData = ALL_DATA; 
             let currentIndex = 0;
             const ITEMS_PER_PAGE = 20;
@@ -799,23 +700,10 @@ async function generateHTML() {
             
             let savedState = JSON.parse(localStorage.getItem('wowScnr_state')) || {};
             let charsList = JSON.parse(localStorage.getItem('wowScnr_chars_list')) || [];
-            
-            // Optimization: Parse all characters once on load/change
             let parsedChars = [];
 
-            // EXPANSION MAPPING: ItemDB Name -> JSON Key / Import Name
             const EXPANSION_MAP = {
-                "Burning Crusade": "Outland",
-                "Wrath of the Lich King": "Northrend",
-                "Cataclysm": "Cataclysm",
-                "Mists of Pandaria": "Pandaria",
-                "Warlords of Draenor": "Draenor",
-                "Legion": "Legion",
-                "Battle for Azeroth": "Zandalari", 
-                "Shadowlands": "Shadowlands",
-                "Dragonflight": "Dragon Isles",
-                "The War Within": "Khaz Algar",
-                "Vanilla": "Classic" 
+                "Burning Crusade": "Outland", "Wrath of the Lich King": "Northrend", "Cataclysm": "Cataclysm", "Mists of Pandaria": "Pandaria", "Warlords of Draenor": "Draenor", "Legion": "Legion", "Battle for Azeroth": "Zandalari", "Shadowlands": "Shadowlands", "Dragonflight": "Dragon Isles", "The War Within": "Khaz Algar", "Vanilla": "Classic" 
             };
 
             function saveToStorage() { localStorage.setItem('wowScnr_state', JSON.stringify(savedState)); }
@@ -823,48 +711,28 @@ async function generateHTML() {
                 localStorage.setItem('wowScnr_chars_list', JSON.stringify(charsList)); 
                 reparseAllCharacters();
                 updateTopRightSection();
-                // TASK 3: Dynamically update badges on existing list
                 updateVisibleCrafterBadges();
             }
 
             function reparseAllCharacters() {
                 parsedChars = charsList.map(char => {
-                    return {
-                        name: char.name,
-                        p1: extractSkillData(char.p1),
-                        p2: extractSkillData(char.p2)
-                    };
+                    return { name: char.name, p1: extractSkillData(char.p1), p2: extractSkillData(char.p2) };
                 });
             }
 
-            // Recursive parser (reused for both display and matching)
             function extractSkillData(str) {
                 if (!str) return null;
-                let root;
-                try { root = JSON.parse(str); } catch(e) { return null; }
-
-                let title = "Unknown Profession";
-                let skillsFound = [];
-
+                let root; try { root = JSON.parse(str); } catch(e) { return null; }
+                let title = "Unknown Profession"; let skillsFound = [];
                 function traverse(node) {
                     if (typeof node !== 'object' || node === null) return;
                     if (node.name && (node.skill !== undefined || node.value !== undefined)) {
                         const n = node.name.toLowerCase();
                         if(title === "Unknown Profession") {
-                            if(n.includes("inscription")) title = "Inscription";
-                            else if(n.includes("alchemy")) title = "Alchemy";
-                            else if(n.includes("jewelcrafting")) title = "Jewelcrafting";
-                            else if(n.includes("blacksmithing")) title = "Blacksmithing";
-                            else if(n.includes("enchanting")) title = "Enchanting";
-                            else if(n.includes("engineering")) title = "Engineering";
-                            else if(n.includes("leatherworking")) title = "Leatherworking";
-                            else if(n.includes("tailoring")) title = "Tailoring";
+                            if(n.includes("inscription")) title = "Inscription"; else if(n.includes("alchemy")) title = "Alchemy"; else if(n.includes("jewelcrafting")) title = "Jewelcrafting"; else if(n.includes("blacksmithing")) title = "Blacksmithing"; else if(n.includes("enchanting")) title = "Enchanting"; else if(n.includes("engineering")) title = "Engineering"; else if(n.includes("leatherworking")) title = "Leatherworking"; else if(n.includes("tailoring")) title = "Tailoring";
                         }
-                        
                         let current = node.skill !== undefined ? node.skill : node.value;
-                        let max = node.maxSkill !== undefined ? node.maxSkill : 
-                                  (node.max !== undefined ? node.max : 100);
-                        
+                        let max = node.maxSkill !== undefined ? node.maxSkill : (node.max !== undefined ? node.max : 100);
                         skillsFound.push({ name: node.name, skill: current, max: max });
                     }
                     Object.keys(node).forEach(key => traverse(node[key]));
@@ -875,38 +743,28 @@ async function generateHTML() {
 
             function findCrafters(itemExp, itemProf) {
                 if (!itemExp || !itemProf || parsedChars.length === 0) return null;
-                
                 const profObj = SKILL_REQS.find(p => p[itemProf]);
                 if (!profObj) return null;
-                
                 const mappedExp = EXPANSION_MAP[itemExp] || itemExp;
                 const reqArray = profObj[itemProf];
-                
                 const expReqObj = reqArray.find(r => r[mappedExp] !== undefined);
                 if (!expReqObj) return null;
-                
                 const requiredSkill = expReqObj[mappedExp];
-                
                 let validCrafters = [];
-                
                 parsedChars.forEach(char => {
                     [char.p1, char.p2].forEach(pData => {
                         if (!pData) return;
                         if (pData.title === itemProf) {
                             const skillEntry = pData.skills.find(s => s.name.includes(mappedExp));
                             if (skillEntry) {
-                                if (skillEntry.skill >= requiredSkill) {
-                                    validCrafters.push(char.name);
-                                }
+                                if (skillEntry.skill >= requiredSkill) validCrafters.push(char.name);
                             }
                         }
                     });
                 });
-                
                 return validCrafters.length > 0 ? validCrafters.join(', ') : null;
             }
 
-            // TASK 3: Function to update badges dynamically without full re-render
             function updateVisibleCrafterBadges() {
                 const cards = document.querySelectorAll('.item-card');
                 cards.forEach(card => {
@@ -915,23 +773,14 @@ async function generateHTML() {
                     if (itemData) {
                         const crafterName = findCrafters(itemData.exp, itemData.prof);
                         const leftCol = card.querySelector('.main-row-left');
-                        
-                        // Remove existing
                         const existingBadge = leftCol.querySelector('.crafter-badge');
                         if (existingBadge) existingBadge.remove();
-
-                        // Add new if crafter exists
                         if (crafterName) {
                             const badge = document.createElement('div');
                             badge.className = 'info-badge crafter-badge';
                             badge.textContent = crafterName;
-                            // Insert before other badges (after name)
                             const expBadge = leftCol.querySelector('.info-badge:not(.crafter-badge)');
-                            if (expBadge) {
-                                leftCol.insertBefore(badge, expBadge);
-                            } else {
-                                leftCol.appendChild(badge);
-                            }
+                            if (expBadge) leftCol.insertBefore(badge, expBadge); else leftCol.appendChild(badge);
                         }
                     }
                 });
@@ -964,11 +813,9 @@ async function generateHTML() {
                 if (card.classList.contains('active')) setTimeout(() => drawChart(itemId), 50);
             }
 
-            // --- CHARACTERS LOGIC ---
             function updateTopRightSection() {
                 const addWrapper = document.getElementById('btnAddCharWrapper');
                 const menuContainer = document.getElementById('charMenuContainer');
-                
                 if (charsList.length === 0) {
                     addWrapper.style.display = 'flex';
                     menuContainer.style.display = 'none';
@@ -1014,31 +861,15 @@ async function generateHTML() {
                 const p2Str = document.getElementById('prof2Input').value;
                 const editId = parseInt(document.getElementById('editCharId').value);
                 
-                let name = "Unknown";
-                let realm = "Unknown";
-                let charClass = "unknown"; 
-
+                let name = "Unknown"; let realm = "Unknown"; let charClass = "unknown"; 
                 function parseMeta(str) {
-                    try {
-                        const obj = JSON.parse(str);
-                        if(obj.character) name = obj.character;
-                        if(obj.realm) realm = obj.realm;
-                        if(obj.class) charClass = obj.class.toLowerCase().replace(/\\s/g, '');
-                    } catch(e) {}
+                    try { const obj = JSON.parse(str); if(obj.character) name = obj.character; if(obj.realm) realm = obj.realm; if(obj.class) charClass = obj.class.toLowerCase().replace(/\\s/g, ''); } catch(e) {}
                 }
-                parseMeta(p1Str);
-                parseMeta(p2Str);
-
+                parseMeta(p1Str); parseMeta(p2Str);
                 if ((p1Str || p2Str) && name === "Unknown") name = "Imported Char";
-
                 const newChar = { name, realm, class: charClass, p1: p1Str, p2: p2Str };
 
-                if (editId >= 0) {
-                    charsList[editId] = newChar;
-                } else {
-                    charsList.push(newChar);
-                }
-                
+                if (editId >= 0) charsList[editId] = newChar; else charsList.push(newChar);
                 saveCharsToStorage();
                 document.getElementById('importModal').classList.remove('active');
             }
@@ -1053,121 +884,60 @@ async function generateHTML() {
             function openCharDetails(index) {
                 const char = charsList[index];
                 if (!char) return;
-
                 document.getElementById('detailsModalTitle').innerText = \`\${char.name} (\${char.realm})\`;
                 const body = document.getElementById('charDetailsBody');
-                
                 function buildHtmlColumn(data, defaultTitle) {
-                    if (!data || data.skills.length === 0) {
-                        return \`<div class="prof-col"><div class="prof-title-wrapper"><span class="prof-title">\${defaultTitle}</span></div><div style="color:#666">No skill data found</div></div>\`;
-                    }
-                    
+                    if (!data || data.skills.length === 0) return \`<div class="prof-col"><div class="prof-title-wrapper"><span class="prof-title">\${defaultTitle}</span></div><div style="color:#666">No skill data found</div></div>\`;
                     const iconName = data.title.toLowerCase().replace(/\\s+/g, '');
                     const iconUrl = \`prof_class_icons/\${iconName}.jpg\`;
-                    
                     let rows = '';
                     data.skills.forEach(s => {
                         const pct = Math.min(100, (s.skill / s.max) * 100);
-                        rows += \`
-                            <div class="prof-row">
-                                <div class="prof-header"><span>\${s.name}</span><span>\${s.skill} / \${s.max}</span></div>
-                                <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:\${pct}%"></div></div>
-                            </div>
-                        \`;
+                        rows += \`<div class="prof-row"><div class="prof-header"><span>\${s.name}</span><span>\${s.skill} / \${s.max}</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:\${pct}%"></div></div></div>\`;
                     });
-                    
-                    return \`
-                        <div class="prof-col">
-                            <div class="prof-title-wrapper">
-                                <img src="\${iconUrl}" class="prof-icon" onerror="this.style.display='none'">
-                                <span class="prof-title">\${data.title}</span>
-                            </div>
-                            \${rows}
-                        </div>\`;
+                    return \`<div class="prof-col"><div class="prof-title-wrapper"><img src="\${iconUrl}" class="prof-icon" onerror="this.style.display='none'"><span class="prof-title">\${data.title}</span></div>\${rows}</div>\`;
                 }
-
                 const data1 = extractSkillData(char.p1);
                 const data2 = extractSkillData(char.p2);
-
                 const leftHtml = buildHtmlColumn(data1, "Profession 1");
                 const rightHtml = buildHtmlColumn(data2, "Profession 2");
-
                 body.innerHTML = \`<div class="details-grid">\${leftHtml}\${rightHtml}</div>\`;
                 document.getElementById('charDetailsModal').classList.add('active');
             }
             
-            document.getElementById('btnCloseDetails').addEventListener('click', () => {
-                document.getElementById('charDetailsModal').classList.remove('active');
-            });
+            document.getElementById('btnCloseDetails').addEventListener('click', () => { document.getElementById('charDetailsModal').classList.remove('active'); });
 
             function renderCharList() {
                 const container = document.getElementById('charList');
                 container.innerHTML = '';
-
-                // Допоміжна функція: тепер повертає назви з Великої Літери (як твої файли)
                 const getProfFilename = (fullTitle) => {
                     if (!fullTitle) return "Unknown";
                     const t = fullTitle.toLowerCase();
-                    
-                    // ЗМІНА ТУТ: Повертаємо назву точно як файл (Alchemy.jpg)
-                    if (t.includes("alchemy")) return "Alchemy";
-                    if (t.includes("blacksmithing")) return "Blacksmithing";
-                    if (t.includes("enchanting")) return "Enchanting";
-                    if (t.includes("engineering")) return "Engineering";
-                    if (t.includes("herbalism")) return "Herbalism";
-                    if (t.includes("inscription")) return "Inscription";
-                    if (t.includes("jewelcrafting")) return "Jewelcrafting";
-                    if (t.includes("leatherworking")) return "Leatherworking";
-                    if (t.includes("mining")) return "Mining";
-                    if (t.includes("skinning")) return "Skinning";
-                    if (t.includes("tailoring")) return "Tailoring";
-                    if (t.includes("cooking")) return "Cooking";
-                    if (t.includes("fishing")) return "Fishing";
-                    
+                    if (t.includes("alchemy")) return "Alchemy"; if (t.includes("blacksmithing")) return "Blacksmithing"; if (t.includes("enchanting")) return "Enchanting"; if (t.includes("engineering")) return "Engineering"; if (t.includes("herbalism")) return "Herbalism"; if (t.includes("inscription")) return "Inscription"; if (t.includes("jewelcrafting")) return "Jewelcrafting"; if (t.includes("leatherworking")) return "Leatherworking"; if (t.includes("mining")) return "Mining"; if (t.includes("skinning")) return "Skinning"; if (t.includes("tailoring")) return "Tailoring"; if (t.includes("cooking")) return "Cooking"; if (t.includes("fishing")) return "Fishing";
                     return "Unknown"; 
                 };
-                
                 charsList.forEach((char, index) => {
-                    // 1. Клас (залишаємо як було, бо воно працює)
                     const iconName = char.class ? char.class.toLowerCase().replace(/\s+/g, '') : "unknown";
                     const iconUrl = \`prof_class_icons/\${iconName}.jpg\`;
-                    
-                    // 2. Професії
                     const p1Data = extractSkillData(char.p1);
                     const p2Data = extractSkillData(char.p2);
                     let profsHtml = '<div class="char-profs">';
-                    
                     [p1Data, p2Data].forEach(p => {
                         if (p && p.title && p.title !== "Unknown Profession") {
                             const simpleName = getProfFilename(p.title);
-                            
-                            // Тут формується шлях: prof_class_icons/Alchemy.jpg
                             profsHtml += '<img src="prof_class_icons/' + simpleName + '.jpg" class="prof-mini-icon" title="' + p.title + '" onerror="this.hidden=true">';
                         }
                     });
                     profsHtml += '</div>';
-
-                    // 3. Плитка (з екрануванням для безпеки)
                     const div = document.createElement('div');
                     div.className = 'char-tile';
-                    div.innerHTML = \`
-                        <button class="tile-btn tile-btn-edit" onclick="openCharDetails(\${index})">✎</button>
-                        <button class="tile-btn tile-btn-delete" onclick="deleteCharacter(\${index})">×</button>
-                        <div class="char-avatar" style="background-image: url('\${iconUrl}');"></div>
-                        <div class="char-info">
-                            <div class="char-name">\${char.name}</div>
-                            <div class="char-realm">\${char.realm}</div>
-                        </div>
-                        \${profsHtml}
-                    \`;
+                    div.innerHTML = \`<button class="tile-btn tile-btn-edit" onclick="openCharDetails(\${index})">✎</button><button class="tile-btn tile-btn-delete" onclick="deleteCharacter(\${index})">×</button><div class="char-avatar" style="background-image: url('\${iconUrl}');"></div><div class="char-info"><div class="char-name">\${char.name}</div><div class="char-realm">\${char.realm}</div></div>\${profsHtml}\`;
                     container.appendChild(div);
                 });
             }
 
             function setChartRange(btn, itemId, range) {
-                const parent = btn.parentElement;
-                parent.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+                const parent = btn.parentElement; parent.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
                 chartRanges[itemId] = range;
                 if (activeCharts[itemId]) { activeCharts[itemId].destroy(); delete activeCharts[itemId]; }
                 drawChart(itemId);
@@ -1180,88 +950,32 @@ async function generateHTML() {
                 if (!itemData || !itemData.history || itemData.history.length === 0) return;
                 const ctx = canvas.getContext('2d');
                 const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-                gradient.addColorStop(0, 'rgba(0, 112, 221, 0.6)');
-                gradient.addColorStop(1, 'rgba(0, 112, 221, 0.0)');
+                gradient.addColorStop(0, 'rgba(0, 112, 221, 0.6)'); gradient.addColorStop(1, 'rgba(0, 112, 221, 0.0)');
                 const range = chartRanges[itemId] || '1m';
                 const now = Date.now();
                 let cutoff = 0;
-                switch(range) {
-                    case '1w': cutoff = now - (7 * 24 * 60 * 60 * 1000); break;
-                    case '1m': cutoff = now - (30 * 24 * 60 * 60 * 1000); break;
-                    case '6m': cutoff = now - (180 * 24 * 60 * 60 * 1000); break;
-                    case '1y': cutoff = now - (365 * 24 * 60 * 60 * 1000); break;
-                    default: cutoff = 0;
-                }
+                switch(range) { case '1w': cutoff = now - (604800000); break; case '1m': cutoff = now - (2592000000); break; case '6m': cutoff = now - (15552000000); break; case '1y': cutoff = now - (31536000000); break; default: cutoff = 0; }
                 const filteredHistory = itemData.history.filter(h => h.t >= cutoff);
-                const labels = filteredHistory.map(h => {
-                    const d = new Date(h.t);
-                    return d.toLocaleDateString() + ' ' + d.getHours() + ':00';
-                });
+                const labels = filteredHistory.map(h => { const d = new Date(h.t); return d.toLocaleDateString() + ' ' + d.getHours() + ':00'; });
                 const dataPoints = filteredHistory.map(h => h.p);
                 activeCharts[itemId] = new Chart(ctx, {
                     type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Price',
-                            data: dataPoints,
-                            borderColor: '#0070dd',
-                            backgroundColor: gradient,
-                            borderWidth: 2,
-                            tension: 0.4,
-                            fill: true,
-                            pointRadius: dataPoints.length < 2 ? 5 : 0,
-                            pointHoverRadius: 6,
-                            pointBackgroundColor: '#fff'
-                        }]
-                    },
-                    options: {
-                        animation: false, 
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: { mode: 'index', intersect: false },
-                        plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#fff', bodyColor: '#0070dd', displayColors: false, callbacks: { label: (c) => c.parsed.y.toLocaleString() + ' g' } } },
-                        scales: { x: { display: false }, y: { display: false } }
-                    }
+                    data: { labels: labels, datasets: [{ label: 'Price', data: dataPoints, borderColor: '#0070dd', backgroundColor: gradient, borderWidth: 2, tension: 0.4, fill: true, pointRadius: dataPoints.length < 2 ? 5 : 0, pointHoverRadius: 6, pointBackgroundColor: '#fff' }] },
+                    options: { animation: false, responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#fff', bodyColor: '#0070dd', displayColors: false, callbacks: { label: (c) => c.parsed.y.toLocaleString() + ' g' } } }, scales: { x: { display: false }, y: { display: false } } }
                 });
             }
 
-            function copyName(el) {
-                const text = el.firstChild.textContent;
-                navigator.clipboard.writeText(text).then(() => {
-                    el.classList.add('copied');
-                    setTimeout(() => el.classList.remove('copied'), 1500);
-                });
-            }
+            function copyName(el) { const text = el.firstChild.textContent; navigator.clipboard.writeText(text).then(() => { el.classList.add('copied'); setTimeout(() => el.classList.remove('copied'), 1500); }); }
 
             function handleReset() {
                 if(!confirm("Очистити вибір предметів? (Персонажі залишаться)")) return;
-                
-                // Очищаємо тільки стан вибору
                 localStorage.removeItem('wowScnr_state');
-                
-                // НЕ видаляємо персонажів
-                // localStorage.removeItem('wowScnr_chars_list'); 
-                
                 savedState = {};
-                
-                // НЕ обнуляємо список персонажів у пам'яті
-                // charsList = []; 
-                // reparseAllCharacters();
-
-                // Скидаємо UI
                 document.querySelectorAll('.check-input').forEach(el => el.checked = false);
                 document.querySelectorAll('.qty-input').forEach(el => el.value = '');
                 document.getElementById('smartSearchInput').value = '';
-                
-                activeData = ALL_DATA;
-                currentIndex = 0;
-                document.getElementById('list').innerHTML = '';
-                loadMore();
-                
-                // Оновлюємо бейджі, бо крафтери залишились
-                updateTopRightSection();
-                updateVisibleCrafterBadges();
+                activeData = ALL_DATA; currentIndex = 0; document.getElementById('list').innerHTML = ''; loadMore();
+                updateTopRightSection(); updateVisibleCrafterBadges();
             }
 
             function openCart() {
@@ -1269,136 +983,77 @@ async function generateHTML() {
                 const body = document.getElementById('cartBody');
                 body.innerHTML = '';
                 const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
-                if (checkedIds.length === 0) {
-                    body.innerHTML = '<div class="empty-cart-msg">Кошик порожній.</div>';
-                } else {
-                    const cartItems = ALL_DATA.filter(item => checkedIds.includes(item.itemId.toString()));
-                    body.innerHTML = cartItems.map(createCartItemHTML).join('');
-                }
+                if (checkedIds.length === 0) body.innerHTML = '<div class="empty-cart-msg">Кошик порожній.</div>';
+                else { const cartItems = ALL_DATA.filter(item => checkedIds.includes(item.itemId.toString())); body.innerHTML = cartItems.map(createCartItemHTML).join(''); }
                 modal.classList.add('active');
             }
 
-            function closeCart() {
-                document.getElementById('cartModal').classList.remove('active');
-                document.getElementById('list').innerHTML = '';
-                currentIndex = 0;
-                loadMore();
-                updateVisibleCrafterBadges();
-            }
+            function closeCart() { document.getElementById('cartModal').classList.remove('active'); document.getElementById('list').innerHTML = ''; currentIndex = 0; loadMore(); updateVisibleCrafterBadges(); }
 
             function handleAddonImport(e) {
                 const btn = e.currentTarget;
                 const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
                 if (checkedIds.length === 0) return alert("Вибери предмети!");
-                
                 let summary = {}; 
                 checkedIds.forEach(id => {
                     const itemData = ALL_DATA.find(i => i.itemId == id);
                     if (!itemData) return;
                     const count = savedState[id].qty || 0;
-                    
                     if (count > 0) {
                         const exp = itemData.exp; 
                         const lumberReq = itemData.craftQty || 0;
                         const totalLumber = count * lumberReq;
-                        
-                        // Додаємо навіть якщо не вимагає ламберу, але є в списку (опціонально, але для адону безпечніше)
                         if (exp) {
                             if (!summary[exp]) summary[exp] = { totalLumber: 0, items: [] };
                             summary[exp].totalLumber += totalLumber;
-                            
                             const crafter = findCrafters(itemData.exp, itemData.prof) || "";
-                            
-                            summary[exp].items.push({ 
-                                name: itemData.name, 
-                                price: itemData.bestPrice, 
-                                count: count,
-                                crafter: crafter,
-                                craftCost: Math.floor(itemData.craftCost),
-                                prof: itemData.prof // <--- ДОДАНО ПРОФЕСІЮ ТУТ
-                            });
+                            summary[exp].items.push({ name: itemData.name, price: itemData.bestPrice, count: count, crafter: crafter, craftCost: Math.floor(itemData.craftCost), prof: itemData.prof });
                         }
                     }
                 });
-                
-                const payload = Object.keys(summary).map(exp => ({ 
-                    "Exp": exp, 
-                    "craftQty": summary[exp].totalLumber, 
-                    "items": summary[exp].items 
-                }));
-                
+                const payload = Object.keys(summary).map(exp => ({ "Exp": exp, "craftQty": summary[exp].totalLumber, "items": summary[exp].items }));
                 if (payload.length === 0) return alert("Помилка даних або не введено кількість.");
                 visualCopy(btn, JSON.stringify(payload));
             }
 
             function handleReagentsImport(e) {
                 const btn = e.currentTarget;
-
-                // --- ЗАХИСТ ВІД ПОДВІЙНОГО КЛІКУ ---
                 if (btn.dataset.locked === "true") return;
-                btn.dataset.locked = "true";
-                setTimeout(() => { delete btn.dataset.locked; }, 500);
-                // -----------------------------------
-
+                btn.dataset.locked = "true"; setTimeout(() => { delete btn.dataset.locked; }, 500);
                 const checkedIds = Object.keys(savedState).filter(id => savedState[id] && savedState[id].checked);
-                
                 if (checkedIds.length === 0) return alert("Вибери предмети!");
-                
-                let reagentsMap = {};
-                let hasItems = false;
-                
+                let reagentsMap = {}; let hasItems = false;
                 checkedIds.forEach(id => {
                     const itemData = ALL_DATA.find(i => i.itemId == id);
                     if (!itemData) return;
-                    
                     const count = parseInt(savedState[id].qty) || 0;
-                    
                     if (count > 0) {
                         hasItems = true;
                         if (itemData.recipeRaw && Array.isArray(itemData.recipeRaw)) {
-                            itemData.recipeRaw.forEach(r => {
-                                if (!reagentsMap[r.name]) reagentsMap[r.name] = 0;
-                                reagentsMap[r.name] += (r.count * count);
-                            });
+                            itemData.recipeRaw.forEach(r => { if (!reagentsMap[r.name]) reagentsMap[r.name] = 0; reagentsMap[r.name] += (r.count * count); });
                         }
                     }
                 });
-                
                 if (!hasItems) return alert("Введи кількість!");
-                
-                // --- 3. ФОРМУВАННЯ СТРІЧКИ (З ЕКРАНУВАННЯМ) ---
                 let importString = "Decor Shopping List";
-
                 Object.entries(reagentsMap).forEach(([name, qty]) => {
-                    // Екрануємо лапки для JS
                     const cleanName = name.replace(/"/g, '\\"');
-                    
-                    // УВАГА: Тут використано \` та \${ для сумісності з Node.js
                     importString += \`^"\${cleanName}";;0;0;0;0;0;0;0;0;;#;;\${qty}\`;
                 });
-                
                 visualCopy(btn, importString);
             }
 
             function visualCopy(btn, text) {
-                // Використовуємо пряму властивість таймера, а не dataset (надійніше)
                 if (btn.copyTimer) clearTimeout(btn.copyTimer);
-
                 navigator.clipboard.writeText(text).catch(err => console.error(err));
-
                 btn.innerText = "Скопійовано!";
                 btn.style.backgroundColor = "#a335ee"; 
-
-                // Зберігаємо таймер у властивість кнопки
                 btn.copyTimer = setTimeout(() => {
                     btn.style.backgroundColor = ""; 
-                    
-                    // Жорстке повернення назви
                     if (btn.classList.contains('btn-import')) btn.innerText = "Reagents Import";
                     else if (btn.classList.contains('btn-import-addon')) btn.innerText = "Lumber Import";
                     else if (btn.id === 'btnOpenCart') btn.innerText = "🛒 Cart";
                     else btn.innerText = "Import";
-                    
                     btn.copyTimer = null;
                 }, 2000);
             }
@@ -1411,19 +1066,14 @@ async function generateHTML() {
                 const saved = savedState[item.itemId] || {};
                 const isChecked = saved.checked ? 'checked' : '';
                 const qtyVal = saved.qty && saved.qty > 0 ? saved.qty : '';
-                
-                // Logic to check crafters
                 const crafterName = findCrafters(item.exp, item.prof);
-                // Apply same style as info-badge but keep text yellow
                 const crafterHtml = crafterName ? \`<div class="info-badge crafter-badge">\${crafterName}</div>\` : '';
-
                 let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
                 const top10Html = item.top10.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
                 const toggleAttr = expandale ? \`onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})"\` : '';
 
-                // Note: onclick="copyName(this)" simplifies the escaping issue
                 return \`<div class="item-card" data-id="\${item.itemId}" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}">
                     <div class="main-row">
                         <div class="main-row-left">
@@ -1446,28 +1096,12 @@ async function generateHTML() {
             function loadMore() {
                 const list = document.getElementById('list');
                 const btn = document.getElementById('btnLoadMore');
-                
-                // Беремо наступну порцію
                 const nextItems = activeData.slice(currentIndex, currentIndex + ITEMS_PER_PAGE);
-                
-                // Якщо є що показувати - рендеримо
                 if (nextItems.length > 0) { 
-                    // Використовуємо + для рядків, щоб Node.js не лаявся
-                    const htmlItems = nextItems.map(function(item) {
-                        return createItemHTML(item);
-                    }).join('');
-                    
-                    list.insertAdjacentHTML('beforeend', htmlItems); 
-                    currentIndex += nextItems.length;
+                    const htmlItems = nextItems.map(function(item) { return createItemHTML(item); }).join('');
+                    list.insertAdjacentHTML('beforeend', htmlItems); currentIndex += nextItems.length;
                 }
-                
-                // ЛОГІКА ВИДИМОСТІ КНОПКИ
-                // Якщо ми показали всі елементи, які є в activeData - ховаємо кнопку
-                if (currentIndex >= activeData.length) {
-                    btn.style.display = 'none';
-                } else {
-                    btn.style.display = 'block';
-                }
+                if (currentIndex >= activeData.length) btn.style.display = 'none'; else btn.style.display = 'block';
             }
 
             function handleSearch(e) {
@@ -1482,25 +1116,115 @@ async function generateHTML() {
                 activeData = filtered; currentIndex = 0; document.getElementById('list').innerHTML = ''; loadMore();
             }
 
+            // --- HISTORY LOGIC ---
+            function checkHistorySession() {
+                const id = localStorage.getItem('wow_bin_id');
+                const btn = document.getElementById('btnHistoryLogin');
+                if (id) {
+                    btn.textContent = "History";
+                    btn.onclick = openHistoryModal;
+                } else {
+                    btn.textContent = "Tracker Login";
+                    btn.onclick = openHistoryModal;
+                }
+            }
+
+            function openHistoryModal() {
+                const id = localStorage.getItem('wow_bin_id');
+                if (id) {
+                    document.getElementById('historyLoginState').style.display = 'none';
+                    document.getElementById('historyDataState').style.display = 'block';
+                    loadHistoryData(id);
+                } else {
+                    document.getElementById('historyLoginState').style.display = 'block';
+                    document.getElementById('historyDataState').style.display = 'none';
+                }
+                document.getElementById('historyModal').classList.add('active');
+            }
+
+            async function loginHistory() {
+                const id = document.getElementById('historyBinInput').value.trim();
+                if (id.length < 5) return alert("ID is too short");
+                localStorage.setItem('wow_bin_id', id);
+                checkHistorySession();
+                openHistoryModal();
+            }
+
+            function logoutHistory() {
+                localStorage.removeItem('wow_bin_id');
+                location.reload();
+            }
+
+            async function loadHistoryData(binId) {
+                document.getElementById('historyLoader').style.display = 'block';
+                document.getElementById('historyTable').style.display = 'none';
+                document.getElementById('historyEmpty').style.display = 'none';
+
+                try {
+                    const response = await fetch(\`https://api.jsonbin.io/v3/b/\${binId}/latest\`, {
+                        headers: { 'X-Master-Key': MASTER_KEY }
+                    });
+                    if (!response.ok) throw new Error("Invalid ID");
+                    const json = await response.json();
+                    let data = json.record;
+                    
+                    if (data[0] && data[0].seller) {
+                        document.getElementById('historyUserLabel').innerText = "User: " + data[0].seller;
+                    }
+
+                    if (!Array.isArray(data) || data.length === 0) {
+                        document.getElementById('historyLoader').style.display = 'none';
+                        document.getElementById('historyEmpty').style.display = 'block';
+                        return;
+                    }
+
+                    data.sort((a, b) => b.timestamp - a.timestamp);
+                    const tbody = document.getElementById('historyTableBody');
+                    tbody.innerHTML = '';
+                    
+                    data.forEach(row => {
+                        const tr = document.createElement('tr');
+                        const priceG = (row.price / 10000).toLocaleString();
+                        const totalG = ((row.price * row.count) / 10000).toLocaleString();
+                        tr.innerHTML = \`<td>\${row.dateReadable}</td><td style="color:white">\${row.item}</td><td style="font-weight:bold">\${row.count}</td><td class="h-price">\${priceG} g</td><td class="h-total">\${totalG} g</td>\`;
+                        tbody.appendChild(tr);
+                    });
+
+                    document.getElementById('historyLoader').style.display = 'none';
+                    document.getElementById('historyTable').style.display = 'table';
+
+                } catch (e) {
+                    document.getElementById('historyLoader').style.display = 'none';
+                    document.getElementById('historyError').innerText = e.message;
+                    document.getElementById('historyError').style.display = 'block';
+                    // Go back to login if failed
+                    setTimeout(() => {
+                        localStorage.removeItem('wow_bin_id');
+                        checkHistorySession();
+                        openHistoryModal();
+                    }, 2000);
+                }
+            }
+
+            document.getElementById('btnCloseHistory').onclick = () => { document.getElementById('historyModal').classList.remove('active'); };
+
             document.addEventListener('DOMContentLoaded', () => {
                 reparseAllCharacters(); 
                 loadMore();
                 updateTopRightSection();
+                checkHistorySession(); // Init history button state
                 
-                // --- ЗАМІНИВ addEventListener НА onclick (ЩОБ УНИКНУТИ ДУБЛІВ) ---
                 document.getElementById('btnLoadMore').onclick = loadMore;
                 document.getElementById('smartSearchInput').oninput = handleSearch;
                 document.querySelector('.btn-import-addon').onclick = handleAddonImport;
-                
-                // Ось тут був головний баг. onclick гарантує, що функція буде одна.
                 document.querySelector('.btn-import').onclick = handleReagentsImport;
-                
                 document.getElementById('btnOpenCart').onclick = openCart;
                 document.getElementById('btnCloseCart').onclick = closeCart;
-                // ... решту можна залишити як є
+                
                 document.getElementById('cartModal').addEventListener('click', (e) => { if (e.target.id === 'cartModal') closeCart(); });
                 document.getElementById('btnReset').addEventListener('click', handleReset);
                 document.getElementById('importModal').addEventListener('click', (e) => { if (e.target.id === 'importModal') document.getElementById('importModal').classList.remove('active'); });
+                document.getElementById('historyModal').addEventListener('click', (e) => { if (e.target.id === 'historyModal') document.getElementById('historyModal').classList.remove('active'); });
                 document.getElementById('charDetailsModal').addEventListener('click', (e) => { if (e.target.id === 'charDetailsModal') document.getElementById('charDetailsModal').classList.remove('active'); });
             });
         </script>
