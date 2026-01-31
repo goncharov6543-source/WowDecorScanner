@@ -690,7 +690,7 @@ async function generateHTML() {
             const SKILL_REQS = ${jsonSkillReq};
             
             // ВШИВАЄМО КЛЮЧ ПРЯМО ТУТ (hardcoded)
-            const MASTER_KEY = '$2a$10$XsaEGChQRacvy3Zymhgl4e2T0lq3eRgHTin6EuwGztMpDjOPyFa3q'; 
+            const MASTER_KEY = '$2a$10$XsAeGChQRacvy3Zymhgl4e2T0lq3eRgHTin6EuwGztMpDjOPyFa3q'; 
             
             let activeData = ALL_DATA; 
             let currentIndex = 0;
