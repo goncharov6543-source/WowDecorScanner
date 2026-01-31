@@ -667,13 +667,14 @@ async function generateHTML() {
             /* 3. Тіло (Body) */
             #historyModal .modal-body {
                 padding: 20px 40px;
-                background: transparent; /* Прозорий, щоб було видно світлий пергамент */
+                background: rgba(0, 0, 0, 0.15); /* Легке затемнення */
+                overflow-y: auto;
             }
 
             /* 4. Картка Лота (The Item Card) */
             .spell-grid {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(3, 1fr); /* 3 рівні колонки */
                 gap: 12px;
                 margin-top: 10px;
             }
@@ -697,10 +698,11 @@ async function generateHTML() {
             .spell-icon-frame {
                 width: 42px;
                 height: 42px;
-                border: 1px solid #444;
-                border-radius: 4px;
+                border: 2px solid #ffd700; /* Золота рамка */
+                border-radius: 6px; /* Заокруглення */
                 margin-right: 10px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+                box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+                overflow: hidden;
             }
             .spell-icon { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
 
@@ -749,11 +751,11 @@ async function generateHTML() {
 
             /* 5. Футер (Такий же колір як шапка) */
             .spellbook-footer {
-                background: #4a3826; /* Match Header */
+                background: #4a3826;
                 border-top: 2px solid #755e42;
                 padding: 10px 30px;
                 display: flex;
-                justify-content: center; /* Центруємо пагінацію */
+                justify-content: flex-end; /* Зміщуємо вправо */
                 align-items: center;
             }
 
@@ -787,6 +789,85 @@ async function generateHTML() {
             .user-tab-badge { background: #8b6946; border: 1px solid #57412d; border-radius: 4px; padding: 2px 10px; display: flex; align-items: center; gap: 8px; color: #fff; font-family: sans-serif; font-size: 12px; }
             .logout-x { cursor: pointer; padding-left: 8px; border-left: 1px solid rgba(255,255,255,0.3); font-size: 14px; }
             .logout-x:hover { color: #ff9999; }
+
+            /* Новий контейнер для верхньої частини хедера */
+                .header-top-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    width: 100%;
+                }
+
+                /* Ліва частина: Іконка + Заголовок + Пошук */
+                .header-left-group {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                }
+
+                .title-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+
+                .gold-bag-icon {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 4px;
+                    border: 1px solid #ffd700;
+                }
+
+                /* Поле пошуку під заголовком */
+                .spellbook-search {
+                    width: 250px;
+                    background: rgba(0, 0, 0, 0.4);
+                    border: 1px solid #5c452d;
+                    border-radius: 4px;
+                    padding: 6px 12px;
+                    color: #ffd700;
+                    font-family: sans-serif;
+                    outline: none;
+                    transition: all 0.3s ease;
+                }
+
+                /* Права частина: Нік + Хрестик */
+                .header-right-group {
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                }
+
+                /* Нижній ряд кнопок (Великі) */
+                .header-bottom-row {
+                    margin-top: 20px;
+                    width: 100%;
+                    display: flex;
+                    gap: 10px;
+                }
+
+                .spellbook-tab {
+                    flex: 1; /* Кнопки розтягуються на всю ширину */
+                    text-align: center;
+                    background: #2e2115;
+                    border: 1px solid #57412d;
+                    color: #a89070;
+                    padding: 10px 0; /* Більші кнопки */
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: bold;
+                    font-family: sans-serif;
+                    transition: 0.2s;
+                    text-transform: uppercase;
+                }
+                .history-coin {
+                    width: 14px;
+                    height: 14px;
+                    vertical-align: middle;
+                    border-radius: 50%; /* Робимо круглою */
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+                }
         </style>
     </head>
     <body>
@@ -849,25 +930,28 @@ async function generateHTML() {
         
         <div id="historyModal" class="modal-overlay">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="historyTitle">Sales History</h2>
-                
-                <div class="spellbook-header-right">
-                    <div class="header-controls-row">
+            <div class="modal-header" style="display:block;">
+                <div class="header-top-row">
+                    <div class="header-left-group">
+                        <div class="title-row">
+                            <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_bag_10.jpg" class="gold-bag-icon">
+                            <h2 id="historyTitle">Sales History</h2>
+                        </div>
+                        <input type="text" id="historySearch" class="spellbook-search" placeholder="Search item..." onkeyup="filterHistory()">
+                    </div>
+
+                    <div class="header-right-group">
                         <div id="userBadge" class="user-tab-badge" style="display:none;">
                             <span id="userNameDisplay">Player</span>
                             <span class="logout-x" onclick="logoutHistory()" title="Logout">×</span>
                         </div>
-
-                        <div class="spellbook-tabs">
-                            <div class="spellbook-tab active" onclick="switchTab('sales')">Only Sales</div>
-                            <div class="spellbook-tab" onclick="switchTab('all')">All Decors</div>
-                        </div>
-
                         <button id="btnCloseHistory" class="modal-close">×</button>
                     </div>
+                </div>
 
-                    <input type="text" id="historySearch" class="spellbook-search" placeholder="Search..." onkeyup="filterHistory()">
+                <div class="header-bottom-row">
+                    <div class="spellbook-tab active" onclick="switchTab('sales')">Only Sales</div>
+                    <div class="spellbook-tab" onclick="switchTab('all')">All Decors</div>
                 </div>
             </div>
 
@@ -1459,16 +1543,16 @@ async function generateHTML() {
                     
                     data.forEach(row => {
                         const totalGoldVal = row.price / 10000;
-                        const unitGoldVal = totalGoldVal / (row.count || 1);
-                        
-                        // Форматуємо (пробіли: 2 100)
                         const totalG = totalGoldVal.toLocaleString('uk-UA', {maximumFractionDigits: 0});
 
-                        // Час (тільки година:хвилина)
-                        // row.dateReadable = "2026-01-31 02:18:55"
-                        // Беремо частину рядка або форматуємо timestamp
-                        let timeStr = row.dateReadable.split(' ')[1] || row.dateReadable; // Беремо "02:18:55"
-                        timeStr = timeStr.substring(0, 5); // Беремо "02:18"
+                        const dateObj = new Date(row.timestamp);
+                        const day = String(dateObj.getDate()).padStart(2, '0');
+                        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                        const hours = String(dateObj.getHours()).padStart(2, '0');
+                        const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+                        
+                        // ТУТ БУЛА ПОМИЛКА: Замінив зворотні лапки на плюси
+                        const timeStr = day + "." + month + " " + hours + ":" + minutes;
 
                         const itemMeta = ALL_DATA.find(i => i.name === row.item);
                         const iconUrl = itemMeta ? itemMeta.icon : 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
@@ -1476,13 +1560,9 @@ async function generateHTML() {
                         const card = document.createElement('div');
                         card.className = 'spell-card';
                         
-                        // Атрибут для пошуку
                         card.setAttribute('data-name', row.item.toLowerCase());
 
-                        // --- HTML КАРТКИ (Скріншот 5) ---
-                        // Зліва: Іконка
-                        // Центр: Назва + Кількість (маленька)
-                        // Справа: Ціна + Час (маленький)
+                        // Тут також використовуємо одинарні лапки ' та плюси +, щоб не ламати структуру index.js
                         card.innerHTML = 
                             '<div class="spell-icon-frame"><img src="' + iconUrl + '" class="spell-icon"></div>' +
                             
@@ -1492,7 +1572,7 @@ async function generateHTML() {
                             '</div>' +
                             
                             '<div class="card-right">' +
-                                '<div class="spell-price">' + totalG + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" style="width:12px; vertical-align:middle"></div>' +
+                                '<div class="spell-price">' + totalG + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="history-coin"></div>' +
                                 '<div class="spell-time">' + timeStr + '</div>' +
                             '</div>';
                         
