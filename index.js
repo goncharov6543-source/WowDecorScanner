@@ -562,6 +562,90 @@ async function generateHTML() {
             .h-total { color: #ffd700; font-family: monospace; font-weight: bold; }
             .loader { border: 4px solid #333; border-top: 4px solid #f8b700; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
             @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            /* --- СТИЛЬ КНИГИ ЗАКЛЯТЬ (SPELLBOOK) --- */
+
+            /* 1. Змінюємо саме вікно історії на "пергамент" */
+            #historyModal .modal-content {
+                background-color: #f3e5c5; /* Колір пергаменту */
+                border: 2px solid #423222; /* Темна рамка */
+                color: #2b2116; /* Колір чорнил */
+                font-family: 'Georgia', serif; /* Шрифт із зарубками */
+            }
+
+            #historyModal .modal-header {
+                background: #2e2115; /* Темна шапка */
+                border-bottom: 2px solid #5c452d;
+            }
+
+            #historyTitle {
+                color: #ffd700; /* Золотий заголовок */
+                text-transform: uppercase;
+                letter-spacing: 2px;
+            }
+
+            /* 2. Створюємо сітку (Grid) замість таблиці */
+            .spell-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr; /* Дві колонки */
+                gap: 15px; /* Відступ між картками */
+                margin-top: 20px;
+            }
+
+            /* 3. Дизайн однієї "картки" (закляття/предмета) */
+            .spell-card {
+                display: flex;
+                align-items: center;
+                padding: 8px;
+                background: rgba(0,0,0,0.03);
+                border-radius: 4px;
+                transition: background 0.2s;
+                border: 1px solid transparent;
+            }
+
+            .spell-card:hover {
+                background: rgba(0,0,0,0.08); /* Ефект наведення */
+                border-color: #bfa785;
+            }
+
+            /* Рамка для іконки */
+            .spell-icon-frame {
+                width: 44px;
+                height: 44px;
+                margin-right: 12px;
+                border: 1px solid #444;
+                border-radius: 4px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            }
+
+            .spell-icon {
+                width: 100%; height: 100%;
+                object-fit: cover;
+                border-radius: 4px;
+            }
+
+            /* Текстова частина */
+            .spell-info {
+                flex-grow: 1;
+                line-height: 1.3;
+            }
+
+            .spell-name {
+                font-weight: bold;
+                font-size: 15px;
+                color: #2e2115;
+            }
+
+            .spell-details {
+                font-size: 13px;
+                color: #665036;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .spell-price {
+                color: #2b5900; /* Темно-зелений для ціни */
+                font-weight: bold;
+            }
         </style>
     </head>
     <body>
@@ -642,12 +726,9 @@ async function generateHTML() {
                              <button onclick="logoutHistory()" class="btn-load-more" style="padding: 5px 15px;">Logout</button>
                          </div>
                          <div id="historyLoader" class="loader" style="display:none;"></div>
-                         <table class="history-table" id="historyTable" style="display:none;">
-                             <thead>
-                                 <tr><th>Дата</th><th>Предмет</th><th>К-сть</th><th>Ціна (шт)</th><th>Сума</th></tr>
-                             </thead>
-                             <tbody id="historyTableBody"></tbody>
-                         </table>
+                         
+                         <div class="spellbook-section-title">Recent Transactions</div>
+                         <div id="historyGrid" class="spell-grid"></div>
                          <div id="historyEmpty" style="text-align:center; padding:30px; color:#666; display:none;">Історія пуста.</div>
                     </div>
                 </div>
@@ -1157,24 +1238,24 @@ async function generateHTML() {
 
             async function loadHistoryData(binId) {
                 document.getElementById('historyLoader').style.display = 'block';
-                document.getElementById('historyTable').style.display = 'none';
+                document.getElementById('historyGrid').innerHTML = '';
                 document.getElementById('historyEmpty').style.display = 'none';
-                document.getElementById('historyError').style.display = 'none';
+                
+                const errBox = document.getElementById('historyError');
+                if(errBox) errBox.style.display = 'none';
 
                 try {
-                    const response = await fetch(\`https://api.jsonbin.io/v3/b/\${binId}/latest\`, {
+                    const response = await fetch('https://api.jsonbin.io/v3/b/' + binId + '/latest', {
                         headers: { 'X-Master-Key': MASTER_KEY }
                     });
                     
-                    if (!response.ok) {
-                        throw new Error(\`Error \${response.status}: \${response.statusText}\`);
-                    }
+                    if (!response.ok) throw new Error('Error ' + response.status);
                     
                     const json = await response.json();
                     let data = json.record;
                     
-                    if (data[0] && data[0].seller) {
-                        document.getElementById('historyUserLabel').innerText = "User: " + data[0].seller;
+                    if (data[0] && data[0].seller && document.getElementById('historyUserLabel')) {
+                        document.getElementById('historyUserLabel').innerText = "Mage: " + data[0].seller;
                     }
 
                     if (!Array.isArray(data) || data.length === 0) {
@@ -1184,34 +1265,49 @@ async function generateHTML() {
                     }
 
                     data.sort((a, b) => b.timestamp - a.timestamp);
-                    const tbody = document.getElementById('historyTableBody');
-                    tbody.innerHTML = '';
                     
-                    // --- ВИПРАВЛЕНА МАТЕМАТИКА ТУТ ---
+                    const grid = document.getElementById('historyGrid');
+                    
                     data.forEach(row => {
-                        const tr = document.createElement('tr');
-                        
-                        // row.price = ЦЕ ЗАГАЛЬНА СУМА ЛОТА (в міді)
                         const totalGoldVal = row.price / 10000;
-                        // Ціна за штуку = Загальна / Кількість
                         const unitGoldVal = totalGoldVal / (row.count || 1);
-
-                        // Форматуємо без копійок
+                        
                         const priceG = unitGoldVal.toLocaleString('uk-UA', {maximumFractionDigits: 0});
                         const totalG = totalGoldVal.toLocaleString('uk-UA', {maximumFractionDigits: 0});
 
-                        tr.innerHTML = \`<td>\${row.dateReadable}</td><td style="color:white">\${row.item}</td><td style="font-weight:bold">\${row.count}</td><td class="h-price">\${priceG} g</td><td class="h-total">\${totalG} g</td>\`;
-                        tbody.appendChild(tr);
+                        // Пошук іконки
+                        const itemMeta = ALL_DATA.find(i => i.name === row.item);
+                        const iconUrl = itemMeta ? itemMeta.icon : 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
+
+                        // Створення картки (Безпечний метод без зворотних лапок)
+                        const card = document.createElement('div');
+                        card.className = 'spell-card';
+                        
+                        // Використовуємо одинарні лапки, щоб не ламати Node.js
+                        card.innerHTML = 
+                            '<div class="spell-icon-frame">' +
+                                '<img src="' + iconUrl + '" class="spell-icon">' +
+                            '</div>' +
+                            '<div class="spell-info">' +
+                                '<div class="spell-name">' + row.item + '</div>' +
+                                '<div class="spell-sub">' +
+                                    '<span class="spell-price">' + totalG + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" style="width:10px; vertical-align:middle"></span>' +
+                                    '<span class="spell-count" style="font-size:11px; font-weight:bold; background:rgba(0,0,0,0.1); padding:1px 6px; border-radius:10px;">x' + row.count + '</span>' +
+                                '</div>' +
+                                '<div style="font-size:11px; color:#665036; margin-top:2px; font-style:italic;">' + row.dateReadable + '</div>' +
+                            '</div>';
+                        
+                        grid.appendChild(card);
                     });
-                    // ---------------------------------
 
                     document.getElementById('historyLoader').style.display = 'none';
-                    document.getElementById('historyTable').style.display = 'table';
 
                 } catch (e) {
                     document.getElementById('historyLoader').style.display = 'none';
-                    document.getElementById('historyError').innerText = e.message;
-                    document.getElementById('historyError').style.display = 'block';
+                    if(errBox) {
+                        errBox.innerText = e.message;
+                        errBox.style.display = 'block';
+                    }
                     
                     if(e.message.includes('401') || e.message.includes('404')) {
                          setTimeout(() => {
