@@ -562,90 +562,93 @@ async function generateHTML() {
             .h-total { color: #ffd700; font-family: monospace; font-weight: bold; }
             .loader { border: 4px solid #333; border-top: 4px solid #f8b700; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
             @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-            /* --- СТИЛЬ КНИГИ ЗАКЛЯТЬ (SPELLBOOK) --- */
 
-            /* 1. Змінюємо саме вікно історії на "пергамент" */
-            #historyModal .modal-content {
-                background-color: #f3e5c5; /* Колір пергаменту */
-                border: 2px solid #423222; /* Темна рамка */
-                color: #2b2116; /* Колір чорнил */
-                font-family: 'Georgia', serif; /* Шрифт із зарубками */
-            }
+            /* --- ОНОВЛЕНИЙ ДИЗАЙН SPELLBOOK --- */
 
+            /* 1. Шапка (Header) */
             #historyModal .modal-header {
-                background: #2e2115; /* Темна шапка */
-                border-bottom: 2px solid #5c452d;
-            }
-
-            #historyTitle {
-                color: #ffd700; /* Золотий заголовок */
-                text-transform: uppercase;
-                letter-spacing: 2px;
-            }
-
-            /* 2. Створюємо сітку (Grid) замість таблиці */
-            .spell-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr; /* Дві колонки */
-                gap: 15px; /* Відступ між картками */
-                margin-top: 20px;
-            }
-
-            /* 3. Дизайн однієї "картки" (закляття/предмета) */
-            .spell-card {
+                background: #2e2115;
+                border-bottom: 1px solid #5c452d;
+                padding: 15px 25px;
                 display: flex;
-                align-items: center;
-                padding: 8px;
-                background: rgba(0,0,0,0.03);
-                border-radius: 4px;
-                transition: background 0.2s;
-                border: 1px solid transparent;
+                flex-direction: column; /* Щоб пошук був під заголовком */
+                gap: 10px;
             }
 
-            .spell-card:hover {
-                background: rgba(0,0,0,0.08); /* Ефект наведення */
-                border-color: #bfa785;
-            }
-
-            /* Рамка для іконки */
-            .spell-icon-frame {
-                width: 44px;
-                height: 44px;
-                margin-right: 12px;
-                border: 1px solid #444;
-                border-radius: 4px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-            }
-
-            .spell-icon {
-                width: 100%; height: 100%;
-                object-fit: cover;
-                border-radius: 4px;
-            }
-
-            /* Текстова частина */
-            .spell-info {
-                flex-grow: 1;
-                line-height: 1.3;
-            }
-
-            .spell-name {
-                font-weight: bold;
-                font-size: 15px;
-                color: #2e2115;
-            }
-
-            .spell-details {
-                font-size: 13px;
-                color: #665036;
+            /* Верхній рядок шапки (Заголовок + Кнопки) */
+            .spellbook-header-top {
                 display: flex;
                 justify-content: space-between;
+                align-items: center;
+                width: 100%;
             }
 
-            .spell-price {
-                color: #2b5900; /* Темно-зелений для ціни */
-                font-weight: bold;
+            /* 2. Заголовок (Зменшений) */
+            #historyTitle {
+                font-size: 22px; /* Зменшили розмір */
+                color: #ffd700;
+                font-family: 'Times New Roman', serif;
+                letter-spacing: 1px;
+                margin: 0;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.8);
             }
+
+            /* 3. Бейдж гравця (Замість кнопки Logout) */
+            .user-tab-badge {
+                background: #8b6946; /* Коричневий, як вкладка */
+                border: 1px solid #57412d;
+                border-radius: 4px;
+                padding: 4px 10px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #f0d0a0; /* Світло-золотий текст */
+                font-family: serif;
+                font-weight: bold;
+                font-size: 14px;
+                box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+            }
+
+            /* Хрестик для виходу */
+            .logout-x {
+                cursor: pointer;
+                color: #ffcccc;
+                font-size: 16px;
+                line-height: 1;
+                padding-left: 6px;
+                border-left: 1px solid rgba(255,255,255,0.2);
+                transition: 0.2s;
+            }
+            .logout-x:hover { color: #ff4444; }
+
+            /* 4. Пошук (Рядок під заголовком) */
+            .spellbook-search {
+                width: 100%;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid #5c452d;
+                border-radius: 4px;
+                padding: 8px 12px;
+                color: #ffd700;
+                font-family: sans-serif;
+                outline: none;
+                box-sizing: border-box; /* Щоб не вилазив за межі */
+            }
+            .spellbook-search::placeholder { color: #8a7b6c; font-style: italic; }
+
+            /* 5. Футер (Світло-сірий) */
+            .spellbook-footer {
+                background: #dcdcdc; /* Світло-сірий */
+                border-top: 2px solid #bfa785;
+                padding: 10px 20px;
+                color: #5c452d;
+                font-size: 12px;
+                text-align: right;
+                font-family: serif;
+                font-style: italic;
+            }
+
+            /* Приховуємо стандартний заголовок продавця в тілі, бо він тепер у шапці */
+            #historyUserLabel { display: none !important; }
         </style>
     </head>
     <body>
@@ -707,31 +710,44 @@ async function generateHTML() {
         </div>
         
         <div id="historyModal" class="modal-overlay">
-            <div class="modal-content" style="max-width: 900px;">
-                <div class="modal-header">
-                    <h2 id="historyTitle" class="modal-title">💰 Sales History</h2>
-                    <button id="btnCloseHistory" class="modal-close">×</button>
-                </div>
-                <div class="modal-body">
-                    <div id="historyLoginState" class="history-login-box">
-                         <p>Введіть ваш Bin ID з програми WoW Tracker:</p>
-                         <input type="text" id="historyBinInput" class="history-input" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
-                         <br>
-                         <button onclick="loginHistory()" class="history-btn">Увійти</button>
-                         <p id="historyError" style="color:#ff5555; display:none; margin-top:10px;"></p>
-                    </div>
-                    <div id="historyDataState" style="display:none;">
-                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                             <span id="historyUserLabel" style="color:#888;"></span>
-                             <button onclick="logoutHistory()" class="btn-load-more" style="padding: 5px 15px;">Logout</button>
-                         </div>
-                         <div id="historyLoader" class="loader" style="display:none;"></div>
-                         
-                         <div class="spellbook-section-title">Recent Transactions</div>
-                         <div id="historyGrid" class="spell-grid"></div>
-                         <div id="historyEmpty" style="text-align:center; padding:30px; color:#666; display:none;">Історія пуста.</div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="spellbook-header-top">
+                    <h2 id="historyTitle">Sales History</h2>
+                    
+                    <div style="display:flex; gap: 15px; align-items:center;">
+                        <div id="userBadge" class="user-tab-badge" style="display:none;">
+                            <span id="userNameDisplay">Player</span>
+                            <span class="logout-x" onclick="logoutHistory()" title="Logout">×</span>
+                        </div>
+                        <button id="btnCloseHistory" class="modal-close">×</button>
                     </div>
                 </div>
+                
+                <input type="text" id="historySearch" class="spellbook-search" placeholder="Search item..." onkeyup="filterHistory()">
+            </div>
+
+            <div class="modal-body">
+                <div id="historyLoginState" class="spellbook-login">
+                    <p style="font-family:serif; font-style:italic; color:#5c452d;">Identify yourself...</p>
+                    <input type="text" id="historyBinInput" class="spellbook-input" placeholder="Enter Bin ID">
+                    <br>
+                    <button onclick="loginHistory()" class="spellbook-btn">Open Book</button>
+                    <p id="historyError" style="color:#d32f2f; display:none; margin-top:10px;"></p>
+                </div>
+
+                <div id="historyDataState" style="display:none;">
+                    <div id="historyLoader" style="text-align:center; padding:40px; font-family:serif; color:#5c452d;">Consulting the archives...</div>
+                    
+                    <div id="historyGrid" class="spell-grid"></div>
+                    
+                    <div id="historyEmpty" style="text-align:center; padding:50px; font-style:italic; color:#665036; display:none;">The pages are blank. Go forth and trade!</div>
+                </div>
+            </div>
+
+            <div class="spellbook-footer">
+                WoW Decor Scanner &copy; 2026
+            </div>
             </div>
         </div>
 
@@ -1201,12 +1217,16 @@ async function generateHTML() {
             function checkHistorySession() {
                 const id = localStorage.getItem('wow_bin_id');
                 const btn = document.getElementById('btnHistoryLogin');
-                if (id) {
-                    btn.textContent = "History";
+                
+                if (id) { 
+                    btn.textContent = "Spellbook"; 
+                    btn.onclick = openHistoryModal; 
+                } else { 
+                    btn.textContent = "Tracker Login"; 
                     btn.onclick = openHistoryModal;
-                } else {
-                    btn.textContent = "Tracker Login";
-                    btn.onclick = openHistoryModal;
+                    // Ховаємо бейдж якщо не залогінені
+                    const badge = document.getElementById('userBadge');
+                    if(badge) badge.style.display = 'none';
                 }
             }
 
@@ -1241,8 +1261,8 @@ async function generateHTML() {
                 document.getElementById('historyGrid').innerHTML = '';
                 document.getElementById('historyEmpty').style.display = 'none';
                 
-                const errBox = document.getElementById('historyError');
-                if(errBox) errBox.style.display = 'none';
+                // Очищаємо поле пошуку при відкритті
+                document.getElementById('historySearch').value = '';
 
                 try {
                     const response = await fetch('https://api.jsonbin.io/v3/b/' + binId + '/latest', {
@@ -1254,9 +1274,16 @@ async function generateHTML() {
                     const json = await response.json();
                     let data = json.record;
                     
-                    if (data[0] && data[0].seller && document.getElementById('historyUserLabel')) {
-                        document.getElementById('historyUserLabel').innerText = "Mage: " + data[0].seller;
+                    // --- ОНОВЛЕННЯ НІКНЕЙМУ В ШАПЦІ ---
+                    if (data[0] && data[0].seller) {
+                        // Показуємо бейдж
+                        document.getElementById('userBadge').style.display = 'flex';
+                        // Забираємо нік (без Mage:)
+                        document.getElementById('userNameDisplay').innerText = data[0].seller; 
+                    } else {
+                        document.getElementById('userBadge').style.display = 'none';
                     }
+                    // ----------------------------------
 
                     if (!Array.isArray(data) || data.length === 0) {
                         document.getElementById('historyLoader').style.display = 'none';
@@ -1265,29 +1292,25 @@ async function generateHTML() {
                     }
 
                     data.sort((a, b) => b.timestamp - a.timestamp);
-                    
                     const grid = document.getElementById('historyGrid');
                     
                     data.forEach(row => {
                         const totalGoldVal = row.price / 10000;
                         const unitGoldVal = totalGoldVal / (row.count || 1);
-                        
                         const priceG = unitGoldVal.toLocaleString('uk-UA', {maximumFractionDigits: 0});
                         const totalG = totalGoldVal.toLocaleString('uk-UA', {maximumFractionDigits: 0});
 
-                        // Пошук іконки
                         const itemMeta = ALL_DATA.find(i => i.name === row.item);
                         const iconUrl = itemMeta ? itemMeta.icon : 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
 
-                        // Створення картки (Безпечний метод без зворотних лапок)
                         const card = document.createElement('div');
                         card.className = 'spell-card';
                         
-                        // Використовуємо одинарні лапки, щоб не ламати Node.js
+                        // Додаємо атрибут data-name для пошуку
+                        card.setAttribute('data-name', row.item.toLowerCase());
+
                         card.innerHTML = 
-                            '<div class="spell-icon-frame">' +
-                                '<img src="' + iconUrl + '" class="spell-icon">' +
-                            '</div>' +
+                            '<div class="spell-icon-frame"><img src="' + iconUrl + '" class="spell-icon"></div>' +
                             '<div class="spell-info">' +
                                 '<div class="spell-name">' + row.item + '</div>' +
                                 '<div class="spell-sub">' +
@@ -1303,18 +1326,31 @@ async function generateHTML() {
                     document.getElementById('historyLoader').style.display = 'none';
 
                 } catch (e) {
+                    // ... старий код обробки помилок ...
                     document.getElementById('historyLoader').style.display = 'none';
-                    if(errBox) {
-                        errBox.innerText = e.message;
-                        errBox.style.display = 'block';
-                    }
-                    
                     if(e.message.includes('401') || e.message.includes('404')) {
                          setTimeout(() => {
                             localStorage.removeItem('wow_bin_id');
                             checkHistorySession();
                             openHistoryModal();
                         }, 3000);
+                    }
+                }
+            }
+
+            // Функція фільтрації історії
+            function filterHistory() {
+                const input = document.getElementById('historySearch');
+                const filter = input.value.toLowerCase();
+                const grid = document.getElementById('historyGrid');
+                const cards = grid.getElementsByClassName('spell-card');
+
+                for (let i = 0; i < cards.length; i++) {
+                    const itemName = cards[i].getAttribute('data-name');
+                    if (itemName.indexOf(filter) > -1) {
+                        cards[i].style.display = "";
+                    } else {
+                        cards[i].style.display = "none";
                     }
                 }
             }
