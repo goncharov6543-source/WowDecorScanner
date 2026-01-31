@@ -2443,9 +2443,9 @@
         "Exp": "Dragonflight",
         "craftQty": 28,
         "recipe": [
-            { "name": "Glossy Stone", "id": "192885", "count": 2},
-            { "name": "Omnium Draconis", "id": "191498", "count": 2},
-            { "name": "Awakened Earth", "id": "190316", "count": 2},
+            { "name": "Glossy Stone", "id": "192885", "count": 6},
+            { "name": "Omnium Draconis", "id": "191498", "count": 6},
+            { "name": "Awakened Earth", "id": "190316", "count": 4},
             { "name": "Khaz'gorite Ore", "id": "190313", "count": 3}
         ]
     },
