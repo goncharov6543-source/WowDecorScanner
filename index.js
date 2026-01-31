@@ -176,7 +176,7 @@ async function scanServer(realmId, realmName, token, mainItemIdsSet) {
 
 // --- GENERATE HTML ---
 async function generateHTML() {
-    console.log("📝 Генерую звіт з інтеграцією Sales Tracker (Fix v2)...");
+    console.log("📝 Генерую звіт з інтеграцією Sales Tracker (Final Fix)...");
     
     const FAVICON_NAME = 'homestone.jpg'; 
 
@@ -186,7 +186,7 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
-    // --- 1. Підготовка даних ---
+    // --- 1. Підготовка даних (Node.js) ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
@@ -289,6 +289,7 @@ async function generateHTML() {
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
 
     // --- 2. HTML Template ---
+    // ВШИВАЄМО КЛЮЧ ПРЯМО ТУТ, БЕЗ ЗМІННИХ JS
     const html = `
     <!DOCTYPE html>
     <html lang="uk">
@@ -688,7 +689,7 @@ async function generateHTML() {
             const ALL_DATA = ${jsonPayload};
             const SKILL_REQS = ${jsonSkillReq};
             
-            // ВШИВАЄМО КЛЮЧ ПРЯМО СЮДИ (Fix)
+            // ВШИВАЄМО КЛЮЧ ПРЯМО ТУТ (hardcoded)
             const MASTER_KEY = '$2a$10$XsaEGChQRacvy3Zymhgl4e2T0lq3eRgHTin6EuwGztMpDjOPyFa3q'; 
             
             let activeData = ALL_DATA; 
@@ -1166,6 +1167,7 @@ async function generateHTML() {
                     });
                     
                     if (!response.ok) {
+                        // Показуємо повну помилку
                         throw new Error(\`Error \${response.status}: \${response.statusText}\`);
                     }
                     
@@ -1202,7 +1204,6 @@ async function generateHTML() {
                     document.getElementById('historyError').innerText = e.message;
                     document.getElementById('historyError').style.display = 'block';
                     
-                    // Якщо помилка доступу або ID, пропонуємо вийти
                     if(e.message.includes('401') || e.message.includes('404')) {
                          setTimeout(() => {
                             localStorage.removeItem('wow_bin_id');
