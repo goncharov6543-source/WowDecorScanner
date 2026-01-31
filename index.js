@@ -176,7 +176,7 @@ async function scanServer(realmId, realmName, token, mainItemIdsSet) {
 
 // --- GENERATE HTML ---
 async function generateHTML() {
-    console.log("📝 Генерую звіт з інтеграцією Sales Tracker...");
+    console.log("📝 Генерую звіт з інтеграцією Sales Tracker (Fix v2)...");
     
     const FAVICON_NAME = 'homestone.jpg'; 
 
@@ -186,7 +186,7 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
-    // --- 1. Підготовка даних (Node.js) ---
+    // --- 1. Підготовка даних ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
         let listings = [];
@@ -287,9 +287,6 @@ async function generateHTML() {
     const jsonPayload = JSON.stringify(sortedItems);
     const jsonSkillReq = JSON.stringify(skillNeededData);
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
-    
-    // Твій Master Key для сайту
-    const MASTER_KEY_JS = '$2a$10$XsaEGChQRacvy3Zymhgl4e2T0lq3eRgHTin6EuwGztMpDjOPyFa3q';
 
     // --- 2. HTML Template ---
     const html = `
@@ -690,7 +687,9 @@ async function generateHTML() {
         <script>
             const ALL_DATA = ${jsonPayload};
             const SKILL_REQS = ${jsonSkillReq};
-            const MASTER_KEY = '${MASTER_KEY_JS}'; // Інтеграція ключа
+            
+            // ВШИВАЄМО КЛЮЧ ПРЯМО СЮДИ (Fix)
+            const MASTER_KEY = '$2a$10$XsaEGChQRacvy3Zymhgl4e2T0lq3eRgHTin6EuwGztMpDjOPyFa3q'; 
             
             let activeData = ALL_DATA; 
             let currentIndex = 0;
@@ -1159,12 +1158,17 @@ async function generateHTML() {
                 document.getElementById('historyLoader').style.display = 'block';
                 document.getElementById('historyTable').style.display = 'none';
                 document.getElementById('historyEmpty').style.display = 'none';
+                document.getElementById('historyError').style.display = 'none';
 
                 try {
                     const response = await fetch(\`https://api.jsonbin.io/v3/b/\${binId}/latest\`, {
                         headers: { 'X-Master-Key': MASTER_KEY }
                     });
-                    if (!response.ok) throw new Error("Invalid ID");
+                    
+                    if (!response.ok) {
+                        throw new Error(\`Error \${response.status}: \${response.statusText}\`);
+                    }
+                    
                     const json = await response.json();
                     let data = json.record;
                     
@@ -1197,12 +1201,15 @@ async function generateHTML() {
                     document.getElementById('historyLoader').style.display = 'none';
                     document.getElementById('historyError').innerText = e.message;
                     document.getElementById('historyError').style.display = 'block';
-                    // Go back to login if failed
-                    setTimeout(() => {
-                        localStorage.removeItem('wow_bin_id');
-                        checkHistorySession();
-                        openHistoryModal();
-                    }, 2000);
+                    
+                    // Якщо помилка доступу або ID, пропонуємо вийти
+                    if(e.message.includes('401') || e.message.includes('404')) {
+                         setTimeout(() => {
+                            localStorage.removeItem('wow_bin_id');
+                            checkHistorySession();
+                            openHistoryModal();
+                        }, 3000);
+                    }
                 }
             }
 
