@@ -176,7 +176,7 @@ async function scanServer(realmId, realmName, token, mainItemIdsSet) {
 
 // --- GENERATE HTML ---
 async function generateHTML() {
-    console.log("📝 Генерую звіт з інтеграцією Sales Tracker (Final Fix)...");
+    console.log("📝 Генерую звіт (Fix Price Logic)...");
     
     const FAVICON_NAME = 'homestone.jpg'; 
 
@@ -289,7 +289,6 @@ async function generateHTML() {
     const updateTime = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
 
     // --- 2. HTML Template ---
-    // ВШИВАЄМО КЛЮЧ ПРЯМО ТУТ, БЕЗ ЗМІННИХ JS
     const html = `
     <!DOCTYPE html>
     <html lang="uk">
@@ -445,6 +444,7 @@ async function generateHTML() {
                 border: 2px solid #ffd700; background-color: #111;
                 object-fit: cover; box-shadow: 0 4px 6px rgba(0,0,0,0.5);
             }
+            .prof-mini-icon:hover { transform: none; z-index: auto; cursor: default; }
 
             .tile-btn {
                 position: absolute; width: 22px; height: 22px; border-radius: 50%;
@@ -644,7 +644,7 @@ async function generateHTML() {
                          <div id="historyLoader" class="loader" style="display:none;"></div>
                          <table class="history-table" id="historyTable" style="display:none;">
                              <thead>
-                                 <tr><th>Дата</th><th>Предмет</th><th>К-сть</th><th>Ціна</th><th>Сума</th></tr>
+                                 <tr><th>Дата</th><th>Предмет</th><th>К-сть</th><th>Ціна (шт)</th><th>Сума</th></tr>
                              </thead>
                              <tbody id="historyTableBody"></tbody>
                          </table>
@@ -690,7 +690,7 @@ async function generateHTML() {
             const SKILL_REQS = ${jsonSkillReq};
             
             // ВШИВАЄМО КЛЮЧ ПРЯМО ТУТ (hardcoded)
-            const MASTER_KEY = '$2a$10$XsAeGChQRacvy3Zymhgl4e2T0lq3eRgHTin6EuwGztMpDjOPyFa3q'; 
+            const MASTER_KEY = '$2a$10$XsaEGChQRacvy3Zymhgl4e2T0lq3eRgHTin6EuwGztMpDjOPyFa3q'; 
             
             let activeData = ALL_DATA; 
             let currentIndex = 0;
@@ -1167,7 +1167,6 @@ async function generateHTML() {
                     });
                     
                     if (!response.ok) {
-                        // Показуємо повну помилку
                         throw new Error(\`Error \${response.status}: \${response.statusText}\`);
                     }
                     
@@ -1188,13 +1187,23 @@ async function generateHTML() {
                     const tbody = document.getElementById('historyTableBody');
                     tbody.innerHTML = '';
                     
+                    // --- ВИПРАВЛЕНА МАТЕМАТИКА ТУТ ---
                     data.forEach(row => {
                         const tr = document.createElement('tr');
-                        const priceG = (row.price / 10000).toLocaleString();
-                        const totalG = ((row.price * row.count) / 10000).toLocaleString();
+                        
+                        // row.price = ЦЕ ЗАГАЛЬНА СУМА ЛОТА (в міді)
+                        const totalGoldVal = row.price / 10000;
+                        // Ціна за штуку = Загальна / Кількість
+                        const unitGoldVal = totalGoldVal / (row.count || 1);
+
+                        // Форматуємо без копійок
+                        const priceG = unitGoldVal.toLocaleString('uk-UA', {maximumFractionDigits: 0});
+                        const totalG = totalGoldVal.toLocaleString('uk-UA', {maximumFractionDigits: 0});
+
                         tr.innerHTML = \`<td>\${row.dateReadable}</td><td style="color:white">\${row.item}</td><td style="font-weight:bold">\${row.count}</td><td class="h-price">\${priceG} g</td><td class="h-total">\${totalG} g</td>\`;
                         tbody.appendChild(tr);
                     });
+                    // ---------------------------------
 
                     document.getElementById('historyLoader').style.display = 'none';
                     document.getElementById('historyTable').style.display = 'table';
