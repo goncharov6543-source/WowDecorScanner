@@ -1112,7 +1112,65 @@ async function generateHTML() {
                 transform: scale(1.2);
             }
 
+            /* --- LOGIN MODE STYLES (Термінал стиль) --- */
+            
+            /* 1. Коли режим логіна - ховаємо хедер */
+            #historyModal.login-mode .modal-header {
+                display: none !important;
+            }
 
+            /* 2. Тіло вікна в режимі логіна (Темний фон, по центру) */
+            #historyModal.login-mode .modal-body {
+                background-image: none !important;
+                background-color: #0f1011 !important;
+                display: flex !important;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+            }
+
+            /* 3. Стиль Інпута (Пунктир + Ціан) */
+            .login-input-style {
+                background-color: #0f1011;
+                border: 2px dashed #f8b700; /* Оранжевий пунктир */
+                color: #00ffff; /* Яскравий ціан */
+                font-family: 'Consolas', 'Courier New', monospace;
+                font-size: 18px;
+                text-align: center;
+                padding: 15px;
+                width: 350px;
+                border-radius: 8px;
+                outline: none;
+                margin-bottom: 25px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.5);
+                transition: 0.2s;
+            }
+            .login-input-style:focus {
+                border-color: #00ffff;
+                box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+            }
+            .login-input-style::placeholder { color: #333; font-family: sans-serif; }
+
+            /* 4. Кнопка Login */
+            .btn-login-action {
+                background: #222;
+                border: 1px solid #444;
+                color: #ccc;
+                padding: 12px 40px;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 14px;
+                cursor: pointer;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: 0.2s;
+            }
+            .btn-login-action:hover {
+                background: #333;
+                color: #fff;
+                border-color: #888;
+            }
         </style>
     </head>
     <body>
@@ -1195,10 +1253,9 @@ async function generateHTML() {
                 </div>
 
                 <div class="modal-body">
-                    <div id="historyLoginState" class="spellbook-login">
-                        <p style="color:#a89070;">Identify yourself...</p>
-                        <input type="text" id="historyBinInput" class="spellbook-input" placeholder="Enter Bin ID">
-                        <br><button onclick="loginHistory()" class="spellbook-btn">Open Book</button>
+                    <div id="historyLoginState" style="display:none; width: 100%; height: 100%;">
+                        <input type="text" id="historyBinInput" class="login-input-style" placeholder="ENTER BIN ID">
+                        <button onclick="loginHistory()" class="btn-login-action">Login</button>
                     </div>
 
                     <div id="historyDataState" style="display:none;">
@@ -1776,15 +1833,26 @@ async function generateHTML() {
 
             function openHistoryModal() {
                 const id = localStorage.getItem('wow_bin_id');
+                const modal = document.getElementById('historyModal');
+                
                 if (id) {
+                    // ЯКЩО ЗАЛОГІНЕНІ:
+                    modal.classList.remove('login-mode'); // Показуємо хедер
                     document.getElementById('historyLoginState').style.display = 'none';
                     document.getElementById('historyDataState').style.display = 'block';
                     loadHistoryData(id);
                 } else {
-                    document.getElementById('historyLoginState').style.display = 'block';
+                    // ЯКЩО НЕ ЗАЛОГІНЕНІ:
+                    modal.classList.add('login-mode'); // Ховаємо хедер, темний фон
+                    // Використовуємо flex для центрування (стилі вже прописані в CSS для .login-mode .modal-body)
+                    document.getElementById('historyLoginState').style.display = 'flex'; 
+                    document.getElementById('historyLoginState').style.flexDirection = 'column';
+                    document.getElementById('historyLoginState').style.alignItems = 'center';
+                    document.getElementById('historyLoginState').style.justifyContent = 'center';
+                    
                     document.getElementById('historyDataState').style.display = 'none';
                 }
-                document.getElementById('historyModal').classList.add('active');
+                modal.classList.add('active');
             }
 
             async function loginHistory() {
