@@ -673,6 +673,7 @@ async function generateHTML() {
             /* Поле пошуку (Коротке з ефектом) */
             .spellbook-search {
                 width: 250px; /* Фіксована ширина */
+                height: 29px;
                 background: rgba(0, 0, 0, 0.4);
                 border: 1px solid #5c452d;
                 border-radius: 4px;
@@ -711,18 +712,16 @@ async function generateHTML() {
             }
 
             .spell-card {
-                display: flex;
-                align-items: center;
-                padding: 6px;
-                background: rgba(0,0,0,0.04);
-                border: 1px solid transparent;
-                border-radius: 6px;
-                transition: background 0.2s;
+                display: flex; align-items: center; padding: 10px;
+                background: #2b221b; /* Світліший коричневий (було #120e0b) */
+                border: 1px solid #c9a45c; /* Чітка золота рамка */
+                border-radius: 4px; transition: 0.1s; cursor: pointer;
+                height: 45px;
             }
-
-            .spell-card:hover {
-                background: rgba(255, 215, 0, 0.1); /* Легке золото при наведенні */
-                border-color: #bfa785;
+            .spell-card:hover { 
+                background: #3a2e24; /* Ще світліше при наведенні */
+                border-color: #fff; 
+                box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); 
             }
 
             /* Іконка (Зліва) */
@@ -1621,15 +1620,15 @@ async function generateHTML() {
                 document.getElementById('historyLoader').style.display = 'block';
                 document.getElementById('historyGrid').innerHTML = '';
                 document.getElementById('historyEmpty').style.display = 'none';
-
+                
                 try {
                     const response = await fetch('https://api.jsonbin.io/v3/b/' + binId + '/latest', {
                         headers: { 'X-Master-Key': MASTER_KEY }
                     });
                     const json = await response.json();
                     let data = json.record;
-                    currentHistoryData = data; // Зберігаємо для детального вікна
-
+                    currentHistoryData = data; // Зберігаємо сирі дані для модалки
+                    
                     if (data[0] && data[0].seller) document.getElementById('userNameDisplay').innerText = data[0].seller;
 
                     if (!Array.isArray(data) || data.length === 0) {
@@ -1638,54 +1637,78 @@ async function generateHTML() {
                         return;
                     }
 
-                    data.sort((a, b) => b.timestamp - a.timestamp);
-                    const grid = document.getElementById('historyGrid');
-
+                    // 1. ГРУПУВАННЯ ДАНИХ (Агрегація)
+                    const groupedItems = {};
+                    
                     data.forEach(row => {
-                        try {
-                            if (!row.item) return;
-
-                            const totalGoldVal = row.price / 10000;
-                            const totalG = totalGoldVal.toLocaleString('uk-UA', {maximumFractionDigits: 0});
-
-                            // ДАТА: Множимо на 1000!
-                            const dateObj = new Date(row.timestamp * 1000); 
-                            const day = String(dateObj.getDate()).padStart(2, '0');
-                            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-                            const hours = String(dateObj.getHours()).padStart(2, '0');
-                            const minutes = String(dateObj.getMinutes()).padStart(2, '0');
-                            const timeStr = day + "." + month + " " + hours + ":" + minutes;
-
-                            // ІКОНКА: Шукаємо у FULL_DB (надійно)
-                            let iconUrl = 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
-                            let itemMeta = FULL_DB.find(i => i.name === row.item);
-                            if (!itemMeta) itemMeta = FULL_DB.find(i => i.name.toLowerCase().includes(row.item.toLowerCase()));
-                            if (itemMeta && itemMeta.icon) iconUrl = itemMeta.icon;
-
-                            // КАРТКА
-                            const card = document.createElement('div');
-                            card.className = 'spell-card';
-                            card.setAttribute('data-name', row.item.toLowerCase());
-                            // Додаємо клік для відкриття деталей
-                            card.onclick = function() { openItemDetails(row.item); };
-
-                            card.innerHTML = 
-                                '<div class="spell-icon-frame"><img src="' + iconUrl + '" class="spell-icon"></div>' +
-                                '<div class="card-center">' +
-                                    '<div class="spell-name">' + row.item + '</div>' +
-                                '</div>' +
-                                '<div class="card-right">' +
-                                    '<div class="spell-price">' + totalG + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-icon"></div>' +
-                                    '<div class="spell-time">' + timeStr + '</div>' +
-                                '</div>';
-
-                            grid.appendChild(card);
-                        } catch (err) { console.error("Skipped item", err); }
+                        if (!row.item) return;
+                        const name = row.item;
+                        
+                        // Створюємо групу, якщо ще немає
+                        if (!groupedItems[name]) {
+                            groupedItems[name] = {
+                                name: name,
+                                totalCount: 0,
+                                totalRevenue: 0, // Загальна виручка (gold)
+                                icon: null
+                            };
+                        }
+                        
+                        // Додаємо дані
+                        groupedItems[name].totalCount += (row.count || 1);
+                        groupedItems[name].totalRevenue += (row.price / 10000); // row.price - це ціна за лот в мідяках
                     });
+
+                    // Перетворюємо об'єкт назад в масив для сортування
+                    const groupedArray = Object.values(groupedItems);
+                    // Сортуємо по виручці (найдорожчі зверху)
+                    groupedArray.sort((a, b) => b.totalRevenue - a.totalRevenue);
+
+                    const grid = document.getElementById('historyGrid');
+                    
+                    groupedArray.forEach(group => {
+                        // Знаходимо іконку та Craft Cost в ALL_DATA
+                        let itemMeta = ALL_DATA.find(i => i.name === group.name);
+                        // Fallback пошук
+                        if (!itemMeta) itemMeta = ALL_DATA.find(i => i.name.toLowerCase().includes(group.name.toLowerCase()));
+                        
+                        const iconUrl = (itemMeta && itemMeta.icon) ? itemMeta.icon : 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
+                        
+                        // --- РОЗРАХУНОК ПРИБУТКУ (Profit) ---
+                        // Profit = Revenue - (CraftCost * Count)
+                        const craftCost = (itemMeta && itemMeta.craftCost) ? itemMeta.craftCost : 0;
+                        const totalCost = craftCost * group.totalCount;
+                        const profit = group.totalRevenue - totalCost;
+
+                        const profitStr = Math.floor(profit).toLocaleString('uk-UA');
+
+                        // Створення картки
+                        const card = document.createElement('div');
+                        card.className = 'spell-card';
+                        card.setAttribute('data-name', group.name.toLowerCase());
+                        card.onclick = function() { openItemDetails(group.name); };
+
+                        card.innerHTML = 
+                            '<div class="spell-icon-frame"><img src="' + iconUrl + '" class="spell-icon"></div>' +
+                            '<div class="card-center">' +
+                                '<div class="spell-name">' + group.name + '</div>' +
+                                '<div class="spell-count-lbl" style="color:#aaa;">x' + group.totalCount + ' sold</div>' +
+                            '</div>' +
+                            '<div class="card-right">' +
+                                // Показуємо ПРИБУТОК (Profit)
+                                '<div class="spell-price" title="Total Profit (Revenue - Craft Cost)">' + 
+                                    profitStr + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-icon">' + 
+                                '</div>' +
+                                // Дату прибрали, як просив
+                            '</div>';
+                        
+                        grid.appendChild(card);
+                    });
+
                     document.getElementById('historyLoader').style.display = 'none';
                 } catch (e) { console.error(e); }
             }
-
+                
             // Функція фільтрації історії
             function filterHistory() {
                 const input = document.getElementById('historySearch');
@@ -1709,32 +1732,37 @@ async function generateHTML() {
                 document.getElementById('detailItemName').innerText = itemName;
                 listContainer.innerHTML = '';
 
-                // Фільтруємо історію для цього предмета
+                // Фільтруємо історію
                 const itemHistory = currentHistoryData.filter(x => x.item === itemName);
-                // Сортуємо для графіка (старі -> нові)
                 itemHistory.sort((a, b) => a.timestamp - b.timestamp);
 
-                // --- 1. СПИСОК ПРОДАЖІВ ---
-                // Сортуємо для списку (нові -> старі)
+                // --- 1. СПИСОК ---
                 const listData = [...itemHistory].reverse(); 
-
+                
                 listData.forEach(row => {
                     const totalGold = row.price / 10000;
                     const count = row.count || 1;
-                    const unitPrice = totalGold / count;
-                    const priceStr = unitPrice.toLocaleString('uk-UA', {maximumFractionDigits: 0});
-
+                    const priceStr = totalGold.toLocaleString('uk-UA', {maximumFractionDigits: 0});
+                    
                     const dateObj = new Date(row.timestamp * 1000);
-                    const dateStr = String(dateObj.getDate()).padStart(2,'0') + "." + String(dateObj.getMonth()+1).padStart(2,'0');
+                    const dateStr = dateObj.toLocaleString('uk-UA', { 
+                        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+                    });
 
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'sale-row';
-                    const countBadge = count > 1 ? '<span style="color:#888; font-size:10px;">(x'+count+')</span>' : '';
-
+                    
+                    const countBadge = count > 1 ? '<span style="color:#ffd700; font-weight:bold;">(x'+count+')</span>' : '';
+                    
                     rowDiv.innerHTML = 
-                        '<div><span style="color:#888">' + dateStr + '</span> <span style="margin-left:5px; color:#ddd;">' + countBadge + '</span></div>' +
-                        '<div style="color:#1eff00; font-weight:bold">' + priceStr + ' g</div>';
-
+                        '<div style="display:flex; flex-direction:column;">' +
+                            '<span style="color:#ccc; font-weight:bold;">' + row.item + ' ' + countBadge + '</span>' +
+                            '<span style="color:#666; font-size:10px;">' + dateStr + '</span>' +
+                        '</div>' +
+                        '<div style="display:flex; align-items:center; gap:3px; color:#1eff00; font-weight:bold;">' + 
+                            priceStr + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" style="width:12px; height:12px; border-radius:50%;">' +
+                        '</div>';
+                    
                     listContainer.appendChild(rowDiv);
                 });
 
@@ -1746,7 +1774,7 @@ async function generateHTML() {
                 itemHistory.forEach(row => {
                     const dateObj = new Date(row.timestamp * 1000);
                     const key = String(dateObj.getDate()).padStart(2,'0') + "." + String(dateObj.getMonth()+1).padStart(2,'0');
-
+                    
                     if (!groupedMap[key]) groupedMap[key] = { count: 0, totalGold: 0 };
                     groupedMap[key].count += (row.count || 1);
                     groupedMap[key].totalGold += (row.price / 10000);
@@ -1759,25 +1787,44 @@ async function generateHTML() {
 
                 if (detailChartInstance) detailChartInstance.destroy();
                 const ctx = document.getElementById('itemDetailChart').getContext('2d');
-
+                
                 detailChartInstance = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: chartLabels,
                         datasets: [{
-                            label: 'Кількість',
+                            label: 'Sales',
                             data: chartData,
                             backgroundColor: 'rgba(0, 112, 221, 0.5)',
                             borderColor: '#0070dd',
-                            borderWidth: 2
+                            borderWidth: 2,
+                            barPercentage: 0.5
                         }]
                     },
                     options: {
                         responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                displayColors: false,
+                                callbacks: {
+                                    title: function(ctx) { return 'Date: ' + ctx[0].label; },
+                                    label: function(context) {
+                                        const dateKey = context.label;
+                                        const info = groupedMap[dateKey];
+                                        const goldStr = info.totalGold.toLocaleString('uk-UA', {maximumFractionDigits:0});
+                                        // ВИПРАВЛЕНО: Використовуємо одинарні лапки + конкатенацію
+                                        return [
+                                            'Sold: ' + info.count + ' items',
+                                            'Total: ' + goldStr + ' Gold'
+                                        ];
+                                    }
+                                }
+                            }
+                        },
                         scales: {
-                            y: { beginAtZero: true, grid: { color: '#333' } },
-                            x: { grid: { display: false } }
+                            y: { beginAtZero: true, grid: { color: '#333' }, ticks: { color: '#888', stepSize: 1 } },
+                            x: { grid: { display: false }, ticks: { color: '#888' } }
                         }
                     }
                 });
