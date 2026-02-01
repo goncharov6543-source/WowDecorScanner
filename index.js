@@ -186,6 +186,12 @@ async function generateHTML() {
         fs.copyFileSync(FAVICON_NAME, path.join('public', FAVICON_NAME));
     }
 
+    ['header_bg.jpg', 'body_bg.jpg', 'footer_bg.jpg'].forEach(file => {
+        if (fs.existsSync(file)) {
+            fs.copyFileSync(file, path.join('public', file));
+        }
+    });
+
     // --- 1. Підготовка даних (Node.js) ---
     const calculatedItems = itemsData.map(item => {
         const itemId = safeId(item.id);
@@ -567,25 +573,40 @@ async function generateHTML() {
 
             /* 1. Основний контейнер (Пергамент) */
             #historyModal .modal-content {
-                background-color: #e3d9c0; /* Світліший пергамент */
-                background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png'); /* Текстура паперу (опціонально) */
-                border: 2px solid #55402a;
-                border-radius: 8px;
-                box-shadow: 0 0 0 4px #2b2116, 0 0 30px rgba(0,0,0,0.9);
-                color: #2b2116;
+                background-color: #110b07; 
+                border: 2px solid #634f37; 
+                box-shadow: 0 0 0 2px #000, 0 0 0 5px #a3824b, 0 0 30px rgba(0,0,0,0.9);
+                border-radius: 6px;
+                color: #f0d0a0;
                 font-family: 'Georgia', serif;
-                max-width: 950px;
+                max-width: 1100px; 
                 height: 85vh;
+                display: flex; flex-direction: column; overflow: hidden;
             }
 
             /* 2. Шапка (Світліша коричнева) */
             #historyModal .modal-header {
-                background: #4a3826; /* Світліший коричневий */
-                border-bottom: 2px solid #755e42;
-                padding: 15px 30px;
+                /* 👇 ФОН ШАПКИ 👇 */
+                background-image: url('header_bg.jpg');
+                background-size: cover; /* Розтягнути і обрізати зайве */
+                background-position: center;
+                background-repeat: no-repeat;
+                /* Якщо картинки немає, буде цей колір: */
+                background-color: #221810;
+                
+                border-bottom: 2px solid #a3824b; /* Золотий розділювач */
+                padding: 20px 30px;
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-start;
+                flex-shrink: 0;
+                position: relative; /* Щоб фон був під текстом */
+                z-index: 1;
+            }
+
+            #historyModal .modal-header::before {
+                content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
+                background: rgba(0,0,0,0.3); z-index: -1; /* Напівпрозорий чорний */
             }
 
             /* Заголовок зліва */
@@ -666,9 +687,15 @@ async function generateHTML() {
 
             /* 3. Тіло (Body) */
             #historyModal .modal-body {
-                padding: 20px 40px;
-                background: rgba(0, 0, 0, 0.15); /* Легке затемнення */
+                /* 👇 ФОН ТІЛА 👇 */
+                background-image: url('body_bg.jpg');
+                background-size: cover;
+                background-position: center;
+                
+                padding: 20px 30px;
+                background-color: #150f0a; 
                 overflow-y: auto;
+                flex-grow: 1;
             }
 
             /* 4. Картка Лота (The Item Card) */
@@ -751,12 +778,15 @@ async function generateHTML() {
 
             /* 5. Футер (Такий же колір як шапка) */
             .spellbook-footer {
-                background: #4a3826;
-                border-top: 2px solid #755e42;
-                padding: 10px 30px;
-                display: flex;
-                justify-content: flex-end; /* Зміщуємо вправо */
-                align-items: center;
+                /* 👇 ФОН ФУТЕРА 👇 */
+                background-image: url('header_bg.jpg'); /* Використовуємо фон шапки або footer_bg.jpg */
+                background-size: cover;
+                background-position: bottom; /* Показувати низ картинки */
+                
+                border-top: 2px solid #a3824b;
+                padding: 15px 30px; 
+                display: flex; justify-content: flex-end; align-items: center;
+                flex-shrink: 0;
             }
 
             /* Пагінація */
