@@ -910,7 +910,6 @@ async function generateHTML() {
                 #historyModal .modal-content {
                     background-color: #110b07; /* Темний фон */
                     background-image: url('spellbook_bg.jpg'); background-size: cover; background-position: center;
-                    border: 2px solid #634f37;
                     box-shadow: 0 0 0 2px #000, 0 0 0 5px #a3824b, 0 0 30px rgba(0,0,0,0.9); /* Золота рамка */
                     border-radius: 6px; color: #f0d0a0; font-family: 'Georgia', serif;
                     max-width: 1100px; height: 85vh; display: flex; flex-direction: column; overflow: hidden;
@@ -933,7 +932,12 @@ async function generateHTML() {
                 .spellbook-search { width: 250px; background: #000; border: 1px solid #5c452d; border-radius: 4px; padding: 6px 10px; color: #ffd700; outline: none; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
 
                 /* Права частина шапки */
-                .header-right-col { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+                .header-right-col {
+                    display: flex !important;
+                    flex-direction: column !important; /* Елементи один під одним */
+                    align-items: flex-end !important; /* Притиснути вправо */
+                    gap: 8px !important;
+                }
                 .top-controls { display: flex; align-items: center; gap: 15px; }
                 #userNameDisplay { font-size: 20px; color: #f0d0a0; font-weight: bold; text-shadow: 0 2px 4px #000; }
 
@@ -947,7 +951,7 @@ async function generateHTML() {
 
                 .card-right { margin-left: auto; text-align: right; }
                 .spell-price { font-weight: bold; font-size: 13px; color: #1eff00; display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
-                .coin-icon { width: 12px; height: 12px; border: none; vertical-align: middle; }
+                .coin-icon { width: 12px; height: 12px; border: none; border-radius: 50%; vertical-align: middle; }
                 .spell-time { font-size: 11px; color: #777; margin-top: 2px; }
 
                 /* Футер */
@@ -975,8 +979,7 @@ async function generateHTML() {
             
             /* 1. Фон картки (Напівпрозорий + Без рамки) */
             #historyModal .spell-card {
-                /* RGB колірrgb(184, 167, 150) з прозорістю 0.5 */
-                background-color: rgba(175, 158, 141, 0.2) !important; 
+                background-color: rgba(111, 108, 105, 0.2) !important; 
                 background-image: none !important;
                 
                 border: none !important; /* Прибрали бордер */
@@ -997,7 +1000,7 @@ async function generateHTML() {
 
             /* 2. Текст назви (Темно-коричневий) */
             #historyModal .spell-name {
-                color: #2b1b10 !important; 
+                color: #e0e0e0 !important; 
                 font-family: sans-serif !important;
                 font-weight: bold !important;
                 font-size: 14px !important;
@@ -1006,7 +1009,7 @@ async function generateHTML() {
 
             /* 3. Кількість (Сірий) */
             #historyModal .spell-count-lbl {
-                color: #555 !important;
+                color: #797979 !important;
                 font-weight: bold !important;
                 font-size: 12px !important;
                 background: transparent !important;
@@ -1015,7 +1018,7 @@ async function generateHTML() {
 
             /* 4. Ціна (Зелена) */
             #historyModal .spell-price {
-                color: #1a6e00 !important; 
+                color: #2ec100 !important; 
                 font-weight: bold !important;
                 font-size: 14px !important;
                 text-shadow: none !important;
@@ -1112,12 +1115,11 @@ async function generateHTML() {
                     </div>
 
                     <div class="header-right-col">
-                        <div class="top-controls">
-                            <div style="display:flex; align-items:center;">
-                                <span id="userNameDisplay">Player</span>
-                                <span class="logout-x" onclick="logoutHistory()" title="Logout">×</span>
-                            </div>
-                            <button id="btnCloseHistory" class="modal-close" style="font-size:24px;">×</button>
+                        <button id="btnCloseHistory" class="modal-close" style="font-size:24px; color:#a89070; border-color:#5c452d;">×</button>
+                        
+                        <div style="display:flex; align-items:center;">
+                            <span id="userNameDisplay" style="font-size: 16px; color: #a89070; font-weight:bold; margin-right: 5px;">Player</span>
+                            <span class="logout-x" onclick="logoutHistory()" title="Logout" style="font-size:16px; color:#ff5555; cursor:pointer;">×</span>
                         </div>
                     </div>
                 </div>
