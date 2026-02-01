@@ -578,7 +578,7 @@ async function generateHTML() {
             /* 1. Основний контейнер (Пергамент) */
             #historyModal .modal-content {
                 background-color: #110b07; 
-                border: 2px solid #634f37; 
+                border: none; 
                 box-shadow: 0 0 0 2px #000, 0 0 0 5px #a3824b, 0 0 30px rgba(0,0,0,0.9);
                 border-radius: 6px;
                 color: #f0d0a0;
@@ -694,7 +694,7 @@ async function generateHTML() {
                 
                 padding: 20px 30px;
                 background-color: #150f0a; 
-                overflow: hidden; /* <--- ВАЖЛИВО: Прибираємо скролбар */
+                overflow-y: auto; 
                 flex-grow: 1;
             }
 
@@ -1119,10 +1119,6 @@ async function generateHTML() {
                             </div>
                             <button id="btnCloseHistory" class="modal-close" style="font-size:24px;">×</button>
                         </div>
-                        <div class="spellbook-tabs">
-                            <div class="spellbook-tab active" onclick="switchTab('sales')">Only Sales</div>
-                            <div class="spellbook-tab" onclick="switchTab('all')">All Decors</div>
-                        </div>
                     </div>
                 </div>
 
@@ -1136,14 +1132,6 @@ async function generateHTML() {
                     <div id="historyDataState" style="display:none;">
                         <div id="historyLoader" style="text-align:center; padding:40px; color:#a89070;">Loading...</div>
                         <div id="historyGrid" class="spell-grid"></div> <div id="historyEmpty" style="text-align:center; padding:50px; color:#666; display:none;">No records found.</div>
-                    </div>
-                </div>
-
-                <div class="spellbook-footer">
-                    <div class="pagination-controls">
-                        <div class="page-btn" id="btnHistoryPrev">&lt;</div>
-                        <div class="page-label" id="historyPageLabel">PAGE 1/1</div>
-                        <div class="page-btn" id="btnHistoryNext">&gt;</div>
                     </div>
                 </div>
             </div>
@@ -1698,15 +1686,15 @@ async function generateHTML() {
                 document.getElementById('historyLoader').style.display = 'block';
                 document.getElementById('historyGrid').innerHTML = '';
                 document.getElementById('historyEmpty').style.display = 'none';
-
+                
                 try {
                     const response = await fetch('https://api.jsonbin.io/v3/b/' + binId + '/latest', {
                         headers: { 'X-Master-Key': MASTER_KEY }
                     });
                     const json = await response.json();
                     let data = json.record;
-                    currentHistoryData = data; // Для модалки деталей
-
+                    currentHistoryData = data; 
+                    
                     if (data[0] && data[0].seller) {
                         const userSpan = document.getElementById('userNameDisplay');
                         if(userSpan) {
@@ -1721,65 +1709,68 @@ async function generateHTML() {
                         return;
                     }
 
-                    // 1. АГРЕГАЦІЯ (Групуємо однакові лоти)
+                    // 1. Групуємо дублікати (як і раніше)
                     const groupedItems = {};
-
+                    
                     data.forEach(row => {
                         if (!row.item) return;
                         const name = row.item;
-
+                        
                         if (!groupedItems[name]) {
-                            // Мета-дані
                             let itemMeta = ALL_DATA.find(i => i.name === name);
                             if (!itemMeta) itemMeta = ALL_DATA.find(i => i.name.toLowerCase().includes(name.toLowerCase()));
-
+                            
                             groupedItems[name] = {
                                 name: name,
                                 totalCount: 0,
                                 totalRevenue: 0,
-                                expansion: (itemMeta && itemMeta.exp) ? itemMeta.exp : "Other", 
                                 icon: (itemMeta && itemMeta.icon) ? itemMeta.icon : null,
                                 craftCost: (itemMeta && itemMeta.craftCost) ? itemMeta.craftCost : 0
                             };
                         }
+                        
                         groupedItems[name].totalCount += (row.count || 1);
                         groupedItems[name].totalRevenue += (row.price / 10000); 
                     });
 
-                    // 2. СТВОРЮЄМО МАСИВ ДЛЯ ВІДОБРАЖЕННЯ
-                    // Ми зберігаємо структуру [ {type:'header', text:'Legion'}, {type:'item', data:...}, ... ]
-                    // Це дозволить пагінації правильно різати список разом із заголовками
-                    historyGroupedData = [];
+                    // 2. Робимо простий масив
+                    const itemsArray = Object.values(groupedItems);
+                    
+                    // Сортуємо: Найдорожчі (по виручці) зверху
+                    itemsArray.sort((a, b) => b.totalRevenue - a.totalRevenue);
 
-                    const expansionsMap = {};
-                    Object.values(groupedItems).forEach(item => {
-                        const exp = item.expansion;
-                        if (!expansionsMap[exp]) expansionsMap[exp] = [];
-                        expansionsMap[exp].push(item);
-                    });
+                    const grid = document.getElementById('historyGrid');
 
-                    const sortedExpansions = Object.keys(expansionsMap).sort();
+                    // 3. Малюємо картки (без заголовків експаншенів)
+                    itemsArray.forEach(group => {
+                        const iconUrl = group.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
+                        
+                        const totalCost = group.craftCost * group.totalCount;
+                        const profit = group.totalRevenue - totalCost;
+                        const profitStr = Math.floor(profit).toLocaleString('uk-UA');
 
-                    sortedExpansions.forEach(expName => {
-                        // Додаємо заголовок як елемент списку
-                        historyGroupedData.push({ type: 'header', text: expName });
+                        const card = document.createElement('div');
+                        card.className = 'spell-card';
+                        card.setAttribute('data-name', group.name.toLowerCase());
+                        card.onclick = function() { openItemDetails(group.name); };
 
-                        // Сортуємо предмети
-                        const itemsInExp = expansionsMap[expName];
-                        itemsInExp.sort((a, b) => b.totalRevenue - a.totalRevenue);
-
-                        // Додаємо предмети
-                        itemsInExp.forEach(item => {
-                            historyGroupedData.push({ type: 'item', data: item });
-                        });
+                        // Стилі беруться з твого CSS, який ти додав в кінці
+                        card.innerHTML = 
+                            '<div class="spell-icon-frame"><img src="' + iconUrl + '" class="spell-icon"></div>' +
+                            '<div class="card-center">' +
+                                '<div class="spell-name">' + group.name + '</div>' +
+                                '<div class="spell-count-lbl">x' + group.totalCount + ' sold</div>' +
+                            '</div>' +
+                            '<div class="card-right">' +
+                                '<div class="spell-price" title="Profit">' + 
+                                    profitStr + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-icon">' + 
+                                '</div>' +
+                            '</div>';
+                        
+                        grid.appendChild(card);
                     });
 
                     document.getElementById('historyLoader').style.display = 'none';
-
-                    // 3. ЗАПУСКАЄМО ПЕРШУ СТОРІНКУ
-                    historyCurrentPage = 1;
-                    renderHistoryPage();
-
                 } catch (e) { console.error(e); }
             }
 
@@ -1845,7 +1836,7 @@ async function generateHTML() {
                 for (let i = 0; i < cards.length; i++) {
                     const itemName = cards[i].getAttribute('data-name');
                     if (itemName.indexOf(filter) > -1) {
-                        cards[i].style.display = "";
+                        cards[i].style.display = "flex";
                     } else {
                         cards[i].style.display = "none";
                     }
