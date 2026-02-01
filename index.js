@@ -717,7 +717,6 @@ async function generateHTML() {
             .spell-card {
                 display: flex; align-items: center; padding: 8px;
                 /* Світлий бежевий фон, як на скріншоті */
-                background: #d9cbb0; 
                 /* Темна рамка */
                 border: 1px solid #5c452d; 
                 border-radius: 4px; transition: 0.1s; cursor: pointer;
@@ -981,8 +980,8 @@ async function generateHTML() {
             
             /* 1. Фон картки (Напівпрозорий + Без рамки) */
             #historyModal .spell-card {
-                /* RGB колірrgb(184, 167, 150) з прозорістю 0.5 (50%) */
-                background-color: rgba(175, 158, 141, 0.5) !important; 
+                /* RGB колірrgb(184, 167, 150) з прозорістю 0.5 */
+                background-color: rgba(175, 158, 141, 0.2) !important; 
                 background-image: none !important;
                 
                 border: none !important; /* Прибрали бордер */
@@ -997,7 +996,7 @@ async function generateHTML() {
 
             /* Ефект при наведенні (стає менш прозорим для контрасту) */
             #historyModal .spell-card:hover {
-                background-color: rgba(235, 224, 209, 0.8) !important; 
+                background-color: rgba(163, 153, 139, 0.5) !important; 
                 box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
             }
 
