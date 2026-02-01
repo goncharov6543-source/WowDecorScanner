@@ -757,6 +757,8 @@ async function generateHTML() {
                 margin-top: 2px;
             }
 
+            .spell-count-lbl { font-size: 12px; color: #555; font-weight: bold; margin-top: 2px;} /* Темно-сірий */
+
             /* Права частина (Ціна і Час) */
             .card-right {
                 margin-left: auto; /* Притискає вправо */
@@ -942,6 +944,11 @@ async function generateHTML() {
 
                 /* Тіло і Сітка */
                 #historyModal .modal-body { padding: 20px 30px; background-color: #150f0a; background-image: url('body_bg.jpg'); background-size: cover; overflow-y: auto; flex-grow: 1; }
+
+                .card-right { margin-left: auto; text-align: right; }
+                .spell-price { font-weight: bold; font-size: 13px; color: #1eff00; display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
+                .coin-icon { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #000; }
+                .spell-time { font-size: 11px; color: #777; margin-top: 2px; }
 
                 /* Футер */
                 .spellbook-footer { background-image: url('header_bg.jpg'); background-size: cover; background-position: bottom; background-color: #221810; border-top: 2px solid #a3824b; padding: 10px 30px; display: flex; justify-content: flex-end; align-items: center; flex-shrink: 0; }
