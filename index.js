@@ -1081,6 +1081,12 @@ async function generateHTML() {
                 opacity: 1;
                 transform: scale(1);
             }
+
+            .item-card {
+                position: relative !important;
+            }
+
+
         </style>
     </head>
     <body>
@@ -1531,11 +1537,12 @@ async function generateHTML() {
                 modal.classList.add('active');
             }
 
-            // --- ФУНКЦІЯ ВИДАЛЕННЯ З КОРЗИНИ (FIXED ESCAPING) ---
+            // --- ФУНКЦІЯ ВИДАЛЕННЯ З КОРЗИНИ (FIXED & CLEAR INPUT) ---
             window.removeFromCart = function(itemId, btnElement) {
-                // 1. Оновлюємо стан (знімаємо галочку)
+                // 1. Оновлюємо стан (знімаємо галочку і обнуляємо кількість)
                 if (savedState[itemId]) {
                     savedState[itemId].checked = false;
+                    savedState[itemId].qty = 0; // <-- Важливо: скидаємо кількість в пам'яті
                     saveToStorage();
                 }
 
@@ -1556,13 +1563,19 @@ async function generateHTML() {
                 }, 300);
 
                 // 3. Синхронізація з головним списком
-                // УВАГА: Екрануємо зворотні лапки (\`) та долар (\$)
                 const mainListCard = document.querySelector(\`#list .item-card[data-id="\${itemId}"]\`);
                 
                 if (mainListCard) {
+                    // Знімаємо галочку
                     const checkbox = mainListCard.querySelector('.check-input');
                     if (checkbox) {
                         checkbox.checked = false;
+                    }
+                    
+                    // Очищуємо поле кількості
+                    const qtyInput = mainListCard.querySelector('.qty-input');
+                    if (qtyInput) {
+                        qtyInput.value = ''; // <-- Очищуємо візуально
                     }
                 }
             }
