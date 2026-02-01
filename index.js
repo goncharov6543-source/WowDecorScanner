@@ -1043,6 +1043,44 @@ async function generateHTML() {
                 height: 36px !important;
                 margin-right: 10px !important;
             }
+
+            /* --- КНОПКА ВИДАЛЕННЯ З КОРЗИНИ --- */
+            .btn-remove-cart {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                width: 24px;
+                height: 24px;
+                background: #ff4d4d; /* Червоний колір */
+                color: white;
+                border-radius: 50%; /* Кругла форма */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 16px;
+                cursor: pointer;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+                border: 2px solid #1a1b1d; /* Обводка під колір фону, щоб виглядало як "виріз" */
+                z-index: 100;
+                
+                /* Анімація появи */
+                opacity: 0; 
+                transform: scale(0.8);
+                transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                line-height: 1; /* Центрування хрестика */
+            }
+
+            .btn-remove-cart:hover {
+                background: #ff0000;
+                transform: scale(1.1);
+            }
+
+            /* Показуємо кнопку при наведенні на картку */
+            .item-card:hover .btn-remove-cart {
+                opacity: 1;
+                transform: scale(1);
+            }
         </style>
     </head>
     <body>
@@ -1493,6 +1531,41 @@ async function generateHTML() {
                 modal.classList.add('active');
             }
 
+            // --- ФУНКЦІЯ ВИДАЛЕННЯ З КОРЗИНИ ---
+            window.removeFromCart = function(itemId, btnElement) {
+                // 1. Оновлюємо стан (знімаємо галочку)
+                if (savedState[itemId]) {
+                    savedState[itemId].checked = false;
+                    saveToStorage();
+                }
+
+                // 2. Анімація видалення картки з корзини
+                const card = btnElement.closest('.item-card');
+                card.style.transition = 'all 0.3s ease';
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.9)';
+                
+                setTimeout(() => {
+                    card.remove();
+                    
+                    // Перевіряємо, чи не пуста корзина
+                    const body = document.getElementById('cartBody');
+                    if (body.children.length === 0) {
+                        body.innerHTML = '<div class="empty-cart-msg">Кошик порожній.</div>';
+                    }
+                }, 300);
+
+                // 3. Синхронізація з головним списком (Знімаємо галочку в основному вікні)
+                // Шукаємо картку в основному списку (#list)
+                const mainListCard = document.querySelector(`#list .item-card[data-id="${itemId}"]`);
+                if (mainListCard) {
+                    const checkbox = mainListCard.querySelector('.check-input');
+                    if (checkbox) {
+                        checkbox.checked = false;
+                    }
+                }
+            }
+
             function closeCart() { document.getElementById('cartModal').classList.remove('active'); document.getElementById('list').innerHTML = ''; currentIndex = 0; loadMore(); updateVisibleCrafterBadges(); }
 
             function handleAddonImport(e) {
@@ -1567,19 +1640,43 @@ async function generateHTML() {
             function createCartItemHTML(item) { return generateItemHtmlString(item, false); }
 
             function generateItemHtmlString(item, expandale) {
+                // 1. Підготовка даних
                 const recipeJson = JSON.stringify(item.recipeRaw).replace(/"/g, '&quot;');
                 const saved = savedState[item.itemId] || {};
                 const isChecked = saved.checked ? 'checked' : '';
                 const qtyVal = saved.qty && saved.qty > 0 ? saved.qty : '';
+                
+                // 2. Крафтер і Бейджі
                 const crafterName = findCrafters(item.exp, item.prof);
                 const crafterHtml = crafterName ? \`<div class="info-badge crafter-badge">\${crafterName}</div>\` : '';
-                let recipeHtml = item.reagentsList && item.reagentsList.length > 0 ? '<ul class="recipe-list">' + item.reagentsList.map(r => \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`).join('') + '</ul>' : '<div style="color:#555">No recipe</div>';
+                
+                // 3. Рецепти (Екрануємо \` та \${)
+                let recipeHtml = item.reagentsList && item.reagentsList.length > 0 
+                    ? '<ul class="recipe-list">' + item.reagentsList.map(r => \`<li><div class="reag-left"><span style="color:#ffd700;font-weight:bold">\${r.count}x</span> <img src="\${r.icon}" class="reag-icon"> <span>\${r.name}</span></div><div class="reag-right">\${r.price < 10 ? parseFloat(r.price.toFixed(2)) : Math.floor(r.price).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></div></li>\`).join('') + '</ul>' 
+                    : '<div style="color:#555">No recipe</div>';
+                
+                // 4. Топ 10 серверів
                 const top10Html = item.top10.map(l => \`<div class="server-row"><span>\${l.r}</span><span class="server-price">\${l.p.toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\`).join('');
+                
+                // 5. Ціна лісу (Lumber)
                 let lumberClass = item.lumberPrice > 0 ? "positive" : (item.lumberPrice > -999999 ? "negative" : "neutral");
                 const dispLumber = item.lumberPrice > -999999 ? Math.floor(item.lumberPrice).toLocaleString() : 'N/A';
                 const toggleAttr = expandale ? \`onclick="toggleDetails(this.closest('.item-card'), \${item.itemId})"\` : '';
 
+                // 6. ЛОГІКА КНОПКИ ВИДАЛЕННЯ (Тільки для кошика)
+                const removeBtnHtml = !expandale 
+                    ? \`<div class="btn-remove-cart" onclick="removeFromCart('\${item.itemId}', this)" title="Видалити з кошика">×</div>\` 
+                    : '';
+
+                // 7. ЛОГІКА ДЕТАЛЕЙ (Винесли в окрему змінну для читабельності)
+                // УВАГА: Тут теж все екрановано (\` та \${)
+                const detailsRowHtml = expandale 
+                    ? \`<div class="details-row"><div class="details-content"><div class="details-left"><div class="chart-wrapper"><div class="chart-controls"><button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1w')">1W</button><button class="chart-btn active" onclick="setChartRange(this, '\${item.itemId}', '1m')">1M</button><button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '6m')">6M</button><button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1y')">1Y</button></div><canvas id="chart-\${item.itemId}"></canvas></div><div class="reagents-block"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><h4>Recipe Cost</h4><span style="color:#f44336;font-weight:bold">Total: -\${Math.floor(item.craftCost).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\${recipeHtml}\${item.craftQty > 0 ? \`<div style="margin-top:10px;color:#4caf50;text-align:center;background:#1a3b1a;padding:5px;border-radius:4px">Requires: <b>\${item.craftQty}</b> Lumber</div>\` : ''}</div></div><div class="details-right"><h4>Cheapest Realms (Top 10)</h4>\${top10Html}</div></div></div>\`
+                    : '';
+
+                // 8. ФІНАЛЬНИЙ HTML
                 return \`<div class="item-card" data-id="\${item.itemId}" data-recipe="\${recipeJson}" data-exp="\${item.exp || ''}" data-lumber="\${item.craftQty || 0}">
+                    \${removeBtnHtml}
                     <div class="main-row">
                         <div class="main-row-left">
                             <div class="col-icon"><img src="\${item.icon}"></div>
@@ -1594,7 +1691,7 @@ async function generateHTML() {
                             <div class="col-inputs"><input type="number" class="qty-input" placeholder="0" min="0" value="\${qtyVal}"><input type="checkbox" class="check-input" \${isChecked}></div>
                         </div>
                     </div>
-                    \${expandale ? \`<div class="details-row"><div class="details-content"><div class="details-left"><div class="chart-wrapper"><div class="chart-controls"><button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1w')">1W</button><button class="chart-btn active" onclick="setChartRange(this, '\${item.itemId}', '1m')">1M</button><button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '6m')">6M</button><button class="chart-btn" onclick="setChartRange(this, '\${item.itemId}', '1y')">1Y</button></div><canvas id="chart-\${item.itemId}"></canvas></div><div class="reagents-block"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><h4>Recipe Cost</h4><span style="color:#f44336;font-weight:bold">Total: -\${Math.floor(item.craftCost).toLocaleString()} <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-xs"></span></div>\${recipeHtml}\${item.craftQty > 0 ? \`<div style="margin-top:10px;color:#4caf50;text-align:center;background:#1a3b1a;padding:5px;border-radius:4px">Requires: <b>\${item.craftQty}</b> Lumber</div>\` : ''}</div></div><div class="details-right"><h4>Cheapest Realms (Top 10)</h4>\${top10Html}</div></div></div>\` : ''}
+                    \${detailsRowHtml}
                 </div>\`;
             }
 
