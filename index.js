@@ -981,8 +981,8 @@ async function generateHTML() {
             
             /* 1. Фон картки (Напівпрозорий + Без рамки) */
             #historyModal .spell-card {
-                /* RGB колір #dccbba з прозорістю 0.5 (50%) */
-                background-color: rgba(220, 203, 186, 0.5) !important; 
+                /* RGB колірrgb(184, 167, 150) з прозорістю 0.5 (50%) */
+                background-color: rgba(175, 158, 141, 0.5) !important; 
                 background-image: none !important;
                 
                 border: none !important; /* Прибрали бордер */
