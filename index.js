@@ -1531,7 +1531,7 @@ async function generateHTML() {
                 modal.classList.add('active');
             }
 
-            // --- ФУНКЦІЯ ВИДАЛЕННЯ З КОРЗИНИ ---
+            // --- ФУНКЦІЯ ВИДАЛЕННЯ З КОРЗИНИ (FIXED ESCAPING) ---
             window.removeFromCart = function(itemId, btnElement) {
                 // 1. Оновлюємо стан (знімаємо галочку)
                 if (savedState[itemId]) {
@@ -1539,7 +1539,7 @@ async function generateHTML() {
                     saveToStorage();
                 }
 
-                // 2. Анімація видалення картки з корзини
+                // 2. Анімація видалення картки
                 const card = btnElement.closest('.item-card');
                 card.style.transition = 'all 0.3s ease';
                 card.style.opacity = '0';
@@ -1555,9 +1555,10 @@ async function generateHTML() {
                     }
                 }, 300);
 
-                // 3. Синхронізація з головним списком (Знімаємо галочку в основному вікні)
-                // Шукаємо картку в основному списку (#list)
-                const mainListCard = document.querySelector(`#list .item-card[data-id="${itemId}"]`);
+                // 3. Синхронізація з головним списком
+                // УВАГА: Екрануємо зворотні лапки (\`) та долар (\$)
+                const mainListCard = document.querySelector(\`#list .item-card[data-id="\${itemId}"]\`);
+                
                 if (mainListCard) {
                     const checkbox = mainListCard.querySelector('.check-input');
                     if (checkbox) {
