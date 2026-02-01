@@ -591,12 +591,9 @@ async function generateHTML() {
             /* 2. Шапка (Світліша коричнева) */
             #historyModal .modal-header {
                 /* 👇 ФОН ШАПКИ 👇 */
-                background-image: url('header_bg.jpg');
-                background-size: cover; /* Розтягнути і обрізати зайве */
-                background-position: center;
-                background-repeat: no-repeat;
-                /* Якщо картинки немає, буде цей колір: */
-                background-color: #221810;
+                background-image: none !important;
+                background-color: #1a1b1d !important;
+                border-bottom: 1px solid #333 !important; /* Тонша рамка під колір */
                 
                 border-bottom: 2px solid #a3824b; /* Золотий розділювач */
                 padding: 20px 30px;
@@ -609,8 +606,7 @@ async function generateHTML() {
             }
 
             #historyModal .modal-header::before {
-                content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
-                background: rgba(0,0,0,0.3); z-index: -1; /* Напівпрозорий чорний */
+                display: none !important;
             }
 
             /* Заголовок зліва */
@@ -673,7 +669,7 @@ async function generateHTML() {
             /* Поле пошуку (Коротке з ефектом) */
             .spellbook-search {
                 width: 250px; /* Фіксована ширина */
-                height: 29px;
+                height: 20px;
                 background: rgba(0, 0, 0, 0.4);
                 border: 1px solid #5c452d;
                 border-radius: 4px;
@@ -693,9 +689,8 @@ async function generateHTML() {
             /* 3. Тіло (Body) */
             #historyModal .modal-body {
                 /* 👇 ФОН ТІЛА 👇 */
-                background-image: url('body_bg.jpg');
-                background-size: cover;
-                background-position: center;
+                background-image: none !important;
+                background-color: #151618 !important;
                 
                 padding: 20px 30px;
                 background-color: #150f0a; 
@@ -787,9 +782,9 @@ async function generateHTML() {
             /* 5. Футер (Такий же колір як шапка) */
             .spellbook-footer {
                 /* 👇 ФОН ФУТЕРА 👇 */
-                background-image: url('header_bg.jpg'); /* Використовуємо фон шапки або footer_bg.jpg */
-                background-size: cover;
-                background-position: bottom; /* Показувати низ картинки */
+                background-image: none !important;
+                background-color: #1a1b1d !important;
+                border-top: 1px solid #333 !important;
                 
                 border-top: 2px solid #a3824b;
                 padding: 15px 30px; 
