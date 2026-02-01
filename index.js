@@ -712,27 +712,25 @@ async function generateHTML() {
             }
 
             .spell-card {
-                display: flex; align-items: center; padding: 10px;
-                background: #2b221b; /* Світліший коричневий (було #120e0b) */
-                border: 1px solid #c9a45c; /* Чітка золота рамка */
+                display: flex; align-items: center; padding: 8px;
+                background: #d9cbb0; /* Світлий бежевий (папір) */
+                border: 1px solid #8c7b65; /* Темно-бежева рамка */
                 border-radius: 4px; transition: 0.1s; cursor: pointer;
                 height: 45px;
             }
             .spell-card:hover { 
-                background: #3a2e24; /* Ще світліше при наведенні */
-                border-color: #fff; 
-                box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); 
+                background: #e8dec8; /* Ще світліше при наведенні */
+                border-color: #666; /* Сірувата рамка при наведенні */
+                box-shadow: 0 0 8px rgba(0,0,0,0.3); 
             }
 
             /* Іконка (Зліва) */
             .spell-icon-frame {
-                width: 42px;
-                height: 42px;
-                border: 2px solid #ffd700; /* Золота рамка */
-                border-radius: 6px; /* Заокруглення */
-                margin-right: 10px;
-                box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
-                overflow: hidden;
+                width: 38px; height: 38px;
+                border: 2px solid #bfa785; /* Золотиста рамка іконки */
+                border-radius: 4px;
+                margin-right: 12px; flex-shrink: 0;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.4);
             }
             .spell-icon { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
 
@@ -743,10 +741,10 @@ async function generateHTML() {
                 justify-content: center;
                 line-height: 1.2;
             }
-            .spell-name {
-                font-weight: bold;
-                font-size: 14px;
-                color: #2b1200; /* Темний текст */
+            .spell-name { 
+                font-weight: bold; font-size: 14px; 
+                color: #1a1a1a; /* Чорний текст */
+                white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
             }
             .spell-count-lbl {
                 font-size: 11px;
@@ -758,6 +756,8 @@ async function generateHTML() {
                 width: fit-content;
                 margin-top: 2px;
             }
+
+            .spell-count-lbl { font-size: 12px; color: #555; font-weight: bold; margin-top: 2px;} /* Темно-сірий */
 
             /* Права частина (Ціна і Час) */
             .card-right {
@@ -820,8 +820,12 @@ async function generateHTML() {
 
             /* Стилі для бейджа гравця (повтор, якщо загубилось) */
             .user-tab-badge { background: #8b6946; border: 1px solid #57412d; border-radius: 4px; padding: 2px 10px; display: flex; align-items: center; gap: 8px; color: #fff; font-family: sans-serif; font-size: 12px; }
-            .logout-x { cursor: pointer; padding-left: 8px; border-left: 1px solid rgba(255,255,255,0.3); font-size: 14px; }
-            .logout-x:hover { color: #ff9999; }
+            .logout-x {
+                cursor: pointer; font-size: 18px; color: #ff9999; margin-left: 8px;
+                padding-left: 8px; border-left: 1px solid #555; line-height: 1;
+                transition: 0.2s;
+            }
+            .logout-x:hover { color: #ff0000; text-shadow: 0 0 5px red; }
 
             /* Новий контейнер для верхньої частини хедера */
                 .header-top-row {
@@ -969,6 +973,22 @@ async function generateHTML() {
                 .details-chart-col { width: 70%; padding: 20px; background: #0f1011; border-right: 1px solid #333; }
                 .details-list-col { width: 30%; background: #1a1a1a; overflow-y: auto; padding: 10px; }
                 .sale-row { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #333; font-size: 12px; color: #ccc; }
+                
+                /* Заголовок Експаншена */
+                .expansion-header {
+                    grid-column: 1 / -1; /* Розтягується на всю ширину сітки */
+                    text-align: center;
+                    font-family: serif;
+                    font-size: 18px;
+                    color: #5c452d; /* Коричневий текст */
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                    margin: 20px 0 10px 0;
+                    border-bottom: 1px solid rgba(92, 69, 45, 0.3); /* Тонка лінія знизу */
+                    padding-bottom: 5px;
+                    text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+                }
         </style>
     </head>
     <body>
@@ -1042,8 +1062,11 @@ async function generateHTML() {
 
                     <div class="header-right-col">
                         <div class="top-controls">
-                            <span id="userNameDisplay">Player</span>
-                            <button id="btnCloseHistory" class="modal-close" style="font-size:24px; color:#a89070; border-color:#5c452d;">×</button>
+                            <div style="display:flex; align-items:center;">
+                                <span id="userNameDisplay">Player</span>
+                                <span class="logout-x" onclick="logoutHistory()" title="Logout">×</span>
+                            </div>
+                            <button id="btnCloseHistory" class="modal-close" style="font-size:24px;">×</button>
                         </div>
                         <div class="spellbook-tabs">
                             <div class="spellbook-tab active" onclick="switchTab('sales')">Only Sales</div>
@@ -1627,9 +1650,16 @@ async function generateHTML() {
                     });
                     const json = await response.json();
                     let data = json.record;
-                    currentHistoryData = data; // Зберігаємо сирі дані для модалки
+                    currentHistoryData = data; 
                     
-                    if (data[0] && data[0].seller) document.getElementById('userNameDisplay').innerText = data[0].seller;
+                    if (data[0] && data[0].seller) {
+                        // Показуємо хрестик логаута
+                        const userSpan = document.getElementById('userNameDisplay');
+                        if(userSpan) {
+                            userSpan.innerText = data[0].seller;
+                            userSpan.parentElement.style.display = 'flex';
+                        }
+                    }
 
                     if (!Array.isArray(data) || data.length === 0) {
                         document.getElementById('historyLoader').style.display = 'none';
@@ -1637,72 +1667,88 @@ async function generateHTML() {
                         return;
                     }
 
-                    // 1. ГРУПУВАННЯ ДАНИХ (Агрегація)
+                    // 1. АГРЕГАЦІЯ ДАНИХ (Групуємо дублікати)
                     const groupedItems = {};
                     
                     data.forEach(row => {
                         if (!row.item) return;
                         const name = row.item;
                         
-                        // Створюємо групу, якщо ще немає
                         if (!groupedItems[name]) {
+                            // Знаходимо мета-дані (ЕКСПАНШЕН)
+                            let itemMeta = ALL_DATA.find(i => i.name === name);
+                            if (!itemMeta) itemMeta = ALL_DATA.find(i => i.name.toLowerCase().includes(name.toLowerCase()));
+                            
                             groupedItems[name] = {
                                 name: name,
                                 totalCount: 0,
-                                totalRevenue: 0, // Загальна виручка (gold)
-                                icon: null
+                                totalRevenue: 0,
+                                // Беремо експаншен з бази або пишемо "Misc"
+                                expansion: (itemMeta && itemMeta.exp) ? itemMeta.exp : "Other", 
+                                icon: (itemMeta && itemMeta.icon) ? itemMeta.icon : null,
+                                craftCost: (itemMeta && itemMeta.craftCost) ? itemMeta.craftCost : 0
                             };
                         }
                         
-                        // Додаємо дані
                         groupedItems[name].totalCount += (row.count || 1);
-                        groupedItems[name].totalRevenue += (row.price / 10000); // row.price - це ціна за лот в мідяках
+                        groupedItems[name].totalRevenue += (row.price / 10000); 
                     });
 
-                    // Перетворюємо об'єкт назад в масив для сортування
-                    const groupedArray = Object.values(groupedItems);
-                    // Сортуємо по виручці (найдорожчі зверху)
-                    groupedArray.sort((a, b) => b.totalRevenue - a.totalRevenue);
+                    // 2. ГРУПУВАННЯ ПО ЕКСПАНШЕНАХ
+                    // Створюємо об'єкт: { "Dragonflight": [item1, item2], "Legion": [item3] }
+                    const expansionsMap = {};
+                    
+                    Object.values(groupedItems).forEach(item => {
+                        const exp = item.expansion;
+                        if (!expansionsMap[exp]) expansionsMap[exp] = [];
+                        expansionsMap[exp].push(item);
+                    });
 
                     const grid = document.getElementById('historyGrid');
-                    
-                    groupedArray.forEach(group => {
-                        // Знаходимо іконку та Craft Cost в ALL_DATA
-                        let itemMeta = ALL_DATA.find(i => i.name === group.name);
-                        // Fallback пошук
-                        if (!itemMeta) itemMeta = ALL_DATA.find(i => i.name.toLowerCase().includes(group.name.toLowerCase()));
-                        
-                        const iconUrl = (itemMeta && itemMeta.icon) ? itemMeta.icon : 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
-                        
-                        // --- РОЗРАХУНОК ПРИБУТКУ (Profit) ---
-                        // Profit = Revenue - (CraftCost * Count)
-                        const craftCost = (itemMeta && itemMeta.craftCost) ? itemMeta.craftCost : 0;
-                        const totalCost = craftCost * group.totalCount;
-                        const profit = group.totalRevenue - totalCost;
 
-                        const profitStr = Math.floor(profit).toLocaleString('uk-UA');
+                    // Сортуємо назви експаншенів (щоб було красиво) і проходимось по них
+                    // Можна задати свій порядок, якщо хочеш
+                    const sortedExpansions = Object.keys(expansionsMap).sort();
 
-                        // Створення картки
-                        const card = document.createElement('div');
-                        card.className = 'spell-card';
-                        card.setAttribute('data-name', group.name.toLowerCase());
-                        card.onclick = function() { openItemDetails(group.name); };
+                    sortedExpansions.forEach(expName => {
+                        const itemsInExp = expansionsMap[expName];
+                        // Сортуємо предмети всередині експаншена по профіту
+                        itemsInExp.sort((a, b) => b.totalRevenue - a.totalRevenue);
 
-                        card.innerHTML = 
-                            '<div class="spell-icon-frame"><img src="' + iconUrl + '" class="spell-icon"></div>' +
-                            '<div class="card-center">' +
-                                '<div class="spell-name">' + group.name + '</div>' +
-                                '<div class="spell-count-lbl" style="color:#aaa;">x' + group.totalCount + ' sold</div>' +
-                            '</div>' +
-                            '<div class="card-right">' +
-                                // Показуємо ПРИБУТОК (Profit)
-                                '<div class="spell-price" title="Total Profit (Revenue - Craft Cost)">' + 
-                                    profitStr + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-icon">' + 
+                        // A. МАЛЮЄМО ЗАГОЛОВОК ЕКСПАНШЕНА
+                        const header = document.createElement('div');
+                        header.className = 'expansion-header';
+                        header.innerText = expName;
+                        grid.appendChild(header);
+
+                        // B. МАЛЮЄМО КАРТКИ
+                        itemsInExp.forEach(group => {
+                            const iconUrl = group.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
+                            
+                            // Profit Calculation
+                            const totalCost = group.craftCost * group.totalCount;
+                            const profit = group.totalRevenue - totalCost;
+                            const profitStr = Math.floor(profit).toLocaleString('uk-UA');
+
+                            const card = document.createElement('div');
+                            card.className = 'spell-card';
+                            card.setAttribute('data-name', group.name.toLowerCase());
+                            card.onclick = function() { openItemDetails(group.name); };
+
+                            card.innerHTML = 
+                                '<div class="spell-icon-frame"><img src="' + iconUrl + '" class="spell-icon"></div>' +
+                                '<div class="card-center">' +
+                                    '<div class="spell-name">' + group.name + '</div>' +
+                                    '<div class="spell-count-lbl">x' + group.totalCount + ' sold</div>' +
                                 '</div>' +
-                                // Дату прибрали, як просив
-                            '</div>';
-                        
-                        grid.appendChild(card);
+                                '<div class="card-right">' +
+                                    '<div class="spell-price" title="Profit">' + 
+                                        profitStr + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-icon">' + 
+                                    '</div>' +
+                                '</div>';
+                            
+                            grid.appendChild(card);
+                        });
                     });
 
                     document.getElementById('historyLoader').style.display = 'none';
