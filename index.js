@@ -673,7 +673,7 @@ async function generateHTML() {
             /* Поле пошуку (Коротке з ефектом) */
             .spellbook-search {
                 width: 250px; /* Фіксована ширина */
-                height: 20px;
+                height: 29px;
                 background: rgba(0, 0, 0, 0.4);
                 border: 1px solid #5c452d;
                 border-radius: 4px;
@@ -996,7 +996,7 @@ async function generateHTML() {
 
             /* Ефект при наведенні (стає менш прозорим для контрасту) */
             #historyModal .spell-card:hover {
-                background-color: rgba(163, 153, 139, 0.5) !important; 
+                background-color: rgba(163, 153, 139, 0.2) !important; 
                 box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
             }
 
@@ -1215,12 +1215,6 @@ async function generateHTML() {
             let activeData = ALL_DATA; 
             let currentIndex = 0;
             const ITEMS_PER_PAGE = 20;
-
-            let historyGroupedData = [];   // Повна база (незмінна)
-            let historyFilteredList = [];  // Те, що відображається зараз (після пошуку)
-            let historyCurrentPage = 1;
-            const HISTORY_PAGE_SIZE = 15;
-
             let activeCharts = {};
             let chartRanges = {}; 
             
