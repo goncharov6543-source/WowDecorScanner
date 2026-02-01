@@ -976,6 +976,75 @@ async function generateHTML() {
                 color: #5c452d; font-weight: bold; text-transform: uppercase;
                 margin: 10px 0 5px 0; border-bottom: 1px solid rgba(92, 69, 45, 0.3);
                 }
+
+                /* --- ФІКС ВИГЛЯДУ ЛОТА (Світла тема) --- */
+
+            /* 1. Фон картки (Світлий пергамент) */
+            .spell-card {
+                background: #d9cbb0 !important; /* Світло-бежевий колір */
+                border: 1px solid #8c7b65 !important; /* Темно-бежева рамка */
+                border-radius: 4px !important;
+                padding: 6px 10px !important;
+                height: 42px !important;
+                display: flex !important;
+                align-items: center !important;
+                box-shadow: inset 0 0 5px rgba(0,0,0,0.05) !important;
+                transition: 0.1s !important;
+            }
+
+            /* Ефект при наведенні */
+            .spell-card:hover {
+                background: #ebe0d1 !important; /* Трохи світліше */
+                border-color: #555 !important;   /* Сірувата рамка */
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+            }
+
+            /* 2. Назва предмета (Темно-коричневий, майже чорний) */
+            .spell-name {
+                color: #2b1b10 !important; 
+                font-family: sans-serif !important;
+                font-weight: bold !important;
+                font-size: 14px !important;
+                text-shadow: none !important; /* Прибираємо чорну тінь */
+            }
+
+            /* 3. Кількість (Сірий колір) */
+            .spell-count-lbl {
+                color: #555 !important;
+                font-weight: bold !important;
+                font-size: 12px !important;
+                margin-top: 2px !important;
+            }
+
+            /* 4. Іконка золота (Прибираємо рамку) */
+            .coin-icon {
+                border: none !important;
+                box-shadow: none !important;
+                width: 13px !important;
+                height: 13px !important;
+                vertical-align: middle !important;
+            }
+
+            /* 5. Ціна (Зелена, але темніша для читабельності на світлому) */
+            .spell-price {
+                color: #1a6e00 !important; 
+                font-weight: bold !important;
+                font-size: 14px !important;
+                text-shadow: none !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 4px !important;
+            }
+
+            /* 6. Рамка навколо іконки предмета */
+            .spell-icon-frame {
+                width: 36px !important;
+                height: 36px !important;
+                border: 1px solid #755e42 !important;
+                border-radius: 4px !important;
+                margin-right: 10px !important;
+                box-shadow: none !important;
+            }
         </style>
     </head>
     <body>
