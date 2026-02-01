@@ -977,36 +977,40 @@ async function generateHTML() {
                 margin: 10px 0 5px 0; border-bottom: 1px solid rgba(92, 69, 45, 0.3);
                 }
 
-                /* --- FORCE OVERRIDE: LIGHT THEME v2 --- */
+            /* --- FORCE OVERRIDE: LIGHT THEME v3 (Transparent + No Border) --- */
             
-            /* 1. Фон картки (Світлий пергамент) - Посилена специфічність */
+            /* 1. Фон картки (Напівпрозорий + Без рамки) */
             #historyModal .spell-card {
-                background-color: #dccbba !important; /* Колір як на скріншоті 1 */
+                /* RGB колір #dccbba з прозорістю 0.5 (50%) */
+                background-color: rgba(220, 203, 186, 0.5) !important; 
                 background-image: none !important;
-                border: 1px solid #9c8565 !important;
+                
+                border: none !important; /* Прибрали бордер */
                 border-radius: 4px !important;
+                
                 box-shadow: inset 0 0 5px rgba(0,0,0,0.05) !important;
                 padding: 6px 10px !important;
                 height: 42px !important;
+                display: flex !important;
+                align-items: center !important;
             }
 
-            /* Ефект при наведенні */
+            /* Ефект при наведенні (стає менш прозорим для контрасту) */
             #historyModal .spell-card:hover {
-                background-color: #ebe0d1 !important;
-                border-color: #555 !important;
+                background-color: rgba(235, 224, 209, 0.8) !important; 
                 box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
             }
 
-            /* 2. Текст назви (Темно-коричневий/Чорний) */
+            /* 2. Текст назви (Темно-коричневий) */
             #historyModal .spell-name {
                 color: #2b1b10 !important; 
                 font-family: sans-serif !important;
                 font-weight: bold !important;
                 font-size: 14px !important;
-                text-shadow: none !important; /* Вимикаємо тінь */
+                text-shadow: none !important;
             }
 
-            /* 3. Кількість (Сірий колір, без фону) */
+            /* 3. Кількість (Сірий) */
             #historyModal .spell-count-lbl {
                 color: #555 !important;
                 font-weight: bold !important;
@@ -1023,17 +1027,17 @@ async function generateHTML() {
                 text-shadow: none !important;
             }
 
-            /* 5. Іконка золота (Прибираємо рамку) */
+            /* 5. Іконка золота (Чиста) */
             #historyModal .coin-icon {
                 border: none !important;
                 box-shadow: none !important;
                 width: 13px !important;
                 height: 13px !important;
                 vertical-align: middle !important;
-                border-radius: 0 !important; /* Якщо була кругла */
+                border-radius: 0 !important;
             }
 
-            /* 6. Рамка іконки предмета (Проста темна) */
+            /* 6. Рамка іконки предмета */
             #historyModal .spell-icon-frame {
                 border: 1px solid #755e42 !important;
                 border-radius: 4px !important;
