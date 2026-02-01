@@ -1212,15 +1212,15 @@ async function generateHTML() {
             // ВШИВАЄМО КЛЮЧ ПРЯМО ТУТ (hardcoded)
             const MASTER_KEY = '$2a$10$XsAeGChQRacvy3Zymhgl4e2T0lq3eRgHTin6EuwGztMpDjOPyFa3q'; 
             
-            // --- ЗМІННІ ДЛЯ ІСТОРІЇ (ОНОВЛЕНО) ---
+            let activeData = ALL_DATA; 
+            let currentIndex = 0;
+            const ITEMS_PER_PAGE = 20;
+
             let historyGroupedData = [];   // Повна база (незмінна)
             let historyFilteredList = [];  // Те, що відображається зараз (після пошуку)
             let historyCurrentPage = 1;
             const HISTORY_PAGE_SIZE = 15;
 
-            let activeData = ALL_DATA; 
-            let currentIndex = 0;
-            const ITEMS_PER_PAGE = 20;
             let activeCharts = {};
             let chartRanges = {}; 
             
@@ -1709,15 +1709,15 @@ async function generateHTML() {
                 document.getElementById('historyLoader').style.display = 'block';
                 document.getElementById('historyGrid').innerHTML = '';
                 document.getElementById('historyEmpty').style.display = 'none';
-                
+
                 try {
                     const response = await fetch('https://api.jsonbin.io/v3/b/' + binId + '/latest', {
                         headers: { 'X-Master-Key': MASTER_KEY }
                     });
                     const json = await response.json();
                     let data = json.record;
-                    currentHistoryData = data; 
-                    
+                    currentHistoryData = data; // Для модалки деталей
+
                     if (data[0] && data[0].seller) {
                         const userSpan = document.getElementById('userNameDisplay');
                         if(userSpan) {
@@ -1732,15 +1732,18 @@ async function generateHTML() {
                         return;
                     }
 
-                    // 1. АГРЕГАЦІЯ
+                    // 1. АГРЕГАЦІЯ (Групуємо однакові лоти)
                     const groupedItems = {};
+
                     data.forEach(row => {
                         if (!row.item) return;
                         const name = row.item;
+
                         if (!groupedItems[name]) {
+                            // Мета-дані
                             let itemMeta = ALL_DATA.find(i => i.name === name);
                             if (!itemMeta) itemMeta = ALL_DATA.find(i => i.name.toLowerCase().includes(name.toLowerCase()));
-                            
+
                             groupedItems[name] = {
                                 name: name,
                                 totalCount: 0,
@@ -1754,8 +1757,11 @@ async function generateHTML() {
                         groupedItems[name].totalRevenue += (row.price / 10000); 
                     });
 
-                    // 2. СТВОРЕННЯ МАЙСТЕР-СПИСКУ
+                    // 2. СТВОРЮЄМО МАСИВ ДЛЯ ВІДОБРАЖЕННЯ
+                    // Ми зберігаємо структуру [ {type:'header', text:'Legion'}, {type:'item', data:...}, ... ]
+                    // Це дозволить пагінації правильно різати список разом із заголовками
                     historyGroupedData = [];
+
                     const expansionsMap = {};
                     Object.values(groupedItems).forEach(item => {
                         const exp = item.expansion;
@@ -1763,19 +1769,25 @@ async function generateHTML() {
                         expansionsMap[exp].push(item);
                     });
 
-                    Object.keys(expansionsMap).sort().forEach(expName => {
+                    const sortedExpansions = Object.keys(expansionsMap).sort();
+
+                    sortedExpansions.forEach(expName => {
+                        // Додаємо заголовок як елемент списку
                         historyGroupedData.push({ type: 'header', text: expName });
-                        const items = expansionsMap[expName];
-                        items.sort((a, b) => b.totalRevenue - a.totalRevenue);
-                        items.forEach(item => historyGroupedData.push({ type: 'item', data: item }));
+
+                        // Сортуємо предмети
+                        const itemsInExp = expansionsMap[expName];
+                        itemsInExp.sort((a, b) => b.totalRevenue - a.totalRevenue);
+
+                        // Додаємо предмети
+                        itemsInExp.forEach(item => {
+                            historyGroupedData.push({ type: 'item', data: item });
+                        });
                     });
 
-                    // Копіюємо повний список у відображуваний список
-                    historyFilteredList = [...historyGroupedData];
-
                     document.getElementById('historyLoader').style.display = 'none';
-                    
-                    // Скидаємо сторінку і малюємо
+
+                    // 3. ЗАПУСКАЄМО ПЕРШУ СТОРІНКУ
                     historyCurrentPage = 1;
                     renderHistoryPage();
 
@@ -1785,35 +1797,36 @@ async function generateHTML() {
             function renderHistoryPage() {
                 const grid = document.getElementById('historyGrid');
                 grid.innerHTML = '';
-                
-                // Беремо дані з ВІДФІЛЬТРОВАНОГО списку
-                const totalItems = historyFilteredList.length;
-                const totalPages = Math.ceil(totalItems / HISTORY_PAGE_SIZE) || 1;
-                
+
+                const totalItems = historyGroupedData.length;
+                const totalPages = Math.ceil(totalItems / HISTORY_ITEMS_PER_PAGE) || 1;
+
+                // Перевірка меж
                 if (historyCurrentPage < 1) historyCurrentPage = 1;
                 if (historyCurrentPage > totalPages) historyCurrentPage = totalPages;
-                
-                const start = (historyCurrentPage - 1) * HISTORY_PAGE_SIZE;
-                const end = start + HISTORY_PAGE_SIZE;
-                const itemsToShow = historyFilteredList.slice(start, end);
-                
-                itemsToShow.forEach(entry => {
+
+                const startIndex = (historyCurrentPage - 1) * HISTORY_ITEMS_PER_PAGE;
+                const endIndex = startIndex + HISTORY_ITEMS_PER_PAGE;
+                const pageItems = historyGroupedData.slice(startIndex, endIndex);
+
+                pageItems.forEach(entry => {
                     if (entry.type === 'header') {
-                        const h = document.createElement('div');
-                        h.className = 'expansion-header';
-                        h.innerText = entry.text;
-                        grid.appendChild(h);
+                        const header = document.createElement('div');
+                        header.className = 'expansion-header';
+                        header.innerText = entry.text;
+                        grid.appendChild(header);
                     } else {
                         const group = entry.data;
                         const iconUrl = group.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
-                        const profit = group.totalRevenue - (group.craftCost * group.totalCount);
+
+                        const totalCost = group.craftCost * group.totalCount;
+                        const profit = group.totalRevenue - totalCost;
                         const profitStr = Math.floor(profit).toLocaleString('uk-UA');
 
                         const card = document.createElement('div');
                         card.className = 'spell-card';
                         card.onclick = function() { openItemDetails(group.name); };
-                        
-                        // Тут твої оновлені стилі вже застосуються через CSS
+
                         card.innerHTML = 
                             '<div class="spell-icon-frame"><img src="' + iconUrl + '" class="spell-icon"></div>' +
                             '<div class="card-center">' +
@@ -1821,60 +1834,33 @@ async function generateHTML() {
                                 '<div class="spell-count-lbl">x' + group.totalCount + ' sold</div>' +
                             '</div>' +
                             '<div class="card-right">' +
-                                '<div class="spell-price">' + profitStr + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-icon"></div>' +
+                                '<div class="spell-price" title="Profit">' + 
+                                    profitStr + ' <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-icon">' + 
+                                '</div>' +
                             '</div>';
                         grid.appendChild(card);
                     }
                 });
-                
+
+                // Оновлюємо футер
                 document.getElementById('historyPageLabel').innerText = 'PAGE ' + historyCurrentPage + '/' + totalPages;
             }
                 
             // Функція фільтрації історії
             function filterHistory() {
                 const input = document.getElementById('historySearch');
-                const term = input.value.toLowerCase().trim();
-                
-                if (!term) {
-                    // Якщо пусто - показуємо все
-                    historyFilteredList = [...historyGroupedData];
-                } else {
-                    // Якщо є текст - фільтруємо розумно
-                    historyFilteredList = [];
-                    let currentHeader = null;
-                    let keepCurrentHeader = false; // Чи показувати заголовок, бо він співпав з пошуком
+                const filter = input.value.toLowerCase();
+                const grid = document.getElementById('historyGrid');
+                const cards = grid.getElementsByClassName('spell-card');
 
-                    historyGroupedData.forEach(entry => {
-                        if (entry.type === 'header') {
-                            currentHeader = entry;
-                            // Перевіряємо, чи шукає юзер саму назву експаншена (напр. "Dragonflight")
-                            if (entry.text.toLowerCase().includes(term)) {
-                                keepCurrentHeader = true; // Показуємо заголовок і ВСІ лоти під ним
-                                historyFilteredList.push(entry);
-                            } else {
-                                keepCurrentHeader = false; // Заголовок не співпав, покажемо його тільки якщо знайдемо лот всередині
-                            }
-                        } else if (entry.type === 'item') {
-                            // Якщо заголовок співпав - додаємо всі лоти під ним автоматично
-                            if (keepCurrentHeader) {
-                                historyFilteredList.push(entry);
-                            } 
-                            // Якщо заголовок не співпав - перевіряємо назву лота
-                            else if (entry.data.name.toLowerCase().includes(term)) {
-                                // Знайшли лот! Треба додати його заголовок, якщо його ще немає в списку
-                                const lastAdded = historyFilteredList[historyFilteredList.length - 1];
-                                if (lastAdded !== currentHeader) {
-                                    historyFilteredList.push(currentHeader);
-                                }
-                                historyFilteredList.push(entry);
-                            }
-                        }
-                    });
+                for (let i = 0; i < cards.length; i++) {
+                    const itemName = cards[i].getAttribute('data-name');
+                    if (itemName.indexOf(filter) > -1) {
+                        cards[i].style.display = "";
+                    } else {
+                        cards[i].style.display = "none";
+                    }
                 }
-
-                // Скидаємо на першу сторінку результатів
-                historyCurrentPage = 1;
-                renderHistoryPage();
             }
 
             window.openItemDetails = function(itemName) {
@@ -2017,8 +2003,7 @@ async function generateHTML() {
                 };
                 
                 document.getElementById('btnHistoryNext').onclick = () => {
-                    // Рахуємо сторінки від ВІДФІЛЬТРОВАНОГО списку
-                    const totalPages = Math.ceil(historyFilteredList.length / HISTORY_PAGE_SIZE) || 1;
+                    const totalPages = Math.ceil(historyGroupedData.length / HISTORY_ITEMS_PER_PAGE) || 1;
                     if (historyCurrentPage < totalPages) {
                         historyCurrentPage++;
                         renderHistoryPage();
