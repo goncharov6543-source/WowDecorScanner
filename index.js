@@ -757,8 +757,6 @@ async function generateHTML() {
                 margin-top: 2px;
             }
 
-            .spell-count-lbl { font-size: 12px; color: #555; font-weight: bold; margin-top: 2px;} /* Темно-сірий */
-
             /* Права частина (Ціна і Час) */
             .card-right {
                 margin-left: auto; /* Притискає вправо */
@@ -944,22 +942,6 @@ async function generateHTML() {
 
                 /* Тіло і Сітка */
                 #historyModal .modal-body { padding: 20px 30px; background-color: #150f0a; background-image: url('body_bg.jpg'); background-size: cover; overflow-y: auto; flex-grow: 1; }
-                .spell-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 5px; } /* 3 колонки! */
-
-                /* Картка лота */
-                .spell-card { display: flex; align-items: center; padding: 8px; background: #231910; border: 1px solid #c9a45c; border-radius: 4px; transition: 0.1s; cursor: pointer; }
-                .spell-card:hover { background: #2f2216; border-color: #fff; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
-
-                .spell-icon-frame { width: 36px; height: 36px; border: 1px solid #555; border-radius: 4px; margin-right: 10px; }
-                .spell-icon { width: 100%; height: 100%; object-fit: cover; }
-
-                .card-center { display: flex; flex-direction: column; justify-content: center; flex-grow: 1; }
-                .spell-name { font-weight: bold; font-size: 13px; color: #dcdcdc; }
-
-                .card-right { margin-left: auto; text-align: right; }
-                .spell-price { font-weight: bold; font-size: 13px; color: #1eff00; display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
-                .coin-icon { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #000; }
-                .spell-time { font-size: 11px; color: #777; margin-top: 2px; }
 
                 /* Футер */
                 .spellbook-footer { background-image: url('header_bg.jpg'); background-size: cover; background-position: bottom; background-color: #221810; border-top: 2px solid #a3824b; padding: 10px 30px; display: flex; justify-content: flex-end; align-items: center; flex-shrink: 0; }
