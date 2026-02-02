@@ -1313,7 +1313,7 @@ async function generateHTML() {
 
         <div id="itemDetailsModal" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-header" style="justify-content: space-between; align-items: center;>
+                <div class="modal-header" style="justify-content: space-between; align-items: center; background:#221810;">
                     <h3 id="detailItemName" style="color: #ffd700; margin: 0;">Item Name</h3>
                     <button onclick="closeItemDetails()" class="modal-close" style="color:#a89070;">×</button>
                 </div>
