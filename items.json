@@ -1982,18 +1982,6 @@
         ]
     },
     {
-        "name": "Gnomish Steam-Powered Bed",
-        "id": "246700",
-        "Exp": "Battle for Azeroth",
-        "craftQty": 25,
-        "recipe": [
-            { "name": "Delicate Arcanite Converter", "id": "16006", "count": 4},
-            { "name": "Thorium Tube", "id": "16000", "count": 4},
-            { "name": "Bolt of Runecloth", "id": "14048", "count": 8},
-            { "name": "Essence of Fire", "id": "7078", "count": 4}
-        ]
-    },
-    {
         "name": "Gnomish Tesla Mega-Coil",
         "id": "246486",
         "Prof": "Engineering",

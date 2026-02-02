@@ -579,7 +579,7 @@ async function generateHTML() {
             #historyModal .modal-content {
                 background-color: #110b07; 
                 border: none; 
-                box-shadow: 0 0 0 2px #000, 0 0 0 5px #a3824b, 0 0 30px rgba(0,0,0,0.9);
+                box-shadow: 0 0 0 2px #000, 0 0 0 3px #4d4d4d, 0 0 30px rgba(0,0,0,0.9);
                 border-radius: 6px;
                 color: #f0d0a0;
                 font-family: 'Georgia', serif;
@@ -596,7 +596,7 @@ async function generateHTML() {
                 border-bottom: 1px solid #333 !important; /* Тонша рамка під колір */
                 
                 border-bottom: 2px solid #a3824b; /* Золотий розділювач */
-                padding: 20px 30px;
+                padding: 13px 30px;
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-start;
@@ -1243,11 +1243,24 @@ async function generateHTML() {
                     </div>
 
                     <div class="header-right-col">
-                        <button id="btnCloseHistory" class="modal-close" style="font-size:24px; color:#a89070; border-color:#5c452d;">×</button>
+                        <div class="top-controls" style="width: 100%; display: flex; justify-content: flex-end;">
+                            <div class="top-user-row" style="display:flex; align-items:center; gap: 15px;">
+                                <div style="display:flex; align-items:center;">
+                                    <span class="logout-x" onclick="logoutHistory()" title="Logout" 
+                                          style="font-size:16px; color:#ff5555; cursor:pointer; margin-right: 8px; padding-right: 8px; border-right: 1px solid #555; border-left: none; margin-left: 0; padding-left: 0;">
+                                          ×
+                                    </span>
+                                    
+                                    <span id="userNameDisplay" style="font-size: 16px; color: #a89070; font-weight:bold;">Player</span>
+                                </div>
+
+                                <button id="btnCloseHistory" class="modal-close" style="font-size:24px; color:#a89070; border-color:#5c452d;">×</button>
+                            </div>
+                        </div>
                         
-                        <div style="display:flex; align-items:center;">
-                            <span id="userNameDisplay" style="font-size: 16px; color: #a89070; font-weight:bold; margin-right: 5px;">Player</span>
-                            <span class="logout-x" onclick="logoutHistory()" title="Logout" style="font-size:16px; color:#ff5555; cursor:pointer;">×</span>
+                        <div class="spellbook-tabs">
+                            <div class="spellbook-tab active" onclick="switchTab('sales')">Only Sales</div>
+                            <div class="spellbook-tab" onclick="switchTab('all')">All Decors</div>
                         </div>
                     </div>
                 </div>
@@ -1905,6 +1918,7 @@ async function generateHTML() {
                         const userSpan = document.getElementById('userNameDisplay');
                         if(userSpan) {
                             userSpan.innerText = data[0].seller;
+                            // Батьківський елемент показуємо
                             userSpan.parentElement.style.display = 'flex';
                         }
                     }
@@ -1915,7 +1929,7 @@ async function generateHTML() {
                         return;
                     }
 
-                    // 1. Групуємо дублікати (як і раніше)
+                    // 1. Агрегація
                     const groupedItems = {};
                     
                     data.forEach(row => {
@@ -1923,6 +1937,7 @@ async function generateHTML() {
                         const name = row.item;
                         
                         if (!groupedItems[name]) {
+                            // Знаходимо мета-дані з ALL_DATA
                             let itemMeta = ALL_DATA.find(i => i.name === name);
                             if (!itemMeta) itemMeta = ALL_DATA.find(i => i.name.toLowerCase().includes(name.toLowerCase()));
                             
@@ -1931,7 +1946,10 @@ async function generateHTML() {
                                 totalCount: 0,
                                 totalRevenue: 0,
                                 icon: (itemMeta && itemMeta.icon) ? itemMeta.icon : null,
-                                craftCost: (itemMeta && itemMeta.craftCost) ? itemMeta.craftCost : 0
+                                craftCost: (itemMeta && itemMeta.craftCost) ? itemMeta.craftCost : 0,
+                                // Зберігаємо для пошуку
+                                exp: (itemMeta && itemMeta.exp) ? itemMeta.exp : "",
+                                prof: (itemMeta && itemMeta.prof) ? itemMeta.prof : ""
                             };
                         }
                         
@@ -1939,28 +1957,30 @@ async function generateHTML() {
                         groupedItems[name].totalRevenue += (row.price / 10000); 
                     });
 
-                    // 2. Робимо простий масив
+                    // 2. Сортування
                     const itemsArray = Object.values(groupedItems);
-                    
-                    // Сортуємо: Найдорожчі (по виручці) зверху
                     itemsArray.sort((a, b) => b.totalRevenue - a.totalRevenue);
 
                     const grid = document.getElementById('historyGrid');
 
-                    // 3. Малюємо картки (без заголовків експаншенів)
+                    // 3. Рендер
                     itemsArray.forEach(group => {
                         const iconUrl = group.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
-                        
                         const totalCost = group.craftCost * group.totalCount;
                         const profit = group.totalRevenue - totalCost;
                         const profitStr = Math.floor(profit).toLocaleString('uk-UA');
 
                         const card = document.createElement('div');
                         card.className = 'spell-card';
+                        
+                        // --- NEW: Додаємо атрибути для розширеного пошуку ---
                         card.setAttribute('data-name', group.name.toLowerCase());
+                        card.setAttribute('data-exp', group.exp.toLowerCase());
+                        card.setAttribute('data-prof', group.prof.toLowerCase());
+                        // ----------------------------------------------------
+
                         card.onclick = function() { openItemDetails(group.name); };
 
-                        // Стилі беруться з твого CSS, який ти додав в кінці
                         card.innerHTML = 
                             '<div class="spell-icon-frame"><img src="' + iconUrl + '" class="spell-icon"></div>' +
                             '<div class="card-center">' +
@@ -2032,7 +2052,7 @@ async function generateHTML() {
                 document.getElementById('historyPageLabel').innerText = 'PAGE ' + historyCurrentPage + '/' + totalPages;
             }
                 
-            // Функція фільтрації історії
+            // Розумний пошук (Назва OR Експаншен OR Професія)
             function filterHistory() {
                 const input = document.getElementById('historySearch');
                 const filter = input.value.toLowerCase();
@@ -2040,8 +2060,12 @@ async function generateHTML() {
                 const cards = grid.getElementsByClassName('spell-card');
 
                 for (let i = 0; i < cards.length; i++) {
-                    const itemName = cards[i].getAttribute('data-name');
-                    if (itemName.indexOf(filter) > -1) {
+                    const name = cards[i].getAttribute('data-name') || "";
+                    const exp = cards[i].getAttribute('data-exp') || "";
+                    const prof = cards[i].getAttribute('data-prof') || "";
+
+                    // Шукаємо співпадіння в будь-якому з полів
+                    if (name.includes(filter) || exp.includes(filter) || prof.includes(filter)) {
                         cards[i].style.display = "flex";
                     } else {
                         cards[i].style.display = "none";
