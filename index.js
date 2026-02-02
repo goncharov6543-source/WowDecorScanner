@@ -2084,7 +2084,7 @@ async function generateHTML() {
                 document.getElementById('historyPageLabel').innerText = 'PAGE ' + historyCurrentPage + '/' + totalPages;
             }
                 
-            // Розумний пошук (Назва OR Експаншен OR Професія)
+            // Розумний пошук (FIXED: Force Hide with !important)
             function filterHistory() {
                 const input = document.getElementById('historySearch');
                 if (!input) return;
@@ -2095,14 +2095,20 @@ async function generateHTML() {
 
                 for (let i = 0; i < cards.length; i++) {
                     const card = cards[i];
+                    // Зчитуємо дані з атрибутів
                     const name = card.getAttribute('data-name') || "";
                     const exp = card.getAttribute('data-exp') || "";
                     const prof = card.getAttribute('data-prof') || "";
 
-                    if (filter === "" || name.includes(filter) || exp.includes(filter) || prof.includes(filter)) {
-                        card.style.display = "flex";
+                    // Перевірка
+                    const isMatch = (filter === "" || name.includes(filter) || exp.includes(filter) || prof.includes(filter));
+
+                    if (isMatch) {
+                        // Показуємо (Flex) і даємо пріоритет
+                        card.style.setProperty('display', 'flex', 'important');
                     } else {
-                        card.style.display = "none";
+                        // Ховаємо (None) і даємо пріоритет, щоб перебити CSS
+                        card.style.setProperty('display', 'none', 'important');
                     }
                 }
             }
