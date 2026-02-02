@@ -688,25 +688,22 @@ async function generateHTML() {
 
             /* 3. Тіло (Body) */
             #historyModal .modal-body {
-                /* 👇 ФОН ТІЛА 👇 */
-                background-image: none !important;
                 background-color: #151618 !important;
-                
-                padding: 20px 30px;
-                background-color: #150f0a; 
+                padding: 20px 20px !important; /* Трохи менші відступи по боках */
                 overflow-y: auto; 
+                overflow-x: hidden !important; /* Жорстко ховаємо горизонтальний скрол */
                 flex-grow: 1;
             }
 
             /* 4. Картка Лота (The Item Card) */
             .spell-grid {
                 display: grid;
-                grid-template-columns: repeat(3, 1fr); /* 3 колонки */
+                grid-template-columns: repeat(2, 1fr) !important; /* 2 лота в ряд */
                 grid-auto-rows: max-content;
                 gap: 12px;
                 margin-top: 10px;
-                height: 100%; /* На всю висоту */
-                align-content: start; /* Елементи зверху */
+                width: 100%;
+                box-sizing: border-box;
             }
 
             .spell-card {
@@ -1971,7 +1968,9 @@ async function generateHTML() {
                         const name = row.item;
                         
                         if (!groupedItems[name]) {
+                            // Шукаємо розширені дані про предмет (Exp, Prof)
                             let itemMeta = ALL_DATA.find(i => i.name === name);
+                            // Якщо точний збіг не знайдено, шукаємо частковий (fallback)
                             if (!itemMeta) itemMeta = ALL_DATA.find(i => i.name.toLowerCase().includes(name.toLowerCase()));
                             
                             groupedItems[name] = {
@@ -1980,7 +1979,7 @@ async function generateHTML() {
                                 totalRevenue: 0,
                                 icon: (itemMeta && itemMeta.icon) ? itemMeta.icon : null,
                                 craftCost: (itemMeta && itemMeta.craftCost) ? itemMeta.craftCost : 0,
-                                // Зберігаємо дані для пошуку
+                                // ВАЖЛИВО: Зберігаємо дані для пошуку, якщо їх немає - пустий рядок
                                 exp: (itemMeta && itemMeta.exp) ? itemMeta.exp : "",
                                 prof: (itemMeta && itemMeta.prof) ? itemMeta.prof : ""
                             };
@@ -1990,7 +1989,7 @@ async function generateHTML() {
                         groupedItems[name].totalRevenue += (row.price / 10000); 
                     });
 
-                    // 2. Сортування
+                    // 2. Сортування (по прибутку)
                     const itemsArray = Object.values(groupedItems);
                     itemsArray.sort((a, b) => b.totalRevenue - a.totalRevenue);
 
@@ -1999,7 +1998,6 @@ async function generateHTML() {
                     // 3. Рендер
                     itemsArray.forEach(group => {
                         const iconUrl = group.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
-                        
                         const totalCost = group.craftCost * group.totalCount;
                         const profit = group.totalRevenue - totalCost;
                         const profitStr = Math.floor(profit).toLocaleString('uk-UA');
@@ -2007,12 +2005,11 @@ async function generateHTML() {
                         const card = document.createElement('div');
                         card.className = 'spell-card';
                         
-                        // --- ВАЖЛИВО: Додаємо атрибути для пошуку ---
+                        // --- ВАЖЛИВО: Записуємо атрибути для пошуку ---
                         card.setAttribute('data-name', group.name.toLowerCase());
-                        // Перевіряємо на null, щоб не було помилок
                         card.setAttribute('data-exp', (group.exp || "").toLowerCase());
                         card.setAttribute('data-prof', (group.prof || "").toLowerCase());
-                        // -------------------------------------------
+                        // ---------------------------------------------
 
                         card.onclick = function() { openItemDetails(group.name); };
 
@@ -2032,6 +2029,10 @@ async function generateHTML() {
                     });
 
                     document.getElementById('historyLoader').style.display = 'none';
+                    
+                    // Викликаємо фільтр один раз, на випадок якщо в полі пошуку щось залишилось
+                    filterHistory(); 
+
                 } catch (e) { console.error(e); }
             }
 
@@ -2090,20 +2091,24 @@ async function generateHTML() {
             // Розумний пошук (Назва OR Експаншен OR Професія)
             function filterHistory() {
                 const input = document.getElementById('historySearch');
-                const filter = input.value.toLowerCase();
+                if (!input) return;
+                
+                const filter = input.value.toLowerCase().trim();
                 const grid = document.getElementById('historyGrid');
                 const cards = grid.getElementsByClassName('spell-card');
 
                 for (let i = 0; i < cards.length; i++) {
-                    const name = cards[i].getAttribute('data-name') || "";
-                    const exp = cards[i].getAttribute('data-exp') || "";
-                    const prof = cards[i].getAttribute('data-prof') || "";
+                    const card = cards[i];
+                    // Зчитуємо дані з атрибутів
+                    const name = card.getAttribute('data-name') || "";
+                    const exp = card.getAttribute('data-exp') || "";
+                    const prof = card.getAttribute('data-prof') || "";
 
-                    // Шукаємо співпадіння в будь-якому з полів
-                    if (name.includes(filter) || exp.includes(filter) || prof.includes(filter)) {
-                        cards[i].style.display = "flex";
+                    // Якщо поле пошуку пусте АБО є співпадіння хоча б в одному параметрі
+                    if (filter === "" || name.includes(filter) || exp.includes(filter) || prof.includes(filter)) {
+                        card.style.display = "flex";
                     } else {
-                        cards[i].style.display = "none";
+                        card.style.display = "none";
                     }
                 }
             }
