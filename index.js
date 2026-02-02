@@ -910,7 +910,7 @@ async function generateHTML() {
                 #historyModal .modal-content {
                     background-color: #110b07; /* Темний фон */
                     background-image: url('spellbook_bg.jpg'); background-size: cover; background-position: center;
-                    box-shadow: 0 0 0 2px #000, 0 0 0 5px #a3824b, 0 0 30px rgba(0,0,0,0.9); /* Золота рамка */
+                    box-shadow: 0 0 0 2px #000, 0 0 0 3px #4d4d4d, 0 0 30px rgba(0,0,0,0.9); /* Золота рамка */
                     border-radius: 6px; color: #f0d0a0; font-family: 'Georgia', serif;
                     max-width: 1100px; height: 85vh; display: flex; flex-direction: column; overflow: hidden;
                 }
@@ -1171,6 +1171,46 @@ async function generateHTML() {
                 color: #fff;
                 border-color: #888;
             }
+
+            /* --- LAYOUT FIX: Truncate Text & Fixed Price Width --- */
+            
+            .spell-card {
+                /* Додаємо gap, щоб елементи не липли */
+                gap: 10px !important; 
+            }
+
+            .card-center {
+                /* Магія Flexbox для обрізки тексту */
+                flex: 1 !important; 
+                min-width: 0 !important; /* Критично важливо для text-overflow: ellipsis */
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+            }
+
+            .spell-name {
+                /* Стилі обрізки */
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                display: block !important;
+                
+                font-weight: bold !important; 
+                font-size: 14px !important; 
+                color: #e0e0e0 !important;
+            }
+
+            .card-right {
+                /* Фіксуємо блок ціни, щоб його не стискало */
+                flex-shrink: 0 !important;
+                min-width: 100px !important; /* Даємо запас для великих цифр (1 000 000) */
+                text-align: right !important;
+                margin-left: 0 !important; /* Прибираємо auto margin, бо flex gap працює краще */
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: flex-end !important;
+                justify-content: center !important;
+            }
         </style>
     </head>
     <body>
@@ -1256,11 +1296,6 @@ async function generateHTML() {
 
                                 <button id="btnCloseHistory" class="modal-close" style="font-size:24px; color:#a89070; border-color:#5c452d;">×</button>
                             </div>
-                        </div>
-                        
-                        <div class="spellbook-tabs">
-                            <div class="spellbook-tab active" onclick="switchTab('sales')">Only Sales</div>
-                            <div class="spellbook-tab" onclick="switchTab('all')">All Decors</div>
                         </div>
                     </div>
                 </div>
@@ -1918,7 +1953,6 @@ async function generateHTML() {
                         const userSpan = document.getElementById('userNameDisplay');
                         if(userSpan) {
                             userSpan.innerText = data[0].seller;
-                            // Батьківський елемент показуємо
                             userSpan.parentElement.style.display = 'flex';
                         }
                     }
@@ -1937,7 +1971,6 @@ async function generateHTML() {
                         const name = row.item;
                         
                         if (!groupedItems[name]) {
-                            // Знаходимо мета-дані з ALL_DATA
                             let itemMeta = ALL_DATA.find(i => i.name === name);
                             if (!itemMeta) itemMeta = ALL_DATA.find(i => i.name.toLowerCase().includes(name.toLowerCase()));
                             
@@ -1947,7 +1980,7 @@ async function generateHTML() {
                                 totalRevenue: 0,
                                 icon: (itemMeta && itemMeta.icon) ? itemMeta.icon : null,
                                 craftCost: (itemMeta && itemMeta.craftCost) ? itemMeta.craftCost : 0,
-                                // Зберігаємо для пошуку
+                                // Зберігаємо дані для пошуку
                                 exp: (itemMeta && itemMeta.exp) ? itemMeta.exp : "",
                                 prof: (itemMeta && itemMeta.prof) ? itemMeta.prof : ""
                             };
@@ -1966,6 +1999,7 @@ async function generateHTML() {
                     // 3. Рендер
                     itemsArray.forEach(group => {
                         const iconUrl = group.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
+                        
                         const totalCost = group.craftCost * group.totalCount;
                         const profit = group.totalRevenue - totalCost;
                         const profitStr = Math.floor(profit).toLocaleString('uk-UA');
@@ -1973,18 +2007,19 @@ async function generateHTML() {
                         const card = document.createElement('div');
                         card.className = 'spell-card';
                         
-                        // --- NEW: Додаємо атрибути для розширеного пошуку ---
+                        // --- ВАЖЛИВО: Додаємо атрибути для пошуку ---
                         card.setAttribute('data-name', group.name.toLowerCase());
-                        card.setAttribute('data-exp', group.exp.toLowerCase());
-                        card.setAttribute('data-prof', group.prof.toLowerCase());
-                        // ----------------------------------------------------
+                        // Перевіряємо на null, щоб не було помилок
+                        card.setAttribute('data-exp', (group.exp || "").toLowerCase());
+                        card.setAttribute('data-prof', (group.prof || "").toLowerCase());
+                        // -------------------------------------------
 
                         card.onclick = function() { openItemDetails(group.name); };
 
                         card.innerHTML = 
                             '<div class="spell-icon-frame"><img src="' + iconUrl + '" class="spell-icon"></div>' +
                             '<div class="card-center">' +
-                                '<div class="spell-name">' + group.name + '</div>' +
+                                '<div class="spell-name" title="' + group.name + '">' + group.name + '</div>' +
                                 '<div class="spell-count-lbl">x' + group.totalCount + ' sold</div>' +
                             '</div>' +
                             '<div class="card-right">' +
