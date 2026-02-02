@@ -958,7 +958,7 @@ async function generateHTML() {
                 .page-label { color: #ffd700; font-weight: bold; font-size: 12px; }
 
                 /* Деталі (Графік) */
-                #itemDetailsModal .modal-content { max-width: 900px; height: 600px; background: #111; border: 2px solid #5c452d; display: flex; flex-direction: column; }
+                #itemDetailsModal .modal-content { max-width: 900px; height: 600px; background: #111; display: flex; flex-direction: column; }
                 .details-body { display: flex; height: 100%; overflow: hidden; }
                 .details-chart-col { width: 70%; padding: 20px; background: #0f1011; border-right: 1px solid #333; }
                 .details-list-col { width: 30%; background: #1a1a1a; overflow-y: auto; padding: 10px; }
@@ -1313,7 +1313,7 @@ async function generateHTML() {
 
         <div id="itemDetailsModal" class="modal-overlay">
             <div class="modal-content">
-                <div class="modal-header" style="justify-content: space-between; align-items: center; background:#221810;">
+                <div class="modal-header" style="justify-content: space-between; align-items: center;>
                     <h3 id="detailItemName" style="color: #ffd700; margin: 0;">Item Name</h3>
                     <button onclick="closeItemDetails()" class="modal-close" style="color:#a89070;">×</button>
                 </div>
