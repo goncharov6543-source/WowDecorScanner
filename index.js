@@ -944,7 +944,7 @@ async function generateHTML() {
                 .spellbook-tab.active { background: #7a5c3b; color: #fff; border-color: #ffd700; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
 
                 /* Тіло і Сітка */
-                #historyModal .modal-body { padding: 20px 30px; background-color: #150f0a; background-image: url('body_bg.jpg'); background-size: cover; overflow-y: auto; flex-grow: 1; }
+                #historyModal .modal-body { padding: 20px 30px; background-color: #151618; background-size: cover; overflow-y: auto; flex-grow: 1; }
 
                 .card-right { margin-left: auto; text-align: right; }
                 .spell-price { font-weight: bold; font-size: 13px; color: #1eff00; display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
@@ -1960,7 +1960,7 @@ async function generateHTML() {
                         return;
                     }
 
-                    // 1. Агрегація
+                    // Агрегація даних
                     const groupedItems = {};
                     
                     data.forEach(row => {
@@ -1968,9 +1968,7 @@ async function generateHTML() {
                         const name = row.item;
                         
                         if (!groupedItems[name]) {
-                            // Шукаємо розширені дані про предмет (Exp, Prof)
                             let itemMeta = ALL_DATA.find(i => i.name === name);
-                            // Якщо точний збіг не знайдено, шукаємо частковий (fallback)
                             if (!itemMeta) itemMeta = ALL_DATA.find(i => i.name.toLowerCase().includes(name.toLowerCase()));
                             
                             groupedItems[name] = {
@@ -1979,7 +1977,7 @@ async function generateHTML() {
                                 totalRevenue: 0,
                                 icon: (itemMeta && itemMeta.icon) ? itemMeta.icon : null,
                                 craftCost: (itemMeta && itemMeta.craftCost) ? itemMeta.craftCost : 0,
-                                // ВАЖЛИВО: Зберігаємо дані для пошуку, якщо їх немає - пустий рядок
+                                // Дані для пошуку
                                 exp: (itemMeta && itemMeta.exp) ? itemMeta.exp : "",
                                 prof: (itemMeta && itemMeta.prof) ? itemMeta.prof : ""
                             };
@@ -1989,27 +1987,25 @@ async function generateHTML() {
                         groupedItems[name].totalRevenue += (row.price / 10000); 
                     });
 
-                    // 2. Сортування (по прибутку)
+                    // Сортування
                     const itemsArray = Object.values(groupedItems);
                     itemsArray.sort((a, b) => b.totalRevenue - a.totalRevenue);
 
                     const grid = document.getElementById('historyGrid');
 
-                    // 3. Рендер
+                    // Рендер
                     itemsArray.forEach(group => {
                         const iconUrl = group.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
-                        const totalCost = group.craftCost * group.totalCount;
-                        const profit = group.totalRevenue - totalCost;
+                        const profit = group.totalRevenue - (group.craftCost * group.totalCount);
                         const profitStr = Math.floor(profit).toLocaleString('uk-UA');
 
                         const card = document.createElement('div');
                         card.className = 'spell-card';
                         
-                        // --- ВАЖЛИВО: Записуємо атрибути для пошуку ---
+                        // АТРИБУТИ ДЛЯ ПОШУКУ
                         card.setAttribute('data-name', group.name.toLowerCase());
                         card.setAttribute('data-exp', (group.exp || "").toLowerCase());
                         card.setAttribute('data-prof', (group.prof || "").toLowerCase());
-                        // ---------------------------------------------
 
                         card.onclick = function() { openItemDetails(group.name); };
 
@@ -2030,8 +2026,8 @@ async function generateHTML() {
 
                     document.getElementById('historyLoader').style.display = 'none';
                     
-                    // Викликаємо фільтр один раз, на випадок якщо в полі пошуку щось залишилось
-                    filterHistory(); 
+                    // Скидаємо фільтр після завантаження
+                    filterHistory();
 
                 } catch (e) { console.error(e); }
             }
@@ -2099,12 +2095,10 @@ async function generateHTML() {
 
                 for (let i = 0; i < cards.length; i++) {
                     const card = cards[i];
-                    // Зчитуємо дані з атрибутів
                     const name = card.getAttribute('data-name') || "";
                     const exp = card.getAttribute('data-exp') || "";
                     const prof = card.getAttribute('data-prof') || "";
 
-                    // Якщо поле пошуку пусте АБО є співпадіння хоча б в одному параметрі
                     if (filter === "" || name.includes(filter) || exp.includes(filter) || prof.includes(filter)) {
                         card.style.display = "flex";
                     } else {
