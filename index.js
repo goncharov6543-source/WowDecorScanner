@@ -1226,6 +1226,30 @@ async function generateHTML() {
                 margin-left: 5px;
                 text-shadow: 0 0 5px rgba(30, 255, 0, 0.2);
             }
+
+            /* --- FIX: РІВНІ ЦИФРИ (Font Fix) --- */
+            /* Застосовуємо до цін в лотах та до загальної суми */
+            #historyModal .spell-price, 
+            .history-total-val {
+                font-family: 'Segoe UI', 'Arial', sans-serif !important; /* Стандартний рівний шрифт */
+                font-variant-numeric: lining-nums !important; /* Примусове вирівнювання по лінії */
+                font-feature-settings: "lnum" 1 !important;
+                letter-spacing: 0.5px !important; /* Трохи розрядимо для читабельності */
+            }
+
+            /* --- FIX: Вирівнювання іконки золота в сумі --- */
+            #historyTotalContainer .coin-icon {
+                position: relative !important;
+                top: -2px !important; /* Піднімаємо іконку на 2 пікселі вгору */
+                vertical-align: middle !important;
+            }
+            
+            /* Додатково гарантуємо, що блок вирівняний по центру */
+            #historyTotalContainer {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: flex-end !important;
+            }
         </style>
     </head>
     <body>
@@ -2063,7 +2087,7 @@ async function generateHTML() {
                     if (totalValEl) {
                         totalValEl.innerText = Math.floor(grandTotalProfit).toLocaleString('uk-UA');
                         // Показуємо контейнер
-                        if(totalContainer) totalContainer.style.display = 'block';
+                        if(totalContainer) totalContainer.style.display = 'flex';
                     }
                     // -------------------------------
 
