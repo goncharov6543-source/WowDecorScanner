@@ -1240,7 +1240,8 @@ async function generateHTML() {
             /* --- FIX: Вирівнювання іконки золота в сумі --- */
             #historyTotalContainer .coin-icon {
                 position: relative !important;
-                top: -2px !important; /* Піднімаємо іконку на 2 пікселі вгору */
+                top: 1px !important; /* Піднімаємо іконку на 2 пікселі вгору */
+                left: 4px;
                 vertical-align: middle !important;
             }
             
