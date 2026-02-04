@@ -1208,6 +1208,24 @@ async function generateHTML() {
                 align-items: flex-end !important;
                 justify-content: center !important;
             }
+
+            /* --- TOTAL PROFIT LABEL --- */
+            .history-total-container {
+                margin-top: 5px; /* Відступ від ніка */
+                text-align: right;
+                font-family: 'Segoe UI', sans-serif;
+                font-size: 13px;
+                color: #888;
+                display: none; /* Ховаємо, поки не завантажиться */
+            }
+            
+            .history-total-val {
+                color: #1eff00; /* Яскраво-зелений */
+                font-weight: bold;
+                font-size: 16px;
+                margin-left: 5px;
+                text-shadow: 0 0 5px rgba(30, 255, 0, 0.2);
+            }
         </style>
     </head>
     <body>
@@ -1293,6 +1311,12 @@ async function generateHTML() {
 
                                 <button id="btnCloseHistory" class="modal-close" style="font-size:24px; color:#a89070; border-color:#5c452d;">×</button>
                             </div>
+                        </div>
+
+                        <div id="historyTotalContainer" class="history-total-container">
+                            Total Profit: 
+                            <span id="historyTotalValue" class="history-total-val">0</span>
+                            <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" class="coin-icon" style="width:14px; height:14px;">
                         </div>
                     </div>
                 </div>
@@ -1938,6 +1962,10 @@ async function generateHTML() {
                 document.getElementById('historyGrid').innerHTML = '';
                 document.getElementById('historyEmpty').style.display = 'none';
                 
+                // Ховаємо тотал поки вантажиться
+                const totalContainer = document.getElementById('historyTotalContainer');
+                if(totalContainer) totalContainer.style.display = 'none';
+                
                 try {
                     const response = await fetch('https://api.jsonbin.io/v3/b/' + binId + '/latest', {
                         headers: { 'X-Master-Key': MASTER_KEY }
@@ -1977,7 +2005,6 @@ async function generateHTML() {
                                 totalRevenue: 0,
                                 icon: (itemMeta && itemMeta.icon) ? itemMeta.icon : null,
                                 craftCost: (itemMeta && itemMeta.craftCost) ? itemMeta.craftCost : 0,
-                                // Дані для пошуку
                                 exp: (itemMeta && itemMeta.exp) ? itemMeta.exp : "",
                                 prof: (itemMeta && itemMeta.prof) ? itemMeta.prof : ""
                             };
@@ -1992,11 +2019,18 @@ async function generateHTML() {
                     itemsArray.sort((a, b) => b.totalRevenue - a.totalRevenue);
 
                     const grid = document.getElementById('historyGrid');
+                    let grandTotalProfit = 0; // <--- ЗМІННА ДЛЯ ЗАГАЛЬНОЇ СУМИ
 
                     // Рендер
                     itemsArray.forEach(group => {
                         const iconUrl = group.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
-                        const profit = group.totalRevenue - (group.craftCost * group.totalCount);
+                        
+                        const totalCost = group.craftCost * group.totalCount;
+                        const profit = group.totalRevenue - totalCost;
+                        
+                        // Додаємо до загальної суми
+                        grandTotalProfit += profit;
+
                         const profitStr = Math.floor(profit).toLocaleString('uk-UA');
 
                         const card = document.createElement('div');
@@ -2023,6 +2057,15 @@ async function generateHTML() {
                         
                         grid.appendChild(card);
                     });
+
+                    // --- ОНОВЛЮЄМО ЗАГАЛЬНУ СУМУ ---
+                    const totalValEl = document.getElementById('historyTotalValue');
+                    if (totalValEl) {
+                        totalValEl.innerText = Math.floor(grandTotalProfit).toLocaleString('uk-UA');
+                        // Показуємо контейнер
+                        if(totalContainer) totalContainer.style.display = 'block';
+                    }
+                    // -------------------------------
 
                     document.getElementById('historyLoader').style.display = 'none';
                     
