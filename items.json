@@ -2927,9 +2927,9 @@
         "Exp": "Burning Crusade",
         "craftQty": 10,
         "recipe": [
-            { "name": "Terocone", "id": "43127", "count": 5},
-            { "name": "Felweed", "id": "36931", "count": 3},
-            { "name": "Crystal Vial", "id": "43127", "count": 1, "fixPrice": 0.2}
+            { "name": "Terocone", "id": "22789", "count": 5},
+            { "name": "Felweed", "id": "22785", "count": 3},
+            { "name": "Crystal Vial", "id": "3371", "count": 1, "fixPrice": 0.2}
         ]
     },
     {
@@ -2942,7 +2942,7 @@
             { "name": "Fel Lotus", "id": "22794", "count": 2},
             { "name": "Mana Thistle", "id": "22793", "count": 7},
             { "name": "Netherbloom", "id": "22791", "count": 6},
-            { "name": "Crystal Vial", "id": "43127", "count": 1, "fixPrice": 0.3}
+            { "name": "Crystal Vial", "id": "3371", "count": 1, "fixPrice": 0.3}
         ]
     }
   ]
