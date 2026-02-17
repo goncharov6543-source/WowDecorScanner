@@ -2970,5 +2970,692 @@
             { "name": "Luminant Flux", "id": "243060", "count": 10},
             { "name": "Sterling Alloy", "id": "238204", "altId": "238205", "count": 10}
         ]
+    },
+    {
+        "name": "Animated Sin'dorei Pick",
+        "id": "262458",    
+        "Prof": "Enchanting",
+        "Exp": "Midnight",
+        "craftQty": 14,
+        "recipe": [
+            { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 5},
+            { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 15},
+            { "name": "Luminant Flux", "id": "243060", "count": 10},
+            { "name": "Sterling Alloy", "id": "238204", "altId": "238205", "count": 10}
+        ]
+    },
+    {
+        "name": "Bejeweled Sin'dorei Lyre",
+        "id": "262471",    
+        "Prof": "Jewelcrafting",
+        "Exp": "Midnight",
+        "craftQty": 24,
+        "recipe": [
+            { "name": "Silverleaf Thread", "id": "251665", "fixPrice": 0.1, "count": 25},
+            { "name": "Glimmering Gemdust", "id": "242620", "altId": "242621", "count": 15},
+            { "name": "Kaleidoscopic Prism", "id": "240974", "altId": "240975", "count": 1}
+        ]
+    },
+    {
+        "name": "Brilliant Phoenix Harp",
+        "id": "262469",    
+        "Prof": "Jewelcrafting",
+        "Exp": "Midnight",
+        "craftQty": 36,
+        "recipe": [
+            { "name": "Silverleaf Thread", "id": "251665", "fixPrice": 0.1, "count": 25},
+            { "name": "Duskshrouded Stone", "id": "242788", "altId": "242789", "count": 20},
+            { "name": "Glimmering Gemdust", "id": "242620", "altId": "242621", "count": 20}
+        ]
+    },
+    {
+        "name": "Chic Silvermoon Pillow",
+        "id": "262593",    
+        "Prof": "Tailoring",
+        "Exp": "Midnight",
+        "craftQty": 8,
+        "recipe": [
+            { "name": "Silverleaf Thread", "id": "251665", "fixPrice": 0.1, "count": 3},
+            { "name": "Sunfire Silk Bolt", "id": "239201", "altId": "239202", "count": 8},
+            { "name": "Arcanoweave Bolt", "id": "239198", "altId": "239200", "count": 8}
+        ]
+    },
+    {
+        "name": "Embossed Sin'dorei Fur Rug",
+        "id": "262449",    
+        "Prof": "Leatherworking",
+        "Exp": "Midnight",
+        "craftQty": 24,
+        "recipe": [
+            { "name": "Silverleaf Thread", "id": "251665", "fixPrice": 0.1, "count": 20},
+            { "name": "Scalewoven Hide", "id": "244631", "altId": "244632", "count": 2},
+            { "name": "Majestic Hide", "id": "238529", "count": 2},
+            { "name": "Fantastic Fur", "id": "238525", "count": 5}
+        ]
+    },
+    {
+        "name": "Endless Codex of Blooming Light",
+        "id": "268038",    
+        "Prof": "Enchanting",
+        "Exp": "Midnight",
+        "craftQty": 50,
+        "recipe": [
+            { "name": "Lexicologist's Vellum", "id": "245881", "fixPrice": 0.1, "count": 50},
+            { "name": "Sienna Ink", "id": "245805", "altId": "245806", "count": 2},
+            { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 3},
+            { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 10},
+            { "name": "Eversinging Dust", "id": "243600", "altId": "243599", "count": 50},
+            { "name": "Mote of Light", "id": "236949", "count": 20}
+        ]
+    },
+    {
+        "name": "Endless Codex of Nature's Grace",
+        "id": "268039",    
+        "Prof": "Enchanting",
+        "Exp": "Midnight",
+        "craftQty": 50,
+        "recipe": [
+            { "name": "Lexicologist's Vellum", "id": "245881", "fixPrice": 0.1, "count": 50},
+            { "name": "Sienna Ink", "id": "245805", "altId": "245806", "count": 2},
+            { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 3},
+            { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 10},
+            { "name": "Eversinging Dust", "id": "243600", "altId": "243599", "count": 50},
+            { "name": "Mote of Light", "id": "236949", "count": 20}
+        ]
+    },
+    {
+        "name": "Endless Codex of the Voidtouched",
+        "id": "268041",    
+        "Prof": "Enchanting",
+        "Exp": "Midnight",
+        "craftQty": 50,
+        "recipe": [
+            { "name": "Lexicologist's Vellum", "id": "245881", "fixPrice": 0.1, "count": 50},
+            { "name": "Sienna Ink", "id": "245805", "altId": "245806", "count": 2},
+            { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 3},
+            { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 10},
+            { "name": "Eversinging Dust", "id": "243600", "altId": "243599", "count": 50},
+            { "name": "Mote of Light", "id": "236949", "count": 20}
+        ]
+    },
+    {
+        "name": "Ensorcelled Broom",
+        "id": "262450",    
+        "Prof": "Enchanting",
+        "Exp": "Midnight",
+        "craftQty": 22,
+        "recipe": [
+            { "name": "Silverleaf Thread", "id": "251665", "fixPrice": 0.1, "count": 50},
+            { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 5},
+            { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 5},
+            { "name": "Eversinging Dust", "id": "243600", "altId": "243599", "count": 30}
+        ]
+    },
+    {
+        "name": "Entropic Illuminant",
+        "id": "262355",    
+        "Prof": "Alchemy",
+        "Exp": "Midnight",
+        "craftQty": 26,
+        "recipe": [
+            { "name": "Wondrous Synergist", "id": "241283", "altId": "241282", "count": 4},
+            { "name": "Composite Flora", "id": "241281", "altId": "241280", "count": 4},
+            { "name": "Mote of Pure Void", "id": "236952", "count": 6}
+        ]
+    },
+    {
+        "name": "Floating Void-Touched Tome",
+        "id": "14594",    
+        "Prof": "Inscription",
+        "Exp": "Midnight",
+        "craftQty": 22,
+        "recipe": [
+            { "name": "Soul Cipher", "id": "245766", "altId": "245767", "count": 8},
+            { "name": "Codified Azeroot", "id": "245764", "altId": "245765", "count": 4}
+        ]
+    },
+    {
+        "name": "Font of Gleaming Water",
+        "id": "262455",    
+        "Prof": "Enchanting",
+        "Exp": "Midnight",
+        "craftQty": 14,
+        "recipe": [
+            { "name": "Thalassian Songwater", "id": "245882", "count": 10},
+            { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 3},
+            { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 10},
+            { "name": "Eversinging Dust", "id": "243600", "altId": "243599", "count": 30},
+            { "name": "Duskshrouded Stone", "id": "242788", "altId": "242789", "count": 5},
+            { "name": "Mote of Wild Magic", "id": "236951", "count": 10}
+        ]
+    },
+    {
+        "name": "Gilded Eversong Book",
+        "id": "262597",    
+        "Prof": "Inscription",
+        "Exp": "Midnight",
+        "craftQty": 6,
+        "recipe": [
+            { "name": "Soul Cipher", "id": "245766", "altId": "245767", "count": 2},
+            { "name": "Codified Azeroot", "id": "245764", "altId": "245765", "count": 1}
+        ]
+    },
+    {
+        "name": "Gilded Silvermoon Anvil",
+        "id": "262451",    
+        "Prof": "Blacksmithing",
+        "Exp": "Midnight",
+        "craftQty": 26,
+        "recipe": [
+            { "name": "Sterling Alloy", "id": "238204", "altId": "238205", "count": 5},
+            { "name": "Gloaming Alloy", "id": "238202", "altId": "238203", "count": 5},
+            { "name": "Core Alloy", "id": "222418", "altId": "222417", "count": 18}
+        ]
+    },
+    {
+        "name": "Gilded Silvermoon Hanger",
+        "id": "262457",    
+        "Prof": "Blacksmithing",
+        "Exp": "Midnight",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Sterling Alloy", "id": "238204", "altId": "238205", "count": 3},
+            { "name": "Gloaming Alloy", "id": "238202", "altId": "238203", "count": 3},
+            { "name": "Core Alloy", "id": "222418", "altId": "222417", "count": 12}
+        ]
+    },
+    {
+        "name": "Harandar Signpost",
+        "id": "253508",    
+        "Prof": "Inscription",
+        "Exp": "Midnight",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Soul Cipher", "id": "245766", "altId": "245767", "count": 7},
+            { "name": "Codified Azeroot", "id": "245764", "altId": "245765", "count": 3}
+        ]
+    },
+    {
+        "name": "Haranir Preserving Agents",
+        "id": "262356",    
+        "Prof": "Alchemy",
+        "Exp": "Midnight",
+        "craftQty": 8,
+        "recipe": [
+            { "name": "Wondrous Synergist", "id": "241283", "altId": "241282", "count": 4},
+            { "name": "Composite Flora", "id": "241281", "altId": "241280", "count": 4},
+            { "name": "Mote of Primal Energy", "id": "236950", "count": 6}
+        ]
+    },
+    {
+        "name": "Homely Sin'dorei Shelf",
+        "id": "262594",    
+        "Prof": "Inscription",
+        "Exp": "Midnight",
+        "craftQty": 24,
+        "recipe": [
+            { "name": "Soul Cipher", "id": "245766", "altId": "245767", "count": 9},
+            { "name": "Codified Azeroot", "id": "245764", "altId": "245765", "count": 4}
+        ]
+    },
+    {
+        "name": "Homely Wall Shelves",
+        "id": "262595",    
+        "Prof": "Inscription",
+        "Exp": "Midnight",
+        "craftQty": 24,
+        "recipe": [
+            { "name": "Soul Cipher", "id": "245766", "altId": "245767", "count": 9},
+            { "name": "Codified Azeroot", "id": "245764", "altId": "245765", "count": 4}
+        ]
+    },
+    {
+        "name": "Leather-Bound Haranir Wall Shelf",
+        "id": "253457",    
+        "Prof": "Leatherworking",
+        "Exp": "Midnight",
+        "craftQty": 24,
+        "recipe": [
+            { "name": "Majestic Hide", "id": "238529", "count": 1},
+            { "name": "Majestic Claw", "id": "238528", "count": 1},
+            { "name": "Carving Canine", "id": "238523", "count": 5}
+        ]
+    },
+    {
+        "name": "Lively Songwriter's Quill",
+        "id": "262616",    
+        "Prof": "Inscription",
+        "Exp": "Midnight",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Soul Cipher", "id": "245766", "altId": "245767", "count": 7},
+            { "name": "Codified Azeroot", "id": "245764", "altId": "245765", "count": 3}
+        ]
+    },
+    {
+        "name": "Lush Telogrus Carpet",
+        "id": "262352",    
+        "Prof": "Tailoring",
+        "Exp": "Midnight",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Silverleaf Thread", "id": "251665", "fixPrice": 0.1, "count": 3},
+            { "name": "Sunfire Silk Bolt", "id": "239201", "altId": "239202", "count": 8},
+            { "name": "Arcanoweave Bolt", "id": "239198", "altId": "239200", "count": 8}
+        ]
+    },
+    {
+        "name": "Luxurious Silvermoon Lounge Cushion",
+        "id": "262591",    
+        "Prof": "Tailoring",
+        "Exp": "Midnight",
+        "craftQty": 12,
+        "recipe": [
+            { "name": "Silverleaf Thread", "id": "251665", "fixPrice": 0.1, "count": 3},
+            { "name": "Sunfire Silk Bolt", "id": "239201", "altId": "239202", "count": 8},
+            { "name": "Arcanoweave Bolt", "id": "239198", "altId": "239200", "count": 8}
+        ]
+    },
+    {
+        "name": "Magnificent Towering Bookcase",
+        "id": "263034",    
+        "Prof": "Inscription",
+        "Exp": "Midnight",
+        "craftQty": 50,
+        "recipe": [
+            { "name": "Soul Cipher", "id": "245766", "altId": "245767", "count": 20},
+            { "name": "Codified Azeroot", "id": "245764", "altId": "245765", "count": 10}
+        ]
+    },
+    {
+        "name": "Masterwork Crafting Hammer",
+        "id": "262452",    
+        "Prof": "Blacksmithing",
+        "Exp": "Midnight",
+        "craftQty": 12,
+        "recipe": [
+            { "name": "Sterling Alloy", "id": "238204", "altId": "238205", "count": 2},
+            { "name": "Gloaming Alloy", "id": "238202", "altId": "238203", "count": 2},
+            { "name": "Core Alloy", "id": "222418", "altId": "222417", "count": 8}
+        ]
+    },
+    {
+        "name": "Opened Sin'dorei Scroll",
+        "id": "262598",    
+        "Prof": "Inscription",
+        "Exp": "Midnight",
+        "craftQty": 6,
+        "recipe": [
+            { "name": "Soul Cipher", "id": "245766", "altId": "245767", "count": 2},
+            { "name": "Codified Azeroot", "id": "245764", "altId": "245765", "count": 1}
+        ]
+    },
+    {
+        "name": "Ornamental Silvermoon Hanger",
+        "id": "262456",    
+        "Prof": "Blacksmithing",
+        "Exp": "Midnight",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Sterling Alloy", "id": "238204", "altId": "238205", "count": 3},
+            { "name": "Gloaming Alloy", "id": "238202", "altId": "238203", "count": 3},
+            { "name": "Core Alloy", "id": "222418", "altId": "222417", "count": 12}
+        ]
+    },
+    {
+        "name": "Plush Haranir Leather Pillow",
+        "id": "262244",    
+        "Prof": "Leatherworking",
+        "Exp": "Midnight",
+        "craftQty": 16,
+        "recipe": [
+            { "name": "Silverleaf Thread", "id": "238204", "fixPrice": 0.1, "count": 10},
+            { "name": "Majestic Hide", "id": "238529", "count": 1},
+            { "name": "Fantastic Fur", "id": "238525", "count": 5}
+        ]
+    },
+    {
+        "name": "Plush Silvermoon Bed",
+        "id": "262592",    
+        "Prof": "Tailoring",
+        "Exp": "Midnight",
+        "craftQty": 46,
+        "recipe": [
+            { "name": "Silverleaf Thread", "id": "251665", "fixPrice": 0.1, "count": 3},
+            { "name": "Sunfire Silk Bolt", "id": "239201", "altId": "239202", "count": 8},
+            { "name": "Arcanoweave Bolt", "id": "239198", "altId": "239200", "count": 8}
+        ]
+    },
+    {
+        "name": "Ren'dorei Anvil",
+        "id": "262460",    
+        "Prof": "Blacksmithing",
+        "Exp": "Midnight",
+        "craftQty": 26,
+        "recipe": [
+            { "name": "Sterling Alloy", "id": "238204", "altId": "238205", "count": 5},
+            { "name": "Gloaming Alloy", "id": "238202", "altId": "238203", "count": 5},
+            { "name": "Core Alloy", "id": "222418", "altId": "222417", "count": 18}
+        ]
+    },
+    {
+        "name": "Ren'dorei Crafting Framework",
+        "id": "262617",    
+        "Prof": "Engineering",
+        "Exp": "Midnight",
+        "craftQty": 24,
+        "recipe": [
+            { "name": "Evercore", "id": "243581", "altId": "243582", "count": 5},
+            { "name": "Aetherlume", "id": "243578", "altId": "243579", "count": 5},
+            { "name": "Soul Sprocket", "id": "243576", "altId": "243577", "count": 10},
+            { "name": "Song Gear", "id": "243574", "altId": "243575", "count": 10}
+        ]
+    },
+    {
+        "name": "Ren'dorei Crafting Framework",
+        "id": "262617",    
+        "Prof": "Engineering",
+        "Exp": "Midnight",
+        "craftQty": 26,
+        "recipe": [
+            { "name": "Evercore", "id": "243581", "altId": "243582", "count": 5},
+            { "name": "Aetherlume", "id": "243578", "altId": "243579", "count": 5},
+            { "name": "Soul Sprocket", "id": "243576", "altId": "243577", "count": 10},
+            { "name": "Song Gear", "id": "243574", "altId": "243575", "count": 10}
+        ]
+    },
+    {
+        "name": "Ren'dorei Postal Repository",
+        "id": "262468",    
+        "Prof": "Enchanting",
+        "Exp": "Midnight",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Lexicologist's Vellum", "id": "245881", "fixPrice": 0.1, "count": 20},
+            { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 5},
+            { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 15},
+            { "name": "Duskshrouded Stone", "id": "242788", "altId": "242789", "count": 5},
+            { "name": "Mote of Pure Void", "id": "236952", "count": 10}
+        ]
+    },
+    {
+        "name": "Ren'dorei Stargazer",
+        "id": "262465",    
+        "Prof": "Engineering",
+        "Exp": "Midnight",
+        "craftQty": 32,
+        "recipe": [
+            { "name": "Evercore", "id": "243581", "altId": "243582", "count": 5},
+            { "name": "Aetherlume", "id": "243578", "altId": "243579", "count": 5},
+            { "name": "Soul Sprocket", "id": "243576", "altId": "243577", "count": 10},
+            { "name": "Song Gear", "id": "243574", "altId": "243575", "count": 10}
+        ]
+    },
+    {
+        "name": "Ren'dorei Void Projector",
+        "id": "262618",    
+        "Prof": "Engineering",
+        "Exp": "Midnight",
+        "craftQty": 22,
+        "recipe": [
+            { "name": "Evercore", "id": "243581", "altId": "243582", "count": 5},
+            { "name": "Aetherlume", "id": "243578", "altId": "243579", "count": 5},
+            { "name": "Soul Sprocket", "id": "243576", "altId": "243577", "count": 10},
+            { "name": "Song Gear", "id": "243574", "altId": "243575", "count": 10}
+        ]
+    },
+    {
+        "name": "Ren'dorei Warp Orb",
+        "id": "262602",    
+        "Prof": "Engineering",
+        "Exp": "Midnight",
+        "craftQty": 28,
+        "recipe": [
+            { "name": "Evercore", "id": "243581", "altId": "243582", "count": 5},
+            { "name": "Aetherlume", "id": "243578", "altId": "243579", "count": 5},
+            { "name": "Soul Sprocket", "id": "243576", "altId": "243577", "count": 10},
+            { "name": "Song Gear", "id": "243574", "altId": "243575", "count": 10}
+        ]
+    },
+    {
+        "name": "Replica Haranir Mural",
+        "id": "262613",    
+        "Prof": "Jewelcrafting",
+        "Exp": "Midnight",
+        "craftQty": 48,
+        "recipe": [
+            { "name": "Duskshrouded Stone", "id": "242788", "altId": "242789", "count": 25},
+            { "name": "Glimmering Gemdust", "id": "242620", "altId": "242621", "count": 5},
+            { "name": "Kaleidoscopic Prism", "id": "240974", "altId": "240975", "count": 1}
+        ]
+    },
+    {
+        "name": "Resplendent Highborne Statue",
+        "id": "248965",    
+        "Prof": "Jewelcrafting",
+        "Exp": "Midnight",
+        "craftQty": 50,
+        "recipe": [
+            { "name": "Duskshrouded Stone", "id": "242788", "altId": "242789", "count": 25},
+            { "name": "Glimmering Gemdust", "id": "242620", "altId": "242621", "count": 15}
+        ]
+    },
+    {
+        "name": "Restful Bronze Bench",
+        "id": "262790",    
+        "Prof": "Inscription",
+        "Exp": "Midnight",
+        "craftQty": 22,
+        "recipe": [
+            { "name": "Soul Cipher", "id": "245766", "altId": "245767", "count": 8},
+            { "name": "Codified Azeroot", "id": "245764", "altId": "245765", "count": 4}
+        ]
+    },
+    {
+        "name": "Riftstone",
+        "id": "262354",    
+        "Prof": "Alchemy",
+        "Exp": "Midnight",
+        "craftQty": 8,
+        "recipe": [
+            { "name": "Wondrous Synergist", "id": "241283", "altId": "241282", "count": 4},
+            { "name": "Composite Flora", "id": "241281", "altId": "241280", "count": 4},
+            { "name": "Mote of Pure Void ", "id": "236952", "count": 8}
+        ]
+    },
+    {
+        "name": "Rootbound Vat",
+        "id": "253506",    
+        "Prof": "Alchemy",
+        "Exp": "Midnight",
+        "craftQty": 32,
+        "recipe": [
+            { "name": "Wondrous Synergist", "id": "241283", "altId": "241282", "count": 4},
+            { "name": "Composite Flora", "id": "241281", "altId": "241280", "count": 4},
+            { "name": "Mote of Primal Energy", "id": "236950", "count": 6}
+        ]
+    },
+    {
+        "name": "Rootflame Campfire",
+        "id": "262590",    
+        "Prof": "Enchanting",
+        "Exp": "Midnight",
+        "craftQty": 32,
+        "recipe": [
+            { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 5},
+            { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 15},
+            { "name": "Mote of Primal Energy", "id": "236950", "count": 10},
+            { "name": "Azeroot", "id": "236774", "altId": "236775", "count": 10}
+        ]
+    },
+    {
+        "name": "Self-Pouring Thalassian Sunwine",
+        "id": "246693",    
+        "Prof": "Enchanting",
+        "Exp": "Midnight",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 5},
+            { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 10},
+            { "name": "Crystalline Glass", "id": "242787", "altId": "242786", "count": 5}
+        ]
+    },
+    {
+        "name": "Shining Sin'dorei Hourglass",
+        "id": "262454",    
+        "Prof": "Jewelcrafting",
+        "Exp": "Midnight",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Crystalline Glass", "id": "242787", "altId": "242786", "count": 50},
+            { "name": "Glimmering Gemdust", "id": "242620", "altId": "242621", "count": 20}
+        ]
+    },
+    {
+        "name": "Silvermoon Curtains",
+        "id": "262599",    
+        "Prof": "Tailoring",
+        "Exp": "Midnight",
+        "craftQty": 24,
+        "recipe": [
+            { "name": "Silverleaf Thread", "id": "251665", "fixPrice": 0.1, "count": 3},
+            { "name": "Sunfire Silk Bolt", "id": "239201", "altId": "239202", "count": 8},
+            { "name": "Arcanoweave Bolt", "id": "239198", "altId": "239200", "count": 8}
+        ]
+    },
+    {
+        "name": "Silvermoon Spire Fountain",
+        "id": "257420",    
+        "Prof": "Alchemy",
+        "Exp": "Midnight",
+        "craftQty": 40,
+        "recipe": [
+            { "name": "Wondrous Synergist", "id": "241283", "altId": "241282", "count": 4},
+            { "name": "Composite Flora", "id": "241281", "altId": "241280", "count": 4},
+            { "name": "Mote of Wild Magic", "id": "236951", "count": 6},
+            { "name": "Mote of Primal Energy", "id": "236950", "count": 6}
+        ]
+    },
+    {
+        "name": "Sin'dorei Phoenix Quill",
+        "id": "262615",    
+        "Prof": "Inscription",
+        "Exp": "Midnight",
+        "craftQty": 4,
+        "recipe": [
+            { "name": "Soul Cipher", "id": "245766", "altId": "245767", "count": 1},
+            { "name": "Codified Azeroot", "id": "245764", "altId": "245765", "count": 1}
+        ]
+    },
+    {
+        "name": "Small Telogrus Lamp",
+        "id": "262789",    
+        "Prof": "Engineering",
+        "Exp": "Midnight",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Evercore", "id": "243581", "altId": "243582", "count": 5},
+            { "name": "Aetherlume", "id": "243578", "altId": "243579", "count": 5},
+            { "name": "Soul Sprocket", "id": "243576", "altId": "243577", "count": 10},
+            { "name": "Song Gear", "id": "243574", "altId": "243575", "count": 10}
+        ]
+    },
+    {
+        "name": "Spellbound Tome of Thalassian Magics",
+        "id": "262470",    
+        "Prof": "Enchanting",
+        "Exp": "Midnight",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Lexicologist's Vellum", "id": "245881", "fixPrice": 0.1, "count": 20},
+            { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 3},
+            { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 10},
+            { "name": "Eversinging Dust", "id": "243600", "altId": "243599", "count": 20},
+            { "name": "Mote of Light", "id": "236949", "count": 10}
+        ]
+    },
+    {
+        "name": "Stitched Haranir Rug",
+        "id": "262600",    
+        "Prof": "Leatherworking",
+        "Exp": "Midnight",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Silverleaf Thread", "id": "251665", "fixPrice": 0.1, "count": 10},
+            { "name": "Majestic Hide", "id": "238529", "count": 1},
+            { "name": "Fantastic Fur", "id": "238525", "count": 5}
+        ]
+    },
+    {
+        "name": "Sturdy Haranir Chair",
+        "id": "243090",    
+        "Prof": "Leatherworking",
+        "Exp": "Midnight",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Silverleaf Thread", "id": "251665", "fixPrice": 0.1, "count": 10},
+            { "name": "Majestic Hide", "id": "238529", "count": 1},
+            { "name": "Majestic Claw", "id": "238258", "count": 1},
+            { "name": "Fantastic Fur", "id": "238525", "count": 2},
+            { "name": "Carving Canine", "id": "238523", "count": 2}
+        ]
+    },
+    {
+        "name": "Sturdy Ren'dorei Cask",
+        "id": "262612",    
+        "Prof": "Inscription",
+        "Exp": "Midnight",
+        "craftQty": 26,
+        "recipe": [
+            { "name": "Soul Cipher", "id": "245766", "altId": "245767", "count": 10},
+            { "name": "Codified Azeroot", "id": "245764", "altId": "245765", "count": 5}
+        ]
+    },
+    {
+        "name": "Sunsmoke Censer",
+        "id": "256356",    
+        "Prof": "Alchemy",
+        "Exp": "Midnight",
+        "craftQty": 12,
+        "recipe": [
+            { "name": "Wondrous Synergist", "id": "241283", "altId": "241282", "count": 4},
+            { "name": "Composite Flora", "id": "241281", "altId": "241280", "count": 4},
+            { "name": "Mote of Light", "id": "236949", "count": 6}
+        ]
+    },
+    {
+        "name": "Tenebrous Ren'dorei Armillary",
+        "id": "262461",    
+        "Prof": "Jewelcrafting",
+        "Exp": "Midnight",
+        "craftQty": 26,
+        "recipe": [
+            { "name": "Duskshrouded Stone", "id": "242788", "altId": "242789", "count": 15},
+            { "name": "Glimmering Gemdust", "id": "242620", "altId": "242621", "count": 5},
+            { "name": "Kaleidoscopic Prism", "id": "240974", "altId": "240974", "count": 1}
+        ]
+    },
+    {
+        "name": "Voidstrider Saddlebag",
+        "id": "262611",    
+        "Prof": "Tailoring",
+        "Exp": "Midnight",
+        "craftQty": 16,
+        "recipe": [
+            { "name": "Silverleaf Thread", "id": "251665", "fixPrice": 0.1, "count": 3},
+            { "name": "Sunfire Silk Bolt", "id": "239201", "altId": "239202", "count": 8},
+            { "name": "Arcanoweave Bolt", "id": "239198", "altId": "239200", "count": 8}
+        ]
+    },
+    {
+        "name": "Wild Hanging Scroll",
+        "id": "262601",    
+        "Prof": "Inscription",
+        "Exp": "Midnight",
+        "craftQty": 18,
+        "recipe": [
+            { "name": "Soul Cipher", "id": "245766", "altId": "245767", "count": 7},
+            { "name": "Codified Azeroot", "id": "245764", "altId": "245765", "count": 3}
+        ]
     }
   ]
