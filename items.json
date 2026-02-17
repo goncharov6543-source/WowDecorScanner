@@ -2939,7 +2939,7 @@
         "Exp": "Burning Crusade",
         "craftQty": 15,
         "recipe": [
-            { "name": "Fel Lotus", "id": "22794", "altId": "22795", "count": 2},
+            { "name": "Fel Lotus", "id": "22794", "count": 2},
             { "name": "Mana Thistle", "id": "22793", "count": 7},
             { "name": "Netherbloom", "id": "22791", "count": 6},
             { "name": "Crystal Vial", "id": "3371", "count": 1, "fixPrice": 0.3}
@@ -2956,6 +2956,19 @@
             { "name": "Aetherlume", "id": "243578", "altId": "243579", "count": 5},
             { "name": "Soul Sprocket", "id": "243576", "altId": "243577", "count": 10},
             { "name": "Song Gear", "id": "243574", "altId": "243575", "count": 10}
+        ]
+    },
+    {
+        "name": "Animated Sin'dorei Hammer",
+        "id": "262459",    
+        "Prof": "Enchanting",
+        "Exp": "Midnight",
+        "craftQty": 14,
+        "recipe": [
+            { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 5},
+            { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 15},
+            { "name": "Luminant Flux", "id": "243060", "count": 10},
+            { "name": "Sterling Alloy", "id": "238204", "altId": "238205", "count": 10}
         ]
     }
   ]
