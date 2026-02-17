@@ -82,7 +82,12 @@ function getMainItemIds() { return new Set(itemsData.map(i => safeId(i.id))); }
 function getReagentIds() {
     const ids = new Set();
     itemsData.forEach(item => {
-        if (item.recipe) item.recipe.forEach(r => ids.add(safeId(r.id)));
+        if (item.recipe) {
+            item.recipe.forEach(r => {
+                ids.add(safeId(r.id));
+                if (r.altId) ids.add(safeId(r.altId)); // Додаємо альтернативний ID до пулу API
+            });
+        }
     });
     return ids;
 }
@@ -109,7 +114,7 @@ async function fetchMeta(rawId, token) {
             name = jsonItem.name;
         } else {
             itemsData.forEach(main => {
-                const r = main.recipe?.find(reag => safeId(reag.id) === itemId);
+                const r = main.recipe?.find(reag => safeId(reag.id) === itemId || (reag.altId && safeId(reag.altId) === itemId));
                 if (r) name = r.name;
             });
         }
@@ -220,8 +225,29 @@ async function generateHTML() {
         if (item.recipe) {
             item.recipe.forEach(reag => {
                 const reagId = safeId(reag.id);
-                const reagPrice = reag.fixPrice || commoditiesMap[reagId];
-                const reagMeta = metaData[reagId] || { icon: '', name: '?' };
+                let reagPrice = reag.fixPrice || commoditiesMap[reagId];
+                let bestId = reagId; // Запам'ятовуємо, який ID виявився кращим
+        
+                // --- ЛОГІКА АЛЬТЕРНАТИВНОГО ID ---
+                if (reag.altId && !reag.fixPrice) {
+                    const altId = safeId(reag.altId);
+                    const altPrice = commoditiesMap[altId];
+                    
+                    // Порівнюємо ціни
+                    if (reagPrice && altPrice) {
+                        if (altPrice < reagPrice) {
+                            reagPrice = altPrice;
+                            bestId = altId; // Якщо альтернативний дешевше, беремо його ID
+                        }
+                    } else if (altPrice && !reagPrice) {
+                        reagPrice = altPrice;
+                        bestId = altId;
+                    }
+                }
+        
+                // Отримуємо метадані (іконку/назву) для найдешевшого варіанту
+                const reagMeta = metaData[bestId] || metaData[reagId] || { icon: '', name: '?' };
+                
                 if (!reagPrice) missingReagents = true;
                 
                 craftCost += (reagPrice || 0) * reag.count;

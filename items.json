@@ -2944,5 +2944,18 @@
             { "name": "Netherbloom", "id": "22791", "count": 6},
             { "name": "Crystal Vial", "id": "3371", "count": 1, "fixPrice": 0.3}
         ]
+    },
+    {
+        "name": "Ambient Aethercharged Crystal",
+        "id": "246460",
+        "Prof": "Engineering",
+        "Exp": "Midnight",
+        "craftQty": 30,
+        "recipe": [
+            { "name": "Evercore", "id": "243581", "altId": "243582", "count": 5},
+            { "name": "Aetherlume", "id": "243578", "altId": "243579", "count": 5},
+            { "name": "Soul Sprocket", "id": "243576", "altId": "243577", "count": 10},
+            { "name": "Song Gear", "id": "243574", "altId": "243575", "count": 10}
+        ]
     }
   ]
