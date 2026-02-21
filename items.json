@@ -1222,6 +1222,19 @@
         ]
     },
     {
+        "name": "\"Unity of Thorns\" Tapestry",
+        "id": "257402",
+        "Prof": "Tailoring",
+        "Exp": "Cataclysm",
+        "craftQty": 26,
+        "recipe": [
+            { "name": "Inferno Ink", "id": "61981", "count": 6},
+            { "name": "Obsidium Bar", "id": "54849", "count": 2},
+            { "name": "Dreamcloth", "id": "54440", "count": 2, "fixPrice": 80},
+            { "name": "Eternium Thread", "id": "38426", "count": 8}
+        ]
+    },
+    {
         "name": "Gilnean Spare Saddle",
         "id": "264712",
         "Prof": "Leatherworking",
