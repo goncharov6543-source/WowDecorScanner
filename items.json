@@ -3084,11 +3084,11 @@
         "craftQty": 50,
         "recipe": [
             { "name": "Lexicologist's Vellum", "id": "245881", "fixPrice": 0.1, "count": 50},
-            { "name": "Sienna Ink", "id": "245805", "altId": "245806", "count": 2},
+            { "name": "Munsell Ink", "id": "245801", "altId": "245802", "count": 2},
             { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 3},
             { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 10},
             { "name": "Eversinging Dust", "id": "243600", "altId": "243599", "count": 50},
-            { "name": "Mote of Light", "id": "236949", "count": 20}
+            { "name": "Mote of Pure Void ", "id": "236952", "count": 20}
         ]
     },
     {
@@ -3118,7 +3118,7 @@
     },
     {
         "name": "Floating Void-Touched Tome",
-        "id": "14594",    
+        "id": "262464",    
         "Prof": "Inscription",
         "Exp": "Midnight",
         "craftQty": 22,
