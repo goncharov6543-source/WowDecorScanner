@@ -3670,5 +3670,17 @@
             { "name": "Soul Cipher", "id": "245766", "altId": "245767", "count": 7},
             { "name": "Codified Azeroot", "id": "245764", "altId": "245765", "count": 3}
         ]
+    },
+    {
+        "name": "Amani Forgemaster's Decorative Spear",
+        "id": "275305",    
+        "Prof": "Blacksmithing",
+        "Exp": "Midnight",
+        "craftQty": 12,
+        "recipe": [
+            { "name": "Sterling Alloy", "id": "238204", "altId": "238205", "count": 5},
+            { "name": "Gloaming Alloy", "id": "238202", "altId": "238203", "count": 5},
+            { "name": "Refulgent Copper Ingot", "id": "238197", "altId": "238198", "count": 8}
+        ]
     }
   ]
