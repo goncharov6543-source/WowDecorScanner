@@ -11,16 +11,41 @@
         ]
     },
     {
+        "name": "Aetherlume Field Lamp",
+        "id": 279341,
+        "Prof": "Engineering",
+        "Exp": "Midnight",
+        "craftQty": 12,
+        "recipe": [
+            { "name": "Evercore", "id": 243581, "count": 5 },
+            { "name": "Aetherlume", "id": 243578, "count": 5 },
+            { "name": "Soul Sprocket", "id": 243576, "count": 5 },
+            { "name": "Song Gear", "id": 243574, "count": 10 }
+        ]
+    },
+    {
+        "name": "Anima-Powered Anvil",
+        "id": 283260,
+        "Prof": "Blacksmithing",
+        "Exp": "Shadowlands",
+        "craftQty": 8,
+        "recipe": [
+            { "name": "Luminous Flux", "id": 180733, "count": 3 },
+            { "name": "Elethium Ore", "id": 171833, "count": 6 },
+            { "name": "Phaedrum Ore", "id": 171831, "count": 20 }
+        ]
+    },
+    {
         "name": "Aldor Stellar Console",
         "id": 257093,
         "Prof": "Enchanting",
         "Exp": "Burning Crusade",
-        "craftQty": 40,
+        "craftQty": 25,
         "recipe": [
-            { "name": "Void Crystal", "id": "22450", "count": 6},
-            { "name": "Large Prismatic Shard", "id": "22449", "count": 6},
-            { "name": "Greater Planar Essence", "id": "22446", "count": 8},
-            { "name": "Arcane Dust", "id": "22445", "count": 20}
+            { "name": "Void Crystal", "id": "22450", "count": 5},
+            { "name": "Large Prismatic Shard", "id": "22449", "count": 4},
+            { "name": "Greater Planar Essence", "id": "22446", "count": 4},
+            { "name": "Arcane Dust", "id": "22445", "count": 10}
         ]
     },
     {
@@ -28,10 +53,10 @@
         "id": "258191",
         "Prof": "Leatherworking",
         "Exp": "Burning Crusade",
-        "craftQty": 20,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Cobra Scales", "id": "29539", "count": 4},
-            { "name": "Heavy Knothide Leather", "id": "23793", "count": 6},
+            { "name": "Cobra Scales", "id": "29539", "count": 2},
+            { "name": "Heavy Knothide Leather", "id": "23793", "count": 3},
             { "name": "Rune Thread", "id": "14341", "count": 3}
         ]
     },
@@ -606,10 +631,10 @@
         "id": "258245",
         "Prof": "Inscription",
         "Exp": "Shadowlands",
-        "craftQty": 16,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Twilight Bark", "id": "177061", "count": 5},
-            { "name": "Shrouded Cloth", "id": "173202", "count": 5}
+            { "name": "Twilight Bark", "id": "177061", "count": 4},
+            { "name": "Shrouded Cloth", "id": "173202", "count": 4}
         ]
     },
     {
@@ -617,11 +642,11 @@
         "id": "258237",
         "Prof": "Enchanting",
         "Exp": "Shadowlands",
-        "craftQty": 30,
+        "craftQty": 16,
         "recipe": [
-            { "name": "Twilight Bark", "id": "177061", "count": 6},
-            { "name": "Eternal Crystal", "id": "172232", "count": 8},
-            { "name": "Soul Dust", "id": "172230", "count": 15}
+            { "name": "Twilight Bark", "id": "177061", "count": 4},
+            { "name": "Eternal Crystal", "id": "172232", "count": 3},
+            { "name": "Soul Dust", "id": "172230", "count": 10}
         ]
     },
     {
@@ -629,12 +654,12 @@
         "id": "257048",
         "Prof": "Blacksmithing",
         "Exp": "Shadowlands",
-        "craftQty": 45,
+        "craftQty": 25,
         "recipe": [
-            { "name": "Essence of Valor", "id": "173173", "count": 5},
+            { "name": "Essence of Valor", "id": "173173", "count": 4},
             { "name": "Aerated Water", "id": "173060", "count": 20},
-            { "name": "Enchanted Elethium Bar", "id": "172437", "count": 15},
-            { "name": "Laestrite Ore", "id": "171828", "count": 20}
+            { "name": "Enchanted Elethium Bar", "id": "172437", "count": 10},
+            { "name": "Laestrite Ore", "id": "171828", "count": 15}
         ]
     },
     {
@@ -889,11 +914,11 @@
         "id": "245601",
         "Prof": "Enchanting",
         "Exp": "Warlords of Draenor",
-        "craftQty": 30,
+        "craftQty": 14,
         "recipe": [
-            { "name": "Temporal Crystal", "id": "113588", "count": 12},
-            { "name": "Sorcerous Earth", "id": "113263", "count": 4},
-            { "name": "Sorcerous Fire", "id": "113261", "count": 8}
+            { "name": "Temporal Crystal", "id": "113588", "count": 4},
+            { "name": "Sorcerous Earth", "id": "113263", "count": 2},
+            { "name": "Sorcerous Fire", "id": "113261", "count": 3}
         ]
     },
     {
@@ -901,11 +926,11 @@
         "id": "251546",
         "Prof": "Tailoring",
         "Exp": "Warlords of Draenor",
-        "craftQty": 30,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Cerulean Pigment", "id": "114931", "count": 15},
-            { "name": "Sumptuous Fur", "id": "111557", "count": 40},
-            { "name": "Blackrock Ore", "id": "109118", "count": 10}
+            { "name": "Cerulean Pigment", "id": "114931", "count": 10},
+            { "name": "Sumptuous Fur", "id": "111557", "count": 20},
+            { "name": "Blackrock Ore", "id": "109118", "count": 6}
         ]
     },
     {
@@ -1625,12 +1650,12 @@
         "id": "256680",
         "Prof": "Alchemy",
         "Exp": "Legion",
-        "craftQty": 50,
+        "craftQty": 20,
         "recipe": [
-            { "name": "Sylvan Elixir", "id": "127838", "count": 20},
-            { "name": "Ancient Mana Potion", "id": "127835", "count": 15},
-            { "name": "Demonsteel Bar", "id": "124461", "count": 25},
-            { "name": "Felwort", "id": "124106", "count": 5}
+            { "name": "Sylvan Elixir", "id": "127838", "count": 10},
+            { "name": "Ancient Mana Potion", "id": "127835", "count": 10},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 8},
+            { "name": "Felwort", "id": "124106", "count": 4}
         ]
     },
     {
@@ -2470,7 +2495,7 @@
         "id": "253164",
         "Prof": "Inscription",
         "Exp": "The War Within",
-        "craftQty": 15,
+        "craftQty": 8,
         "recipe": [
             { "name": "Shadow Ink", "id": "222610", "count": 2},
             { "name": "Core Alloy", "id": "222418", "count": 1}
@@ -2481,7 +2506,7 @@
         "id": "253165",
         "Prof": "Inscription",
         "Exp": "The War Within",
-        "craftQty": 10,
+        "craftQty": 6,
         "recipe": [
             { "name": "Shadow Ink", "id": "222610", "count": 1},
             { "name": "Core Alloy", "id": "222418", "count": 1}
@@ -2770,11 +2795,11 @@
         "id": "257100",
         "Prof": "Alchemy",
         "Exp": "Vanilla",
-        "craftQty": 40,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Essence of Undeath", "id": "12808", "count": 16},
-            { "name": "Arcanite Bar", "id": "12360", "count": 12},
-            { "name": "Black Lotus", "id": "13468", "count": 8},
+            { "name": "Essence of Undeath", "id": "12808", "count": 3},
+            { "name": "Arcanite Bar", "id": "12360", "count": 2},
+            { "name": "Black Lotus", "id": "13468", "count": 1},
             { "name": "Crystal Vial", "id": "3371", "count": 6}
         ]
     },
@@ -2915,11 +2940,11 @@
         "id": "258199",
         "Prof": "Inscription",
         "Exp": "Burning Crusade",
-        "craftQty": 25,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Ethereal Ink", "id": "43124", "count": 10},
-            { "name": "Scroll of Intellect VI", "id": "33458", "count": 50},
-            { "name": "Primal Earth", "id": "22452", "count": 4}
+            { "name": "Ethereal Ink", "id": "43124", "count": 6},
+            { "name": "Scroll of Intellect VI", "id": "33458", "count": 30},
+            { "name": "Primal Earth", "id": "22452", "count": 1}
         ]
     },
     {
@@ -2967,7 +2992,7 @@
         "recipe": [
             { "name": "Evercore", "id": "243581", "altId": "243582", "count": 5},
             { "name": "Aetherlume", "id": "243578", "altId": "243579", "count": 5},
-            { "name": "Soul Sprocket", "id": "243576", "altId": "243577", "count": 10},
+            { "name": "Soul Sprocket", "id": "243576", "altId": "243577", "count": 5},
             { "name": "Song Gear", "id": "243574", "altId": "243575", "count": 10}
         ]
     },
@@ -2981,7 +3006,7 @@
             { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 5},
             { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 15},
             { "name": "Luminant Flux", "id": "243060", "count": 10},
-            { "name": "Sterling Alloy", "id": "238204", "altId": "238205", "count": 10}
+            { "name": "Sterling Alloy", "id": "238204", "altId": "238205", "count": 6}
         ]
     },
     {
@@ -2994,7 +3019,7 @@
             { "name": "Dawn Crystal", "id": "243606", "altId": "243605", "count": 5},
             { "name": "Radiant Shard", "id": "243603", "altId": "243602", "count": 15},
             { "name": "Luminant Flux", "id": "243060", "count": 10},
-            { "name": "Sterling Alloy", "id": "238204", "altId": "238205", "count": 10}
+            { "name": "Sterling Alloy", "id": "238204", "altId": "238205", "count": 6}
         ]
     },
     {
