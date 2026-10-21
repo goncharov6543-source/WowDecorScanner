@@ -4,10 +4,10 @@
         "id": 252389,
         "Prof": "Inscription",
         "Exp": "Battle for Azeroth",
-        "craftQty": 8,
+        "craftQty": 4,
         "recipe": [
-            { "name": "Aromatic Fish Oil", "id": 160711, "count": 5 },
-            { "name": "Ultramarine Ink", "id": 158187, "count": 5 }
+            { "name": "Aromatic Fish Oil", "id": 160711, "count": 3 },
+            { "name": "Ultramarine Ink", "id": 158187, "count": 3 }
         ]
     },
     {
@@ -21,6 +21,270 @@
             { "name": "Aetherlume", "id": 243578, "count": 5 },
             { "name": "Soul Sprocket", "id": 243576, "count": 5 },
             { "name": "Song Gear", "id": 243574, "count": 10 }
+        ]
+    },
+    {
+        "name": "Beloved Murloc Plushie",
+        "id": 284238,
+        "Prof": "Tailoring",
+        "Exp": "Warlords of Draenor",
+        "craftQty": 5,
+        "recipe": [
+            { "name": "Cerulean Pigment", "id": 114931, "count": 2 },
+            { "name": "Temporal Crystal", "id": 113588, "count": 1 },
+            { "name": "Sumptuous Fur", "id": 111557, "count": 6 }
+        ]
+    },
+    {
+        "name": "Beloved Ottuk Plushie",
+        "id": 284240,
+        "Prof": "Leatherworking",
+        "Exp": "Dragonflight",
+        "craftQty": 6,
+        "recipe": [
+            { "name": "Dense Hide", "id": 193217, "count": 2 },
+            { "name": "Resilient Leather", "id": 193210, "count": 20 },
+            { "name": "Spool of Wilderthread", "id": 192096, "count": 5 }
+        ]
+    },
+    {
+        "name": "Beloved Ottuuuuuuk Plushie",
+        "id": 284242,
+        "Prof": "Leatherworking",
+        "Exp": "Dragonflight",
+        "craftQty": 8,
+        "recipe": [
+            { "name": "Dense Hide", "id": 193217, "count": 3 },
+            { "name": "Resilient Leather", "id": 193210, "count": 30 },
+            { "name": "Spool of Wilderthread", "id": 192096, "count": 7 }
+        ]
+    },
+    {
+        "name": "Beloved Plush Doll",
+        "id": 284246,
+        "Prof": "Tailoring",
+        "Exp": "Vanilla",
+        "craftQty": 4,
+        "recipe": [
+            { "name": "Mooncloth", "id": 14342, "count": 1 },
+            { "name": "Rune Thread", "id": 14341, "count": 2 },
+            { "name": "Bolt of Runecloth", "id": 14048, "count": 3 },
+            { "name": "Bolt of Mageweave", "id": 4339, "count": 3 },
+            { "name": "Bolt of Silk Cloth", "id": 4305, "count": 3 }
+        ]
+    },
+    {
+        "name": "Closed Vulpera Scroll",
+        "id": 283321,
+        "Prof": "Inscription",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 4,
+        "recipe": [
+            { "name": "Viridescent Ink", "id": 158189, "count": 10 },
+            { "name": "Tidespray Linen", "id": 152576, "count": 3 },
+            { "name": "Light Parchment", "id": 39354, "count": 25 }
+        ]
+    },
+    {
+        "name": "Dalaran Post",
+        "id": 258204,
+        "Prof": "Inscription",
+        "Exp": "Wrath of the Lich King",
+        "craftQty": 8,
+        "recipe": [
+            { "name": "Ink of the Sea", "id": 43126, "count": 3 },
+            { "name": "Cobalt Bar", "id": 36916, "count": 5 }
+        ]
+    },
+    {
+        "name": "Decorative Lightweave Bolt",
+        "id": 282158,
+        "Prof": "Tailoring",
+        "Exp": "Legion",
+        "craftQty": 6,
+        "recipe": [
+            { "name": "Lightweave Cloth", "id": 151567, "count": 35 },
+            { "name": "Runic Catgut", "id": 127037, "count": 10 }
+        ]
+    },
+    {
+        "name": "Draenei Holo-Junction",
+        "id": 265331,
+        "Prof": "Enchanting",
+        "Exp": "Burning Crusade",
+        "craftQty": 9,
+        "recipe": [
+            { "name": "Large Prismatic Shard", "id": 22449, "count": 2 },
+            { "name": "Greater Planar Essence", "id": 22446, "count": 2 },
+            { "name": "Arcane Dust", "id": 22445, "count": 8 }
+        ]
+    },
+    {
+        "name": "Draenei Holo-Projector Pedestal",
+        "id": 258193,
+        "Prof": "Engineering",
+        "Exp": "Burning Crusade",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Felsteel Stabilizer", "id": 23787, "count": 3 },
+            { "name": "Khorium Power Core", "id": 23786, "count": 1 }
+        ]
+    },
+    {
+        "name": "Eredath Artisan's Workbench",
+        "id": 282132,
+        "Prof": "Inscription",
+        "Exp": "Legion",
+        "craftQty": 20,
+        "recipe": [
+            { "name": "Lightweave Cloth", "id": 151567, "count": 5 },
+            { "name": "Astral Glory", "id": 151565, "count": 15 },
+            { "name": "Leystone Ore", "id": 123918, "count": 10 }
+        ]
+    },
+    {
+        "name": "Fae Moonbough Scroll",
+        "id": 283301,
+        "Prof": "Inscription",
+        "Exp": "Shadowlands",
+        "craftQty": 4,
+        "recipe": [
+            { "name": "Dark Parchment", "id": 175886, "count": 10 },
+            { "name": "Lightless Silk", "id": 173204, "count": 3 },
+            { "name": "Luminous Ink", "id": 173059, "count": 5 }
+        ]
+    },
+    {
+        "name": "Gleaming Lightforge",
+        "id": 282124,
+        "Prof": "Blacksmithing",
+        "Exp": "Legion",
+        "craftQty": 12,
+        "recipe": [
+            { "name": "Empyrium", "id": 151564, "count": 50 },
+            { "name": "Demonsteel Bar", "id": 124461, "count": 3 }
+        ]
+    },
+    {
+        "name": "Hanging Argunite Lamp",
+        "id": 282126,
+        "Prof": "Jewelcrafting",
+        "Exp": "Legion",
+        "craftQty": 6,
+        "recipe": [
+            { "name": "Lightsphene", "id": 151719, "count": 2 },
+            { "name": "Empyrium", "id": 151564, "count": 10 },
+            { "name": "Saber's Eye", "id": 130245, "count": 1 }
+        ]
+    },
+    {
+        "name": "Kirin Tor Skyline Banner",
+        "id": 258298,
+        "Prof": "Tailoring",
+        "Exp": "Burning Crusade",
+        "craftQty": 15,
+        "recipe": [
+            { "name": "Spellweave", "id": 41595, "count": 3 },
+            { "name": "Moonshroud", "id": 41594, "count": 3 },
+            { "name": "Blue Dye", "id": 6260, "count": 4 },
+            { "name": "Red Dye", "id": 2604, "count": 4 }
+        ]
+    },
+    {
+        "name": "Levitating Lich Library",
+        "id": 284504,
+        "Prof": "Inscription",
+        "Exp": "Shadowlands",
+        "craftQty": 10,
+        "recipe": [
+            { "name": "Rune Etched Vial", "id": 180732, "count": 1 },
+            { "name": "Umbral Ink", "id": 173058, "count": 5 },
+            { "name": "Nightshade", "id": 171315, "count": 3 },
+            { "name": "Marrowroot", "id": 168589, "count": 15 }
+        ]
+    },
+    {
+        "name": "Lightforged Recall Beacon",
+        "id": 282144,
+        "Prof": "Engineering",
+        "Exp": "Legion",
+        "craftQty": 9,
+        "recipe": [
+            { "name": "Empyrium", "id": 151564, "count": 20 },
+            { "name": "Demonsteel Bar", "id": 124461, "count": 5 }
+        ]
+    },
+    {
+        "name": "Lillistrasza's Lucky Duck Plushie",
+        "id": 284244,
+        "Prof": "Tailoring",
+        "Exp": "Dragonflight",
+        "craftQty": 5,
+        "recipe": [
+            { "name": "Duck-Eye Glass Bead", "id": 284249, "count": 2 },
+            { "name": "Vibrant Wildercloth Bolt", "id": 193930, "count": 2 },
+            { "name": "Contoured Fowlfeather", "id": 193053, "count": 20 },
+            { "name": "Spool of Wilderthread", "id": 192096, "count": 5 }
+        ]
+    },
+    {
+        "name": "Nomad's Campfire Grill",
+        "id": 283291,
+        "Prof": "Engineering",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 5,
+        "recipe": [
+            { "name": "Insulated Wiring", "id": 163569, "count": 10 },
+            { "name": "Storm Silver Ore", "id": 152579, "count": 8 },
+            { "name": "Monelite Ore", "id": 152512, "count": 8 }
+        ]
+    },
+    {
+        "name": "Nomad's Steel Forge",
+        "id": 283303,
+        "Prof": "Blacksmithing",
+        "Exp": "Battle for Azeroth",
+        "craftQty": 5,
+        "recipe": [
+            { "name": "Luminous Flux", "id": 180733, "count": 5 },
+            { "name": "Storm Silver Ore", "id": 152579, "count": 5 },
+            { "name": "Monelite Ore", "id": 152512, "count": 10 }
+        ]
+    },
+    {
+        "name": "Proudmoore Ship-in-a-Bottle",
+        "id": 279339,
+        "Prof": "Engineering",
+        "Exp": "Midnight",
+        "craftQty": 6,
+        "recipe": [
+            { "name": "Evercore", "id": 243581, "count": 5 },
+            { "name": "Aetherlume", "id": 243578, "count": 5 },
+            { "name": "Soul Sprocket", "id": 243576, "count": 5 },
+            { "name": "Song Gear", "id": 243574, "count": 5 }
+        ]
+    },
+    {
+        "name": "Roaring Amani Garnet",
+        "id": 280762,
+        "Prof": "Jewelcrafting",
+        "Exp": "Midnight",
+        "craftQty": 6,
+        "recipe": [
+            { "name": "Dusk-Shrouded Stone", "id": 242788, "count": 8 },
+            { "name": "Glimmering Gemdust", "id": 242620, "count": 6 },
+            { "name": "Sanguine Garnet", "id": 242553, "count": 4 }
+        ]
+    },
+    {
+        "name": "Shimmering Lightforged Canister",
+        "id": 282140,
+        "Prof": "Enchanting",
+        "Exp": "Legion",
+        "craftQty": 8,
+        "recipe": [
+            { "name": "Empyrium", "id": 151564, "count": 40 },
+            { "name": "Demonsteel Bar", "id": 124461, "count": 2 }
         ]
     },
     {
@@ -65,10 +329,10 @@
         "id": "262347",
         "Prof": "Jewelcrafting",
         "Exp": "Burning Crusade",
-        "craftQty": 15,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Earthstorm Diamond", "id": "25867", "count": 2},
-            { "name": "Hardened Adamantite Bar", "id": "23573", "count": 4}
+            { "name": "Earthstorm Diamond", "id": "25867", "count": 1},
+            { "name": "Hardened Adamantite Bar", "id": "23573", "count": 3}
         ]
     },
     {
@@ -76,11 +340,11 @@
         "id": "258195",
         "Prof": "Tailoring",
         "Exp": "Burning Crusade",
-        "craftQty": 35,
+        "craftQty": 18,
         "recipe": [
-            { "name": "Shadowcloth", "id": "24272", "count": 4},
-            { "name": "Spellcloth", "id": "24271", "count": 4},
-            { "name": "Primal Mooncloth", "id": "21845", "count": 4}
+            { "name": "Shadowcloth", "id": "24272", "count": 2},
+            { "name": "Spellcloth", "id": "24271", "count": 2},
+            { "name": "Primal Mooncloth", "id": "21845", "count": 2}
         ]
     },
     {
@@ -88,10 +352,10 @@
         "id": "264705",
         "Prof": "Alchemy",
         "Exp": "Burning Crusade",
-        "craftQty": 6,
+        "craftQty": 3,
         "recipe": [
-            { "name": "Mad Alchemist's Potion", "id": "34440", "count": 5},
-            { "name": "Khorium Bar", "id": "23449", "count": 4},
+            { "name": "Mad Alchemist's Potion", "id": "34440", "count": 2},
+            { "name": "Khorium Bar", "id": "23449", "count": 1},
             { "name": "Crystal Vial", "id": "3371", "count": 1}
         ]
     },
@@ -100,10 +364,10 @@
         "id": "258202",
         "Prof": "Tailoring",
         "Exp": "Burning Crusade",
-        "craftQty": 18,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Primal Mana", "id": "22457", "count": 3},
-            { "name": "Bolt of Imbued Netherweave", "id": "21842", "count": 4},
+            { "name": "Primal Mana", "id": "22457", "count": 2},
+            { "name": "Bolt of Imbued Netherweave", "id": "21842", "count": 2},
             { "name": "Rune Thread", "id": "14341", "count": 3}
         ]
     },
@@ -112,10 +376,10 @@
         "id": "258215",
         "Prof": "Inscription",
         "Exp": "Burning Crusade",
-        "craftQty": 20,
+        "craftQty": 9,
         "recipe": [
-            { "name": "Heavy Knothide Leather", "id": "23793", "count": 3},
-            { "name": "Primal Mana", "id": "22457", "count": 2}
+            { "name": "Heavy Knothide Leather", "id": "23793", "count": 2},
+            { "name": "Primal Mana", "id": "22457", "count": 1}
         ]
     },
     {
@@ -123,10 +387,10 @@
         "id": "258211",
         "Prof": "Jewelcrafting",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 22,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Dragon's Eye", "id": "42225", "count": 4},
-            { "name": "Cobalt Bar", "id": "36916", "count": 8}
+            { "name": "Dragon's Eye", "id": "42225", "count": 2},
+            { "name": "Cobalt Bar", "id": "36916", "count": 6}
         ]
     },
     {
@@ -134,11 +398,11 @@
         "id": "258190",
         "Prof": "Leatherworking",
         "Exp": "Burning Crusade",
-        "craftQty": 12,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Thick Clefthoof Leather", "id": "25708", "count": 8},
-            { "name": "Primal Earth", "id": "22452", "count": 2},
-            { "name": "Primal Life", "id": "21886", "count": 2}
+            { "name": "Thick Clefthoof Leather", "id": "25708", "count": 4},
+            { "name": "Primal Earth", "id": "22452", "count": 1},
+            { "name": "Primal Life", "id": "21886", "count": 1}
         ]
     },
     {
@@ -146,11 +410,11 @@
         "id": "264706",
         "Prof": "Alchemy",
         "Exp": "Burning Crusade",
-        "craftQty": 16,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Hardened Adamantite Bar", "id": "23573", "count": 3},
-            { "name": "Flask of Blinding Light", "id": "22861", "count": 4},
-            { "name": "Primal Fire", "id": "21884", "count": 4}
+            { "name": "Hardened Adamantite Bar", "id": "23573", "count": 1},
+            { "name": "Flask of Blinding Light", "id": "22861", "count": 2},
+            { "name": "Primal Fire", "id": "21884", "count": 2}
         ]
     },
     {
@@ -158,10 +422,10 @@
         "id": "258201",
         "Prof": "Jewelcrafting",
         "Exp": "Burning Crusade",
-        "craftQty": 20,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Shadowsong Amethyst", "id": "32230", "count": 2},
-            { "name": "Mercurial Adamantite", "id": "31079", "count": 6}
+            { "name": "Shadowsong Amethyst", "id": "32230", "count": 1},
+            { "name": "Mercurial Adamantite", "id": "31079", "count": 2}
         ]
     },
     {
@@ -169,10 +433,10 @@
         "id": "258200",
         "Prof": "Jewelcrafting",
         "Exp": "Burning Crusade",
-        "craftQty": 10,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Mercurial Adamantite", "id": "31079", "count": 3},
-            { "name": "Nightseye", "id": "23441", "count": 3}
+            { "name": "Mercurial Adamantite", "id": "31079", "count": 1},
+            { "name": "Nightseye", "id": "23441", "count": 1}
         ]
     },
     {
@@ -180,10 +444,10 @@
         "id": "264709",
         "Prof": "Alchemy",
         "Exp": "Burning Crusade",
-        "craftQty": 8,
+        "craftQty": 4,
         "recipe": [
-            { "name": "Bolt of Netherweave", "id": "21840", "count": 4},
-            { "name": "Stranglekelp", "id": "108330", "count": 10}
+            { "name": "Bolt of Netherweave", "id": "21840", "count": 3},
+            { "name": "Stranglekelp", "id": "108330", "count": 6}
         ]
     },
     {
@@ -191,10 +455,10 @@
         "id": "258192",
         "Prof": "Inscription",
         "Exp": "Burning Crusade",
-        "craftQty": 10,
+        "craftQty": 9,
         "recipe": [
-            { "name": "Ethereal Ink", "id": "43124", "count": 3},
-            { "name": "Primal Life", "id": "21886", "count": 2}
+            { "name": "Ethereal Ink", "id": "43124", "count": 2},
+            { "name": "Primal Life", "id": "21886", "count": 1}
         ]
     },
     {
@@ -202,11 +466,11 @@
         "id": "246413",
         "Prof": "Jewelcrafting",
         "Exp": "Vanilla",
-        "craftQty": 40,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Lava Core", "id": "17011", "count": 6},
-            { "name": "Dark Iron Bar", "id": "11371", "count": 16},
-            { "name": "Star Ruby", "id": "7910", "count": 20}
+            { "name": "Lava Core", "id": "17011", "count": 3},
+            { "name": "Dark Iron Bar", "id": "11371", "count": 6},
+            { "name": "Star Ruby", "id": "7910", "count": 4}
         ]
     },
     {
@@ -214,11 +478,11 @@
         "id": "245502",
         "Prof": "Inscription",
         "Exp": "Vanilla",
-        "craftQty": 25,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Ink of the Sky", "id": "43123", "count": 5},
-            { "name": "Essence of Undeath", "id": "12808", "count": 8},
-            { "name": "Essence of Earth", "id": "7076", "count": 8}
+            { "name": "Ink of the Sky", "id": "43123", "count": 3},
+            { "name": "Essence of Undeath", "id": "12808", "count": 5},
+            { "name": "Essence of Earth", "id": "7076", "count": 5}
         ]
     },
     {
@@ -226,11 +490,11 @@
         "id": "245503",
         "Prof": "Inscription",
         "Exp": "Vanilla",
-        "craftQty": 15,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Ink of the Sky", "id": "43123", "count": 2},
-            { "name": "Essence of Undeath", "id": "12808", "count": 4},
-            { "name": "Essence of Earth", "id": "7076", "count": 4}
+            { "name": "Ink of the Sky", "id": "43123", "count": 1},
+            { "name": "Essence of Undeath", "id": "12808", "count": 2},
+            { "name": "Essence of Earth", "id": "7076", "count": 2}
         ]
     },
     {
@@ -238,9 +502,9 @@
         "id": "257725",
         "Prof": "Leatherworking",
         "Exp": "Vanilla",
-        "craftQty": 18,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Devilsaur Leather", "id": "15417", "count": 8},
+            { "name": "Devilsaur Leather", "id": "15417", "count": 3},
             { "name": "Rune Thread", "id": "14341", "count": 2},
             { "name": "Purple Dye", "id": "4342", "count": 2},
             { "name": "Red Dye", "id": "2604", "count": 2}
@@ -251,12 +515,12 @@
         "id": "246410",
         "Prof": "Engineering",
         "Exp": "Vanilla",
-        "craftQty": 40,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Delicate Arcanite Converter", "id": "16006", "count": 8},
-            { "name": "Thorium Widget", "id": "16994", "count": 6},
-            { "name": "Dark Iron Bar", "id": "11371", "count": 12},
-            { "name": "Essence of Earth", "id": "7076", "count": 8}
+            { "name": "Delicate Arcanite Converter", "id": "16006", "count": 2},
+            { "name": "Thorium Widget", "id": "16994", "count": 3},
+            { "name": "Dark Iron Bar", "id": "11371", "count": 8},
+            { "name": "Essence of Earth", "id": "7076", "count": 3}
         ]
     },
     {
@@ -264,12 +528,12 @@
         "id": "263027",
         "Prof": "Enchanting",
         "Exp": "Vanilla",
-        "craftQty": 30,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Dark Rune", "id": "20520", "count": 8},
-            { "name": "Greater Eternal Essence", "id": "16203", "count": 8},
-            { "name": "Large Brilliant Shard", "id": "14344", "count": 12},
-            { "name": "Essence of Undeath", "id": "12808", "count": 16}
+            { "name": "Dark Rune", "id": "20520", "count": 2},
+            { "name": "Greater Eternal Essence", "id": "16203", "count": 5},
+            { "name": "Large Brilliant Shard", "id": "14344", "count": 6},
+            { "name": "Essence of Undeath", "id": "12808", "count": 5}
         ]
     },
     {
@@ -277,12 +541,12 @@
         "id": "246685",
         "Prof": "Tailoring",
         "Exp": "Vanilla",
-        "craftQty": 25,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Mooncloth", "id": "14342", "count": 12},
+            { "name": "Mooncloth", "id": "14342", "count": 2},
             { "name": "Rune Thread", "id": "14341", "count": 4},
-            { "name": "Golden Pearl", "id": "13926", "count": 2},
-            { "name": "Yellow Dye", "id": "4341", "count": 20}
+            { "name": "Golden Pearl", "id": "13926", "count": 1},
+            { "name": "Yellow Dye", "id": "4341", "count": 10}
         ]
     },
     {
@@ -290,9 +554,9 @@
         "id": "243336",
         "Prof": "Tailoring",
         "Exp": "Vanilla",
-        "craftQty": 18,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Bolt of Runecloth", "id": "14048", "count": 12},
+            { "name": "Bolt of Runecloth", "id": "14048", "count": 6},
             { "name": "Rune Thread", "id": "14341", "count": 2},
             { "name": "Red Dye", "id": "2604", "count": 4}
         ]
@@ -302,12 +566,12 @@
         "id": "246700",
         "Prof": "Engineering",
         "Exp": "Vanilla",
-        "craftQty": 25,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Delicate Arcanite Converter", "id": "16006", "count": 4},
-            { "name": "Thorium Tube", "id": "16000", "count": 4},
-            { "name": "Bolt of Runecloth", "id": "14048", "count": 8},
-            { "name": "Essence of Fire", "id": "7078", "count": 4}
+            { "name": "Delicate Arcanite Converter", "id": "16006", "count": 1},
+            { "name": "Thorium Tube", "id": "16000", "count": 2},
+            { "name": "Bolt of Runecloth", "id": "14048", "count": 5},
+            { "name": "Essence of Fire", "id": "7078", "count": 2}
         ]
     },
     {
@@ -315,11 +579,11 @@
         "id": "246488",
         "Prof": "Jewelcrafting",
         "Exp": "Vanilla",
-        "craftQty": 30,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Mithril Filigree", "id": "20963", "count": 8},
-            { "name": "Large Opal", "id": "12799", "count": 8},
-            { "name": "Truesilver Bar", "id": "6037", "count": 12}
+            { "name": "Mithril Filigree", "id": "20963", "count": 6},
+            { "name": "Large Opal", "id": "12799", "count": 2},
+            { "name": "Truesilver Bar", "id": "6037", "count": 8}
         ]
     },
     {
@@ -327,11 +591,11 @@
         "id": "246420",
         "Prof": "Inscription",
         "Exp": "Vanilla",
-        "craftQty": 50,
+        "craftQty": 15,
         "recipe": [
-            { "name": "Dense Stone", "id": "12365", "count": 24},
-            { "name": "Thorium Bar", "id": "12359", "count": 12},
-            { "name": "Scroll of Intellect IV", "id": "10308", "count": 50}
+            { "name": "Dense Stone", "id": "12365", "count": 16},
+            { "name": "Thorium Bar", "id": "12359", "count": 4},
+            { "name": "Scroll of Intellect IV", "id": "10308", "count": 10}
         ]
     },
     {
@@ -339,11 +603,11 @@
         "id": "246111",
         "Prof": "Blacksmithing",
         "Exp": "Vanilla",
-        "craftQty": 10,
+        "craftQty": 5,
         "recipe": [
-            { "name": "Lava Core", "id": "17011", "count": 4},
+            { "name": "Lava Core", "id": "17011", "count": 2},
             { "name": "Large Brilliant Shard", "id": "14344", "count": 2},
-            { "name": "Dark Iron Bar", "id": "11371", "count": 12}
+            { "name": "Dark Iron Bar", "id": "11371", "count": 6}
         ]
     },
     {
@@ -351,11 +615,11 @@
         "id": "257693",
         "Prof": "Leatherworking",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 12,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Arctic Fur", "id": "44128", "count": 2},
-            { "name": "Heavy Borean Leather", "id": "38425", "count": 8},
-            { "name": "Eternal Shadow", "id": "35627", "count": 6}
+            { "name": "Arctic Fur", "id": "44128", "count": 1},
+            { "name": "Heavy Borean Leather", "id": "38425", "count": 5},
+            { "name": "Eternal Shadow", "id": "35627", "count": 4}
         ]
     },
     {
@@ -363,11 +627,11 @@
         "id": "246489",
         "Prof": "Blacksmithing",
         "Exp": "Vanilla",
-        "craftQty": 20,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Enchanted Leather", "id": "12810", "count": 4},
-            { "name": "Arcanite Bar", "id": "12360", "count": 8},
-            { "name": "Dark Iron Bar", "id": "11371", "count": 20}
+            { "name": "Enchanted Leather", "id": "12810", "count": 2},
+            { "name": "Arcanite Bar", "id": "12360", "count": 3},
+            { "name": "Dark Iron Bar", "id": "11371", "count": 10}
         ]
     },
     {
@@ -375,10 +639,10 @@
         "id": "258289",
         "Prof": "Inscription",
         "Exp": "Vanilla",
-        "craftQty": 30,
+        "craftQty": 14,
         "recipe": [
-            { "name": "Fiery Ink", "id": "43121", "count": 6},
-            { "name": "Essence of Earth", "id": "7076", "count": 8}
+            { "name": "Fiery Ink", "id": "43121", "count": 3},
+            { "name": "Essence of Earth", "id": "7076", "count": 3}
         ]
     },
     {
@@ -386,11 +650,11 @@
         "id": "253250",
         "Prof": "Enchanting",
         "Exp": "Vanilla",
-        "craftQty": 20,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Fiery Core", "id": "17010", "count": 5},
-            { "name": "Greater Eternal Essence", "id": "16203", "count": 12},
-            { "name": "Dense Stone", "id": "12365", "count": 12}
+            { "name": "Fiery Core", "id": "17010", "count": 2},
+            { "name": "Greater Eternal Essence", "id": "16203", "count": 7},
+            { "name": "Dense Stone", "id": "12365", "count": 10}
         ]
     },
     {
@@ -398,12 +662,12 @@
         "id": "257095",
         "Prof": "Enchanting",
         "Exp": "Cataclysm",
-        "craftQty": 20,
+        "craftQty": 9,
         "recipe": [
             { "name": "Living Ember", "id": "69237", "count": 1},
-            { "name": "Hardened Elementium Bar", "id": "53039", "count": 2},
-            { "name": "Maelstrom Crystal", "id": "52722", "count": 8},
-            { "name": "Volatile Air", "id": "52328", "count": 20}
+            { "name": "Hardened Elementium Bar", "id": "53039", "count": 1},
+            { "name": "Maelstrom Crystal", "id": "52722", "count": 5},
+            { "name": "Volatile Air", "id": "52328", "count": 8}
         ]
     },
     {
@@ -411,11 +675,11 @@
         "id": "258205",
         "Prof": "Leatherworking",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 18,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Heavy Borean Leather", "id": "38425", "count": 14},
+            { "name": "Heavy Borean Leather", "id": "38425", "count": 8},
             { "name": "Eternal Earth", "id": "35624", "count": 2},
-            { "name": "Eternal Air", "id": "35623", "count": 4}
+            { "name": "Eternal Air", "id": "35623", "count": 3}
         ]
     },
     {
@@ -423,12 +687,12 @@
         "id": "246423",
         "Prof": "Inscription",
         "Exp": "Vanilla",
-        "craftQty": 45,
+        "craftQty": 15,
         "recipe": [
-            { "name": "Royal Ink", "id": "43119", "count": 8},
-            { "name": "Mithril Filigree", "id": "20963", "count": 4},
-            { "name": "Enchanted Leather", "id": "12810", "count": 8},
-            { "name": "Truesilver Bar", "id": "6037", "count": 12}
+            { "name": "Royal Ink", "id": "43119", "count": 3},
+            { "name": "Mithril Filigree", "id": "20963", "count": 3},
+            { "name": "Enchanted Leather", "id": "12810", "count": 3},
+            { "name": "Truesilver Bar", "id": "6037", "count": 5}
         ]
     },
     {
@@ -447,11 +711,11 @@
         "id": "257040",
         "Prof": "Blacksmithing",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 40,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Runed Orb", "id": "45087", "count": 6},
-            { "name": "Titansteel Bar", "id": "37663", "count": 8},
-            { "name": "Eternal Earth", "id": "35624", "count": 4} 
+            { "name": "Runed Orb", "id": "45087", "count": 2},
+            { "name": "Titansteel Bar", "id": "37663", "count": 5},
+            { "name": "Eternal Earth", "id": "35624", "count": 2} 
         ]
     },
     {
@@ -459,12 +723,12 @@
         "id": "258207",
         "Prof": "Inscription",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 45,
+        "craftQty": 16,
         "recipe": [
-            { "name": "Snowfall Ink", "id": "43127", "count": 6},
-            { "name": "Ink of the Sea", "id": "43126", "count": 6},
-            { "name": "Titansteel Bar", "id": "37663", "count": 12},
-            { "name": "Ametrine", "id": "36931", "count": 4}
+            { "name": "Snowfall Ink", "id": "43127", "count": 4},
+            { "name": "Ink of the Sea", "id": "43126", "count": 4},
+            { "name": "Titansteel Bar", "id": "37663", "count": 5},
+            { "name": "Ametrine", "id": "36931", "count": 3}
         ]
     },
     {
@@ -472,11 +736,11 @@
         "id": "264676",
         "Prof": "Blacksmithing",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 30,
+        "craftQty": 15,
         "recipe": [
-            { "name": "Runed Orb", "id": "45087", "count": 4},
-            { "name": "Titansteel Bar", "id": "37663", "count": 6},
-            { "name": "Eternal Water", "id": "35622", "count": 2}
+            { "name": "Runed Orb", "id": "45087", "count": 2},
+            { "name": "Titansteel Bar", "id": "37663", "count": 4},
+            { "name": "Eternal Water", "id": "35622", "count": 1}
         ]
     },
     {
@@ -484,11 +748,11 @@
         "id": "258210",
         "Prof": "Inscription",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 10,
+        "craftQty": 5,
         "recipe": [
-            { "name": "Ink of the Sea", "id": "43126", "count": 5},
-            { "name": "Titanium Bar", "id": "41163", "count": 6},
-            { "name": "Light Parchment", "id": "39354", "count": 10}
+            { "name": "Ink of the Sea", "id": "43126", "count": 3},
+            { "name": "Titanium Bar", "id": "41163", "count": 4},
+            { "name": "Light Parchment", "id": "39354", "count": 6}
         ]
     },
     {
@@ -496,10 +760,10 @@
         "id": "264710",
         "Prof": "Blacksmithing",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 8,
+        "craftQty": 5,
         "recipe": [
-            { "name": "Titansteel Bar", "id": "37663", "count": 4},
-            { "name": "Eternal Fire", "id": "36860", "count": 3}
+            { "name": "Titansteel Bar", "id": "37663", "count": 2},
+            { "name": "Eternal Fire", "id": "36860", "count": 2}
         ]
     },
     {
@@ -507,9 +771,9 @@
         "id": "258206",
         "Prof": "Tailoring",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 10,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Spellweave", "id": "41595", "count": 8},
+            { "name": "Spellweave", "id": "41595", "count": 3},
             { "name": "Majestic Zircon", "id": "36925", "count": 1},
             { "name": "Blue Dye", "id": "6260", "count": 2},
             { "name": "Red Dye", "id": "2604", "count": 2}
@@ -520,11 +784,11 @@
         "id": "264708",
         "Prof": "Engineering",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 28,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Goblin-Machined Piston", "id": "44501", "count": 2},
-            { "name": "Overcharged Capacitor", "id": "39682", "count": 4},
-            { "name": "Handful of Cobalt Bolts", "id": "39681", "count": 12}
+            { "name": "Goblin-Machined Piston", "id": "44501", "count": 1},
+            { "name": "Overcharged Capacitor", "id": "39682", "count": 2},
+            { "name": "Handful of Cobalt Bolts", "id": "39681", "count": 5}
         ]
     },
     {
@@ -532,13 +796,13 @@
         "id": "258213",
         "Prof": "Alchemy",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 40,
+        "craftQty": 12,
         "recipe": [
             { "name": "Frozen Orb", "id": "43102", "count": 1},
-            { "name": "Crazy Alchemist's Potion", "id": "40077", "count": 5},
-            { "name": "Frost Lotus", "id": "36908", "count": 5},
-            { "name": "Eternal Life", "id": "35625", "count": 2},
-            { "name": "Runic Healing Potion", "id": "33447", "count": 10}
+            { "name": "Crazy Alchemist's Potion", "id": "40077", "count": 4},
+            { "name": "Frost Lotus", "id": "36908", "count": 2},
+            { "name": "Eternal Life", "id": "35625", "count": 1},
+            { "name": "Runic Healing Potion", "id": "33447", "count": 4}
         ]
     },
     {
@@ -546,12 +810,12 @@
         "id": "264711",
         "Prof": "Engineering",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 46,
+        "craftQty": 18,
         "recipe": [
-            { "name": "Titanium Bar", "id": "41163", "count": 20},
-            { "name": "Froststeel Tube", "id": "39683", "count": 8},
-            { "name": "Overcharged Capacitor", "id": "39682", "count": 4},
-            { "name": "Handful of Cobalt Bolts", "id": "39681", "count": 2}
+            { "name": "Titanium Bar", "id": "41163", "count": 8},
+            { "name": "Froststeel Tube", "id": "39683", "count": 5},
+            { "name": "Overcharged Capacitor", "id": "39682", "count": 2},
+            { "name": "Handful of Cobalt Bolts", "id": "39681", "count": 1}
         ]
     },
     {
@@ -574,8 +838,8 @@
         "Exp": "Wrath of the Lich King",
         "craftQty": 8,
         "recipe": [
-            { "name": "Skyflare Diamond", "id": "41266", "count": 4},
-            { "name": "Cobalt Bar", "id": "36916", "count": 6}
+            { "name": "Skyflare Diamond", "id": "41266", "count": 3},
+            { "name": "Cobalt Bar", "id": "36916", "count": 4}
         ]
     },
     {
@@ -583,9 +847,9 @@
         "id": "264707",
         "Prof": "Engineering",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 20,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Titanium Bar", "id": "41163", "count": 20},
+            { "name": "Titanium Bar", "id": "41163", "count": 8},
             { "name": "Handful of Cobalt Bolts", "id": "39681", "count": 2}
         ]
     },
@@ -594,11 +858,11 @@
         "id": "258212",
         "Prof": "Alchemy",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 20,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Frost Lotus", "id": "36908", "count": 3},
-            { "name": "Lichbloom", "id": "36905", "count": 10},
-            { "name": "Eternal Shadow", "id": "35627", "count": 4},
+            { "name": "Frost Lotus", "id": "36908", "count": 1},
+            { "name": "Lichbloom", "id": "36905", "count": 8},
+            { "name": "Eternal Shadow", "id": "35627", "count": 3},
             { "name": "Crystal Vial", "id": "3371", "count": 1}
         ]
     },
@@ -607,10 +871,10 @@
         "id": "258203",
         "Prof": "Inscription",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 18,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Snowfall Ink", "id": "43127", "count": 10},
-            { "name": "Titansteel Bar", "id": "37663", "count": 4}
+            { "name": "Snowfall Ink", "id": "43127", "count": 4},
+            { "name": "Titansteel Bar", "id": "37663", "count": 2}
         ]
     },
     {
@@ -618,12 +882,12 @@
         "id": "257101",
         "Prof": "Enchanting",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 20,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Bolt of Frostweave", "id": "41510", "count": 6},
-            { "name": "Titanium Bar", "id": "41163", "count": 4},
-            { "name": "Abyss Crystal", "id": "34057", "count": 3},
-            { "name": "Greater Cosmic Essence", "id": "34055", "count": 3}
+            { "name": "Bolt of Frostweave", "id": "41510", "count": 4},
+            { "name": "Titanium Bar", "id": "41163", "count": 3},
+            { "name": "Abyss Crystal", "id": "34057", "count": 2},
+            { "name": "Greater Cosmic Essence", "id": "34055", "count": 2}
         ]
     },
     {
@@ -667,12 +931,12 @@
         "id": "264678",
         "Prof": "Tailoring",
         "Exp": "Shadowlands",
-        "craftQty": 16,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Penumbra Thread", "id": "177062", "count": 5},
-            { "name": "Shrouded Cloth", "id": "173202", "count": 25},
+            { "name": "Penumbra Thread", "id": "177062", "count": 4},
+            { "name": "Shrouded Cloth", "id": "173202", "count": 10},
             { "name": "Essence of Valor", "id": "173173", "count": 1},
-            { "name": "Laestrite Ore", "id": "171828", "count": 12}
+            { "name": "Laestrite Ore", "id": "171828", "count": 6}
         ]
     },
     {
@@ -680,10 +944,10 @@
         "id": "258235",
         "Prof": "Inscription",
         "Exp": "Shadowlands",
-        "craftQty": 28,
+        "craftQty": 9,
         "recipe": [
             { "name": "Umbryl", "id": "173110", "count": 2},
-            { "name": "Luminous Ink", "id": "173059", "count": 15}
+            { "name": "Luminous Ink", "id": "173059", "count": 6}
         ]
     },
     {
@@ -691,12 +955,12 @@
         "id": "257049",
         "Prof": "Blacksmithing",
         "Exp": "Shadowlands",
-        "craftQty": 8,
+        "craftQty": 4,
         "recipe": [
             { "name": "Essence of Torment", "id": "173171", "count": 1},
             { "name": "Angerseye", "id": "173109", "count": 1},
             { "name": "Sinvyr Ore", "id": "171832", "count": 3},
-            { "name": "Laestrite Ore", "id": "171828", "count": 5}
+            { "name": "Laestrite Ore", "id": "171828", "count": 2}
         ]
     },
     {
@@ -704,11 +968,11 @@
         "id": "258244",
         "Prof": "Inscription",
         "Exp": "Shadowlands",
-        "craftQty": 24,
+        "craftQty": 16,
         "recipe": [
-            { "name": "Lightless Silk", "id": "173204", "count": 8},
-            { "name": "Luminous Ink", "id": "173059", "count": 8},
-            { "name": "Laestrite Ore", "id": "171828", "count": 8}
+            { "name": "Lightless Silk", "id": "173204", "count": 5},
+            { "name": "Luminous Ink", "id": "173059", "count": 5},
+            { "name": "Laestrite Ore", "id": "171828", "count": 5}
         ]
     },
     {
@@ -716,12 +980,12 @@
         "id": "246705",
         "Prof": "Cooking",
         "Exp": "Shadowlands",
-        "craftQty": 8,
+        "craftQty": 3,
         "recipe": [
             { "name": "Perfect Preservatives", "id": "259894", "count": 5},
-            { "name": "Phantasmal Haunch", "id": "172055", "count": 6},
-            { "name": "Iridescent Ravioli with Apple Sauce", "id": "172049", "count": 5},
-            { "name": "Solenium Ore", "id": "171829", "count": 4}
+            { "name": "Phantasmal Haunch", "id": "172055", "count": 4},
+            { "name": "Iridescent Ravioli with Apple Sauce", "id": "172049", "count": 3},
+            { "name": "Solenium Ore", "id": "171829", "count": 3}
         ]
     },
     {
@@ -729,11 +993,11 @@
         "id": "258250",
         "Prof": "Inscription",
         "Exp": "Shadowlands",
-        "craftQty": 35,
+        "craftQty": 13,
         "recipe": [
             { "name": "Umbryl", "id": "173110", "count": 1},
-            { "name": "Luminous Ink", "id": "173059", "count": 16},
-            { "name": "Solenium Ore", "id": "171829", "count": 10}
+            { "name": "Luminous Ink", "id": "173059", "count": 8},
+            { "name": "Solenium Ore", "id": "171829", "count": 6}
         ]
     },
     {
@@ -741,13 +1005,13 @@
         "id": "258252",
         "Prof": "Engineering",
         "Exp": "Shadowlands",
-        "craftQty": 42,
+        "craftQty": 28,
         "recipe": [
-            { "name": "Mortal Coiled Spring", "id": "172936", "count": 6},
-            { "name": "Porous Polishing Abrasive", "id": "172935", "count": 4},
-            { "name": "Handful of Laestrite Bolts", "id": "172934", "count": 8},
+            { "name": "Mortal Coiled Spring", "id": "172936", "count": 5},
+            { "name": "Porous Polishing Abrasive", "id": "172935", "count": 3},
+            { "name": "Handful of Laestrite Bolts", "id": "172934", "count": 6},
             { "name": "Laestrite Skeleton Key", "id": "171441", "count": 1},
-            { "name": "Shadowghast Ingot", "id": "171428", "count": 15}
+            { "name": "Shadowghast Ingot", "id": "171428", "count": 5}
         ]
     },
     {
@@ -755,12 +1019,12 @@
         "id": "264713",
         "Prof": "Tailoring",
         "Exp": "Shadowlands",
-        "craftQty": 45,
+        "craftQty": 24,
         "recipe": [
-            { "name": "Penumbra Thread", "id": "177062", "count": 10},
+            { "name": "Penumbra Thread", "id": "177062", "count": 6},
             { "name": "Twilight Bark", "id": "177061", "count": 2},
-            { "name": "Essence of Rebirth", "id": "173170", "count": 6},
-            { "name": "Enchanted Lightless Silk", "id": "172439", "count": 20}
+            { "name": "Essence of Rebirth", "id": "173170", "count": 2},
+            { "name": "Enchanted Lightless Silk", "id": "172439", "count": 15}
         ]
     },
     {
@@ -768,13 +1032,13 @@
         "id": "258242",
         "Prof": "Inscription",
         "Exp": "Shadowlands",
-        "craftQty": 50,
+        "craftQty": 22,
         "recipe": [
             { "name": "Twilight Bark", "id": "177061", "count": 4},
-            { "name": "Tranquil Ink", "id": "175970", "count": 25},
+            { "name": "Tranquil Ink", "id": "175970", "count": 10},
             { "name": "Shrouded Cloth", "id": "173202", "count": 4},
-            { "name": "Essence of Rebirth", "id": "173170", "count": 8},
-            { "name": "Soul Dust", "id": "172230", "count": 15}
+            { "name": "Essence of Rebirth", "id": "173170", "count": 3},
+            { "name": "Soul Dust", "id": "172230", "count": 10}
         ]
     },
     {
@@ -782,12 +1046,12 @@
         "id": "258240",
         "Prof": "Engineering",
         "Exp": "Shadowlands",
-        "craftQty": 18,
+        "craftQty": 9,
         "recipe": [
-            { "name": "Essence of Valor", "id": "173173", "count": 2},
+            { "name": "Essence of Valor", "id": "173173", "count": 1},
             { "name": "Umbryl", "id": "173110", "count": 2},
             { "name": "Porous Polishing Abrasive", "id": "172935", "count": 4},
-            { "name": "Solenium Ore", "id": "171829", "count": 6}
+            { "name": "Solenium Ore", "id": "171829", "count": 5}
         ]
     },
     {
@@ -795,10 +1059,10 @@
         "id": "258561",
         "Prof": "Tailoring",
         "Exp": "Shadowlands",
-        "craftQty": 14,
+        "craftQty": 5,
         "recipe": [
-            { "name": "Penumbra Thread", "id": "177062", "count": 5},
-            { "name": "Shrouded Cloth", "id": "173202", "count": 12}
+            { "name": "Penumbra Thread", "id": "177062", "count": 4},
+            { "name": "Shrouded Cloth", "id": "173202", "count": 8}
         ]
     },
     {
@@ -806,11 +1070,11 @@
         "id": "262663",
         "Prof": "Jewelcrafting",
         "Exp": "Shadowlands",
-        "craftQty": 18,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Essence of Valor", "id": "173173", "count": 4},
+            { "name": "Essence of Valor", "id": "173173", "count": 1},
             { "name": "Soul Dust", "id": "172230", "count": 4},
-            { "name": "Solenium Ore", "id": "171829", "count": 6}
+            { "name": "Solenium Ore", "id": "171829", "count": 5}
         ]
     },
     {
@@ -818,10 +1082,10 @@
         "id": "258247",
         "Prof": "Inscription",
         "Exp": "Shadowlands",
-        "craftQty": 20,
+        "craftQty": 9,
         "recipe": [
-            { "name": "Umbral Ink", "id": "173058", "count": 10},
-            { "name": "Sinvyr Ore", "id": "171832", "count": 5}
+            { "name": "Umbral Ink", "id": "173058", "count": 6},
+            { "name": "Sinvyr Ore", "id": "171832", "count": 4}
         ]
     },
     {
@@ -829,11 +1093,11 @@
         "id": "258238",
         "Prof": "Leatherworking",
         "Exp": "Shadowlands",
-        "craftQty": 18,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Pallid Bone", "id": "172092", "count": 12},
-            { "name": "Desolate Leather", "id": "172089", "count": 12},
-            { "name": "Oxxein Ore", "id": "171830", "count": 6}
+            { "name": "Pallid Bone", "id": "172092", "count": 10},
+            { "name": "Desolate Leather", "id": "172089", "count": 10},
+            { "name": "Oxxein Ore", "id": "171830", "count": 5}
         ]
     },
     {
@@ -841,11 +1105,11 @@
         "id": "260699",
         "Prof": "Jewelcrafting",
         "Exp": "Shadowlands",
-        "craftQty": 30,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Essence of Servitude", "id": "173172", "count": 8},
+            { "name": "Essence of Servitude", "id": "173172", "count": 2},
             { "name": "Eternal Crystal", "id": "172232", "count": 2},
-            { "name": "Laestrite Ore", "id": "171828", "count": 25}
+            { "name": "Laestrite Ore", "id": "171828", "count": 12}
         ]
     },
     {
@@ -853,11 +1117,11 @@
         "id": "258248",
         "Prof": "Leatherworking",
         "Exp": "Shadowlands",
-        "craftQty": 30,
+        "craftQty": 10,
         "recipe": [
             { "name": "Penumbra Thread", "id": "177062", "count": 5},
             { "name": "Callous Hide", "id": "172094", "count": 3},
-            { "name": "Desolate Leather", "id": "172089", "count": 14}
+            { "name": "Desolate Leather", "id": "172089", "count": 8}
         ]
     },
     {
@@ -865,11 +1129,11 @@
         "id": "257051",
         "Prof": "Alchemy",
         "Exp": "Shadowlands",
-        "craftQty": 9,
+        "craftQty": 5,
         "recipe": [
             { "name": "Sealing Wax", "id": "183953", "count": 6},
             { "name": "Shrouded Cloth", "id": "173202", "count": 2},
-            { "name": "Ground Widowbloom", "id": "171289", "count": 4}
+            { "name": "Ground Widowbloom", "id": "171289", "count": 3}
         ]
     },
     {
@@ -877,13 +1141,13 @@
         "id": "258239",
         "Prof": "Inscription",
         "Exp": "Shadowlands",
-        "craftQty": 10,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Tranquil Ink", "id": "175970", "count": 5},
+            { "name": "Tranquil Ink", "id": "175970", "count": 4},
             { "name": "Dark Parchment", "id": "175886", "count": 10},
-            { "name": "Essence of Servitude", "id": "173172", "count": 2},
+            { "name": "Essence of Servitude", "id": "173172", "count": 1},
             { "name": "Straddling Jewel Doublet", "id": "173126", "count": 1},
-            { "name": "Pallid Bone", "id": "172092", "count": 8}
+            { "name": "Pallid Bone", "id": "172092", "count": 6}
         ]
     },
     {
@@ -891,11 +1155,11 @@
         "id": "257050",
         "Prof": "Alchemy",
         "Exp": "Shadowlands",
-        "craftQty": 12,
+        "craftQty": 6,
         "recipe": [
             { "name": "Twilight Bark", "id": "177061", "count": 2},
-            { "name": "Essence of Rebirth", "id": "173170", "count": 2},
-            { "name": "Ground Nightshade", "id": "171292", "count": 3}
+            { "name": "Essence of Rebirth", "id": "173170", "count": 1},
+            { "name": "Ground Nightshade", "id": "171292", "count": 2}
         ]
     },
     {
@@ -903,10 +1167,10 @@
         "id": "257098",
         "Prof": "Enchanting",
         "Exp": "Shadowlands",
-        "craftQty": 6,
+        "craftQty": 3,
         "recipe": [
-            { "name": "Soul Dust", "id": "172230", "count": 4},
-            { "name": "Sinvyr Ore", "id": "171832", "count": 3}
+            { "name": "Soul Dust", "id": "172230", "count": 3},
+            { "name": "Sinvyr Ore", "id": "171832", "count": 2}
         ]
     },
     {
@@ -950,11 +1214,11 @@
         "id": "245432",
         "Prof": "Leatherworking",
         "Exp": "Warlords of Draenor",
-        "craftQty": 40,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Sumptuous Fur", "id": "111557", "count": 15},
-            { "name": "Raw Beast Hide", "id": "110609", "count": 45},
-            { "name": "True Iron Ore", "id": "109119", "count": 20}
+            { "name": "Sumptuous Fur", "id": "111557", "count": 8},
+            { "name": "Raw Beast Hide", "id": "110609", "count": 20},
+            { "name": "True Iron Ore", "id": "109119", "count": 10}
         ]
     },
     {
@@ -962,11 +1226,11 @@
         "id": "245436",
         "Prof": "Blacksmithing",
         "Exp": "Warlords of Draenor",
-        "craftQty": 40,
+        "craftQty": 16,
         "recipe": [
-            { "name": "Savage Blood", "id": "118472", "count": 5},
-            { "name": "Raw Beast Hide", "id": "110609", "count": 15},
-            { "name": "Blackrock Ore", "id": "109118", "count": 30}
+            { "name": "Savage Blood", "id": "118472", "count": 2},
+            { "name": "Raw Beast Hide", "id": "110609", "count": 9},
+            { "name": "Blackrock Ore", "id": "109118", "count": 20}
         ]
     },
     {
@@ -974,11 +1238,11 @@
         "id": "251482",
         "Prof": "Engineering",
         "Exp": "Warlords of Draenor",
-        "craftQty": 20,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Temporal Crystal", "id": "113588", "count": 3},
-            { "name": "Sorcerous Air", "id": "113264", "count": 12},
-            { "name": "Blackrock Ore", "id": "109118", "count": 20}
+            { "name": "Temporal Crystal", "id": "113588", "count": 2},
+            { "name": "Sorcerous Air", "id": "113264", "count": 7},
+            { "name": "Blackrock Ore", "id": "109118", "count": 10}
         ]
     },
     {
@@ -986,12 +1250,12 @@
         "id": "251550",
         "Prof": "Jewelcrafting",
         "Exp": "Warlords of Draenor",
-        "craftQty": 8,
+        "craftQty": 6,
         "recipe": [
             { "name": "Mastery Taladite", "id": "115805", "count": 1},
-            { "name": "Sorcerous Fire", "id": "113261", "count": 2},
-            { "name": "Sumptuous Fur", "id": "111557", "count": 4},
-            { "name": "Blackrock Ore", "id": "109118", "count": 10}
+            { "name": "Sorcerous Fire", "id": "113261", "count": 1},
+            { "name": "Sumptuous Fur", "id": "111557", "count": 3},
+            { "name": "Blackrock Ore", "id": "109118", "count": 6}
         ]
     },
     {
@@ -999,11 +1263,11 @@
         "id": "251655",
         "Prof": "Enchanting",
         "Exp": "Warlords of Draenor",
-        "craftQty": 10,
+        "craftQty": 5,
         "recipe": [
-            { "name": "Sumptuous Fur", "id": "111557", "count": 5},
-            { "name": "Luminous Shard", "id": "111245", "count": 6},
-            { "name": "Blackrock Ore", "id": "109118", "count": 5}
+            { "name": "Sumptuous Fur", "id": "111557", "count": 3},
+            { "name": "Luminous Shard", "id": "111245", "count": 3},
+            { "name": "Blackrock Ore", "id": "109118", "count": 4}
         ]
     },
     {
@@ -1011,11 +1275,11 @@
         "id": "251495",
         "Prof": "Jewelcrafting",
         "Exp": "Warlords of Draenor",
-        "craftQty": 25,
+        "craftQty": 12,
         "recipe": [
             { "name": "Greater Haste Taladite", "id": "115811", "count": 1},
-            { "name": "Sorcerous Water", "id": "113262", "count": 12},
-            { "name": "Blackrock Ore", "id": "109118", "count": 20}
+            { "name": "Sorcerous Water", "id": "113262", "count": 5},
+            { "name": "Blackrock Ore", "id": "109118", "count": 14}
         ]
     },
     {
@@ -1023,11 +1287,11 @@
         "id": "244314",
         "Prof": "Engineering",
         "Exp": "Warlords of Draenor",
-        "craftQty": 25,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Cerulean Pigment", "id": "114931", "count": 5},
-            { "name": "True Iron Ore", "id": "109119", "count": 15},
-            { "name": "Blackrock Ore", "id": "109118", "count": 10},
+            { "name": "Cerulean Pigment", "id": "114931", "count": 4},
+            { "name": "True Iron Ore", "id": "109119", "count": 10},
+            { "name": "Blackrock Ore", "id": "109118", "count": 8},
             { "name": "Light Parchment", "id": "39354", "count": 2}
         ]
     },
@@ -1036,11 +1300,11 @@
         "id": "245534",
         "Prof": "Inscription",
         "Exp": "Warlords of Draenor",
-        "craftQty": 25,
+        "craftQty": 14,
         "recipe": [
-            { "name": "Savage Blood", "id": "118472", "count": 10},
-            { "name": "Sorcerous Fire", "id": "113261", "count": 6},
-            { "name": "True Iron Ore", "id": "109119", "count": 20}
+            { "name": "Savage Blood", "id": "118472", "count": 5},
+            { "name": "Sorcerous Fire", "id": "113261", "count": 3},
+            { "name": "True Iron Ore", "id": "109119", "count": 10}
         ]
     },
     {
@@ -1048,11 +1312,11 @@
         "id": "245600",
         "Prof": "Blacksmithing",
         "Exp": "Warlords of Draenor",
-        "craftQty": 45,
+        "craftQty": 20,
         "recipe": [
-            { "name": "Sorcerous Fire", "id": "113261", "count": 25},
-            { "name": "True Iron Ore", "id": "109119", "count": 50},
-            { "name": "Blackrock Ore", "id": "109118", "count": 25}
+            { "name": "Sorcerous Fire", "id": "113261", "count": 10},
+            { "name": "True Iron Ore", "id": "109119", "count": 20},
+            { "name": "Blackrock Ore", "id": "109118", "count": 15}
         ]
     },
     {
@@ -1060,12 +1324,12 @@
         "id": "245428",
         "Prof": "Cooking",
         "Exp": "Warlords of Draenor",
-        "craftQty": 8,
+        "craftQty": 5,
         "recipe": [
             { "name": "Perfect Preservatives", "id": "259894", "count": 5},
             { "name": "Telmor-Aruuna Hard Cheese", "id": "115352", "count": 5},
-            { "name": "Blackrock Barbecue", "id": "111449", "count": 5},
-            { "name": "True Iron Ore", "id": "109119", "count": 10}
+            { "name": "Blackrock Barbecue", "id": "111449", "count": 3},
+            { "name": "True Iron Ore", "id": "109119", "count": 7}
         ]
     },
     {
@@ -1073,10 +1337,10 @@
         "id": "245421",
         "Prof": "Tailoring",
         "Exp": "Warlords of Draenor",
-        "craftQty": 35,
+        "craftQty": 15,
         "recipe": [
-            { "name": "Cerulean Pigment", "id": "114931", "count": 12},
-            { "name": "Sumptuous Fur", "id": "111557", "count": 50}
+            { "name": "Cerulean Pigment", "id": "114931", "count": 8},
+            { "name": "Sumptuous Fur", "id": "111557", "count": 25}
         ]
     },
     {
@@ -1084,11 +1348,11 @@
         "id": "244317",
         "Prof": "Inscription",
         "Exp": "Warlords of Draenor",
-        "craftQty": 6,
+        "craftQty": 5,
         "recipe": [
-            { "name": "Cerulean Pigment", "id": "114931", "count": 6},
-            { "name": "Sorcerous Earth", "id": "113263", "count": 4},
-            { "name": "Blackrock Ore", "id": "109118", "count": 8}
+            { "name": "Cerulean Pigment", "id": "114931", "count": 4},
+            { "name": "Sorcerous Earth", "id": "113263", "count": 1},
+            { "name": "Blackrock Ore", "id": "109118", "count": 6}
         ]
     },
     {
@@ -1096,11 +1360,11 @@
         "id": "257044",
         "Prof": "Alchemy",
         "Exp": "Warlords of Draenor",
-        "craftQty": 25,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Felblight", "id": "127759", "count": 15},
-            { "name": "True Iron Ore", "id": "109119", "count": 10},
-            { "name": "Alchemical Catalyst", "id": "108996", "count": 20}
+            { "name": "Felblight", "id": "127759", "count": 8},
+            { "name": "True Iron Ore", "id": "109119", "count": 6},
+            { "name": "Alchemical Catalyst", "id": "108996", "count": 8}
         ]
     },
     {
@@ -1108,11 +1372,11 @@
         "id": "244313",
         "Prof": "Inscription",
         "Exp": "Warlords of Draenor",
-        "craftQty": 15,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Sorcerous Earth", "id": "113263", "count": 8},
-            { "name": "Sumptuous Fur", "id": "111557", "count": 10},
-            { "name": "True Iron Ore", "id": "109119", "count": 15}
+            { "name": "Sorcerous Earth", "id": "113263", "count": 2},
+            { "name": "Sumptuous Fur", "id": "111557", "count": 3},
+            { "name": "True Iron Ore", "id": "109119", "count": 10}
         ]
     },
     {
@@ -1120,10 +1384,10 @@
         "id": "245441",
         "Prof": "Inscription",
         "Exp": "Warlords of Draenor",
-        "craftQty": 10,
+        "craftQty": 4,
         "recipe": [
-            { "name": "Sorcerous Earth", "id": "113263", "count": 4},
-            { "name": "True Iron Ore", "id": "109119", "count": 10}
+            { "name": "Sorcerous Earth", "id": "113263", "count": 2},
+            { "name": "True Iron Ore", "id": "109119", "count": 6}
         ]
     },
     {
@@ -1131,10 +1395,10 @@
         "id": "244323",
         "Prof": "Leatherworking",
         "Exp": "Warlords of Draenor",
-        "craftQty": 22,
+        "craftQty": 14,
         "recipe": [
-            { "name": "Raw Beast Hide", "id": "110609", "count": 30},
-            { "name": "True Iron Ore", "id": "109119", "count": 15}
+            { "name": "Raw Beast Hide", "id": "110609", "count": 10},
+            { "name": "True Iron Ore", "id": "109119", "count": 10}
         ]
     },
     {
@@ -1142,11 +1406,11 @@
         "id": "244318",
         "Prof": "Alchemy",
         "Exp": "Warlords of Draenor",
-        "craftQty": 16,
+        "craftQty": 12,
         "recipe": [
             { "name": "Gorgrond Grapes", "id": "117454", "count": 6},
-            { "name": "Sorcerous Water", "id": "113262", "count": 6},
-            { "name": "Alchemical Catalyst", "id": "108996", "count": 10}
+            { "name": "Sorcerous Water", "id": "113262", "count": 4},
+            { "name": "Alchemical Catalyst", "id": "108996", "count": 4}
         ]
     },
     {
@@ -1154,11 +1418,11 @@
         "id": "244319",
         "Prof": "Inscription",
         "Exp": "Warlords of Draenor",
-        "craftQty": 8,
+        "craftQty": 4,
         "recipe": [
-            { "name": "Cerulean Pigment", "id": "114931", "count": 10},
-            { "name": "Sorcerous Earth", "id": "113263", "count": 6},
-            { "name": "Blackrock Ore", "id": "109118", "count": 12}
+            { "name": "Cerulean Pigment", "id": "114931", "count": 6},
+            { "name": "Sorcerous Earth", "id": "113263", "count": 2},
+            { "name": "Blackrock Ore", "id": "109118", "count": 5}
         ]
     },
     {
@@ -1166,12 +1430,12 @@
         "id": "245517",
         "Prof": "Alchemy",
         "Exp": "Cataclysm",
-        "craftQty": 30,
+        "craftQty": 15,
         "recipe": [
             { "name": "Living Ember", "id": "69237", "count": 1},
-            { "name": "Deepstone Oil", "id": "56850", "count": 6},
-            { "name": "Obsidium Bar", "id": "54849", "count": 16},
-            { "name": "Volatile Water", "id": "52326", "count": 40}
+            { "name": "Deepstone Oil", "id": "56850", "count": 4},
+            { "name": "Obsidium Bar", "id": "54849", "count": 10},
+            { "name": "Volatile Water", "id": "52326", "count": 15}
         ]
     },
     {
@@ -1179,11 +1443,11 @@
         "id": "257694",
         "Prof": "Alchemy",
         "Exp": "Cataclysm",
-        "craftQty": 10,
+        "craftQty": 3,
         "recipe": [
-            { "name": "Whiptail", "id": "52988", "count": 5},
-            { "name": "Azshara's Veil", "id": "52985", "count": 3},
-            { "name": "Volatile Life", "id": "52329", "count": 5},
+            { "name": "Whiptail", "id": "52988", "count": 2},
+            { "name": "Azshara's Veil", "id": "52985", "count": 2},
+            { "name": "Volatile Life", "id": "52329", "count": 2},
             { "name": "Volatile Water", "id": "3371", "count": 1}
         ]
     },
@@ -1192,10 +1456,10 @@
         "id": "257696",
         "Prof": "Inscription",
         "Exp": "Cataclysm",
-        "craftQty": 8,
+        "craftQty": 3,
         "recipe": [
-            { "name": "Blackfallow Ink", "id": "61978", "count": 8},
-            { "name": "Obsidium Bar", "id": "54849", "count": 3},
+            { "name": "Blackfallow Ink", "id": "61978", "count": 5},
+            { "name": "Obsidium Bar", "id": "54849", "count": 1},
             { "name": "Light Parchment", "id": "39354", "count": 1}
         ]
     },
@@ -1204,10 +1468,10 @@
         "id": "257042",
         "Prof": "Blacksmithing",
         "Exp": "Cataclysm",
-        "craftQty": 8,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Volatile Earth", "id": "52327", "count": 6},
-            { "name": "Elementium Bar", "id": "52186", "count": 12}
+            { "name": "Volatile Earth", "id": "52327", "count": 3},
+            { "name": "Elementium Bar", "id": "52186", "count": 5}
         ]
     },
     {
@@ -1215,11 +1479,11 @@
         "id": "257695",
         "Prof": "Inscription",
         "Exp": "Cataclysm",
-        "craftQty": 35,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Blackfallow Ink", "id": "61978", "count": 10},
+            { "name": "Blackfallow Ink", "id": "61978", "count": 7},
             { "name": "Obsidium Skeleton Key", "id": "55053", "count": 1},
-            { "name": "Elementium Bar", "id": "52186", "count": 12}
+            { "name": "Elementium Bar", "id": "52186", "count": 7}
         ]
     },
     {
@@ -1227,10 +1491,10 @@
         "id": "245602",
         "Prof": "Engineering",
         "Exp": "Cataclysm",
-        "craftQty": 40,
+        "craftQty": 20,
         "recipe": [
-            { "name": "Handful of Obsidium Bolts", "id": "60224", "count": 8},
-            { "name": "Hardened Elementium Bar", "id": "53039", "count": 4},
+            { "name": "Handful of Obsidium Bolts", "id": "60224", "count": 6},
+            { "name": "Hardened Elementium Bar", "id": "53039", "count": 2},
             { "name": "Embersilk Cloth", "id": "53010", "count": 6}
         ]
     },
@@ -1239,11 +1503,11 @@
         "id": "245623",
         "Prof": "Inscription",
         "Exp": "Cataclysm",
-        "craftQty": 25,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Inferno Ink", "id": "61981", "count": 8},
-            { "name": "Deepstone Oil", "id": "56850", "count": 4},
-            { "name": "Volatile Air", "id": "52328", "count": 6}
+            { "name": "Inferno Ink", "id": "61981", "count": 5},
+            { "name": "Deepstone Oil", "id": "56850", "count": 2},
+            { "name": "Volatile Air", "id": "52328", "count": 5}
         ]
     },
     {
@@ -1264,11 +1528,11 @@
         "id": "264712",
         "Prof": "Leatherworking",
         "Exp": "Cataclysm",
-        "craftQty": 12,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Obsidium Bar", "id": "54849", "count": 4},
-            { "name": "Pristine Hide", "id": "52980", "count": 4},
-            { "name": "Eternium Thread", "id": "38426", "count": 8}
+            { "name": "Obsidium Bar", "id": "54849", "count": 3},
+            { "name": "Pristine Hide", "id": "52980", "count": 3},
+            { "name": "Eternium Thread", "id": "38426", "count": 5}
         ]
     },
     {
@@ -1276,9 +1540,9 @@
         "id": "245622",
         "Prof": "Inscription",
         "Exp": "Cataclysm",
-        "craftQty": 10,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Blackfallow Ink", "id": "61978", "count": 4},
+            { "name": "Blackfallow Ink", "id": "61978", "count": 3},
             { "name": "Elementium Bar", "id": "52186", "count": 2}
         ]
     },
@@ -1287,11 +1551,11 @@
         "id": "245621",
         "Prof": "Inscription",
         "Exp": "Cataclysm",
-        "craftQty": 25,
+        "craftQty": 16,
         "recipe": [
-            { "name": "Inferno Ink", "id": "61981", "count": 8},
-            { "name": "Deepstone Oil", "id": "56850", "count": 4},
-            { "name": "Volatile Earth", "id": "52327", "count": 6}
+            { "name": "Inferno Ink", "id": "61981", "count": 5},
+            { "name": "Deepstone Oil", "id": "56850", "count": 2},
+            { "name": "Volatile Earth", "id": "52327", "count": 4}
         ]
     },
     {
@@ -1299,10 +1563,10 @@
         "id": "257404",
         "Prof": "Enchanting",
         "Exp": "Cataclysm",
-        "craftQty": 8,
+        "craftQty": 4,
         "recipe": [
-            { "name": "Hypnotic Dust", "id": "52555", "count": 6},
-            { "name": "Volatile Fire", "id": "52325", "count": 3},
+            { "name": "Hypnotic Dust", "id": "52555", "count": 4},
+            { "name": "Volatile Fire", "id": "52325", "count": 2},
             { "name": "Crystal Vial", "id": "3371", "count": 1}
         ]
     },
@@ -1311,11 +1575,11 @@
         "id": "264677",
         "Prof": "Leatherworking",
         "Exp": "Cataclysm",
-        "craftQty": 14,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Heavy Savage Leather", "id": "56516", "count": 10},
-            { "name": "Volatile Earth", "id": "52327", "count": 4},
-            { "name": "Eternium Thread", "id": "38426", "count": 8}
+            { "name": "Heavy Savage Leather", "id": "56516", "count": 6},
+            { "name": "Volatile Earth", "id": "52327", "count": 2},
+            { "name": "Eternium Thread", "id": "38426", "count": 6}
         ]
     },
     {
@@ -1323,11 +1587,11 @@
         "id": "257806",
         "Prof": "Leatherworking",
         "Exp": "Cataclysm",
-        "craftQty": 40,
+        "craftQty": 15,
         "recipe": [
-            { "name": "Heavy Savage Leather", "id": "56516", "count": 10},
-            { "name": "Obsidium Bar", "id": "54849", "count": 15},
-            { "name": "Blackened Dragonscale", "id": "52979", "count": 20},
+            { "name": "Heavy Savage Leather", "id": "56516", "count": 8},
+            { "name": "Obsidium Bar", "id": "54849", "count": 10},
+            { "name": "Blackened Dragonscale", "id": "52979", "count": 10},
             { "name": "Inferno Ruby", "id": "52190", "count": 1}
         ]
     },
@@ -1336,12 +1600,12 @@
         "id": "257689",
         "Prof": "Engineering",
         "Exp": "Cataclysm",
-        "craftQty": 50,
+        "craftQty": 25,
         "recipe": [
-            { "name": "Electrified Ether", "id": "67749", "count": 5},
-            { "name": "Handful of Obsidium Bolts", "id": "60224", "count": 6},
-            { "name": "Obsidium Bar", "id": "54849", "count": 15},
-            { "name": "Savage Leather", "id": "52976", "count": 12}
+            { "name": "Electrified Ether", "id": "67749", "count": 3},
+            { "name": "Handful of Obsidium Bolts", "id": "60224", "count": 4},
+            { "name": "Obsidium Bar", "id": "54849", "count": 8},
+            { "name": "Savage Leather", "id": "52976", "count": 6}
         ]
     },
     {
@@ -1349,11 +1613,11 @@
         "id": "257406",
         "Prof": "Jewelcrafting",
         "Exp": "Cataclysm",
-        "craftQty": 8,
+        "craftQty": 3,
         "recipe": [
-            { "name": "Obsidium Bar", "id": "54849", "count": 6},
-            { "name": "Ember Topaz", "id": "52193", "count": 4},
-            { "name": "Chaos Orb", "id": "52078", "count": 2}
+            { "name": "Obsidium Bar", "id": "54849", "count": 3},
+            { "name": "Ember Topaz", "id": "52193", "count": 2},
+            { "name": "Chaos Orb", "id": "52078", "count": 1}
         ]
     },
     {
@@ -1361,12 +1625,12 @@
         "id": "249143",
         "Prof": "Jewelcrafting",
         "Exp": "Cataclysm",
-        "craftQty": 12,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Obsidium Bar", "id": "54849", "count": 10},
-            { "name": "Embersilk Cloth", "id": "53010", "count": 4},
-            { "name": "Ember Topaz", "id": "52193", "count": 4},
-            { "name": "Chaos Orb", "id": "52078", "count": 2}
+            { "name": "Obsidium Bar", "id": "54849", "count": 4},
+            { "name": "Embersilk Cloth", "id": "53010", "count": 3},
+            { "name": "Ember Topaz", "id": "52193", "count": 1},
+            { "name": "Chaos Orb", "id": "52078", "count": 1}
         ]
     },
     {
@@ -1374,11 +1638,11 @@
         "id": "257409",
         "Prof": "Blacksmithing",
         "Exp": "Cataclysm",
-        "craftQty": 35,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Obsidium Bar", "id": "54849", "count": 20},
-            { "name": "Ember Topaz", "id": "52193", "count": 8},
-            { "name": "Chaos Orb", "id": "52078", "count": 4}
+            { "name": "Obsidium Bar", "id": "54849", "count": 7},
+            { "name": "Ember Topaz", "id": "52193", "count": 3},
+            { "name": "Chaos Orb", "id": "52078", "count": 2}
         ]
     },
     {
@@ -1386,11 +1650,11 @@
         "id": "245618",
         "Prof": "Tailoring",
         "Exp": "Cataclysm",
-        "craftQty": 35,
+        "craftQty": 14,
         "recipe": [
-            { "name": "Obsidium Bar", "id": "54849", "count": 6},
-            { "name": "Powerful Ghostly Spellthread", "id": "54450", "count": 4},
-            { "name": "Bolt of Embersilk Cloth", "id": "53643", "count": 20}
+            { "name": "Obsidium Bar", "id": "54849", "count": 3},
+            { "name": "Powerful Ghostly Spellthread", "id": "54450", "count": 1},
+            { "name": "Bolt of Embersilk Cloth", "id": "53643", "count": 8}
         ]
     },
     {
@@ -1398,12 +1662,12 @@
         "id": "247733",
         "Prof": "Engineering",
         "Exp": "Mists of Pandaria",
-        "craftQty": 30,
+        "craftQty": 1230,
         "recipe": [
-            { "name": "Ghost Iron Bolts", "id": "77467", "count": 12},
-            { "name": "Spirit of Harmony", "id": "76061", "count": 8},
-            { "name": "Trillium Bar", "id": "72095", "count": 20},
-            { "name": "Coal", "id": "3857", "count": 10}
+            { "name": "Ghost Iron Bolts", "id": "77467", "count": 10},
+            { "name": "Spirit of Harmony", "id": "76061", "count": 3},
+            { "name": "Trillium Bar", "id": "72095", "count": 8},
+            { "name": "Coal", "id": "3857", "count": 8}
         ]
     },
     {
@@ -1411,10 +1675,10 @@
         "id": "247731",
         "Prof": "Inscription",
         "Exp": "Mists of Pandaria",
-        "craftQty": 15,
+        "craftQty": 7,
         "recipe": [
             { "name": "Bolt of Windwool Cloth", "id": "82441", "count": 2},
-            { "name": "Starlight Ink", "id": "79255", "count": 5}
+            { "name": "Starlight Ink", "id": "79255", "count": 4}
         ]
     },
     {
@@ -1422,10 +1686,10 @@
         "id": "257097",
         "Prof": "Enchanting",
         "Exp": "Mists of Pandaria",
-        "craftQty": 30,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Haunting Spirit", "id": "94289", "count": 4},
-            { "name": "Sha Crystal", "id": "74248", "count": 15},
+            { "name": "Haunting Spirit", "id": "94289", "count": 3},
+            { "name": "Sha Crystal", "id": "74248", "count": 10},
             { "name": "Coal", "id": "3857", "count": 5}
         ]
     },
@@ -1434,12 +1698,12 @@
         "id": "247736",
         "Prof": "Jewelcrafting",
         "Exp": "Mists of Pandaria",
-        "craftQty": 50,
+        "craftQty": 25,
         "recipe": [
             { "name": "Orb of Mystery", "id": "83092", "count": 1},
             { "name": "Serpent's Eye", "id": "76734", "count": 2},
-            { "name": "Spirit of Harmony", "id": "76061", "count": 6},
-            { "name": "Trillium Bar", "id": "72095", "count": 30}
+            { "name": "Spirit of Harmony", "id": "76061", "count": 3},
+            { "name": "Trillium Bar", "id": "72095", "count": 15}
         ]
     },
     {
@@ -1447,12 +1711,12 @@
         "id": "247669",
         "Prof": "Inscription",
         "Exp": "Mists of Pandaria",
-        "craftQty": 45,
+        "craftQty": 15,
         "recipe": [
-            { "name": "Starlight Ink", "id": "79255", "count": 20},
-            { "name": "Spirit of Harmony", "id": "76061", "count": 8},
-            { "name": "Living Steel", "id": "72104", "count": 4},
-            { "name": "Light Parchment", "id": "39354", "count": 18}
+            { "name": "Starlight Ink", "id": "79255", "count": 8},
+            { "name": "Spirit of Harmony", "id": "76061", "count": 4},
+            { "name": "Living Steel", "id": "72104", "count": 3},
+            { "name": "Light Parchment", "id": "39354", "count": 15}
         ]
     },
     {
@@ -1460,10 +1724,10 @@
         "id": "247735",
         "Prof": "Inscription",
         "Exp": "Mists of Pandaria",
-        "craftQty": 20,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Desecrated Oil", "id": "87872", "count": 5},
-            { "name": "Ink of Dreams", "id": "79254", "count": 6}
+            { "name": "Desecrated Oil", "id": "87872", "count": 3},
+            { "name": "Ink of Dreams", "id": "79254", "count": 4}
         ]
     },
     {
@@ -1471,13 +1735,13 @@
         "id": "247220",
         "Prof": "Cooking",
         "Exp": "Mists of Pandaria",
-        "craftQty": 18,
+        "craftQty": 20,
         "recipe": [
-            { "name": "Perfect Preservatives", "id": "259894", "count": 10},
+            { "name": "Perfect Preservatives", "id": "259894", "count": 8},
             { "name": "100 Year Soy Sauce", "id": "74853", "count": 1},
-            { "name": "Ginseng", "id": "74845", "count": 10},
-            { "name": "Scallions", "id": "74843", "count": 50},
-            { "name": "Wildfowl Breast", "id": "74839", "count":10},
+            { "name": "Ginseng", "id": "74845", "count": 6},
+            { "name": "Scallions", "id": "74843", "count": 35},
+            { "name": "Wildfowl Breast", "id": "74839", "count":6},
             { "name": "Rice Flour", "id": "74662", "count": 1}
         ]
     },
@@ -1486,11 +1750,11 @@
         "id": "258214",
         "Prof": "Alchemy",
         "Exp": "Mists of Pandaria",
-        "craftQty": 16,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Master Mana Potion", "id": "76098", "count": 5},
-            { "name": "Golden Lotus", "id": "72238", "count": 3},
-            { "name": "Green Tea Leaf", "id": "72234", "count": 12},
+            { "name": "Master Mana Potion", "id": "76098", "count": 4},
+            { "name": "Golden Lotus", "id": "72238", "count": 2},
+            { "name": "Green Tea Leaf", "id": "72234", "count": 8},
             { "name": "Crystal Vial", "id": "3371", "count": 1}
         ]
     },
@@ -1499,11 +1763,11 @@
         "id": "257043",
         "Prof": "Alchemy",
         "Exp": "Mists of Pandaria",
-        "craftQty": 6,
+        "craftQty": 5,
         "recipe": [
-            { "name": "Spirit of Harmony", "id": "76061", "count": 2},
-            { "name": "Rain Poppy", "id": "72237", "count": 8},
-            { "name": "Ghost Iron Bar", "id": "72096", "count": 6}
+            { "name": "Spirit of Harmony", "id": "76061", "count": 1},
+            { "name": "Rain Poppy", "id": "72237", "count": 4},
+            { "name": "Ghost Iron Bar", "id": "72096", "count": 4}
         ]
     },
     {
@@ -1511,10 +1775,10 @@
         "id": "247752",
         "Prof": "Blacksmithing",
         "Exp": "Mists of Pandaria",
-        "craftQty": 40,
+        "craftQty": 25,
         "recipe": [
-            { "name": "Spirit of Harmony", "id": "76061", "count": 6},
-            { "name": "Trillium Bar", "id": "72095", "count": 35}
+            { "name": "Spirit of Harmony", "id": "76061", "count": 3},
+            { "name": "Trillium Bar", "id": "72095", "count": 18}
         ]
     },
     {
@@ -1522,10 +1786,10 @@
         "id": "258302",
         "Prof": "Tailoring",
         "Exp": "Mists of Pandaria",
-        "craftQty": 8,
+        "craftQty": 5,
         "recipe": [
-            { "name": "Bolt of Windwool Cloth", "id": "82441", "count": 5},
-            { "name": "Golden Carp", "id": "74866", "count": 10}
+            { "name": "Bolt of Windwool Cloth", "id": "82441", "count": 3},
+            { "name": "Golden Carp", "id": "74866", "count": 8}
         ]
     },
     {
@@ -1533,10 +1797,10 @@
         "id": "247738",
         "Prof": "Tailoring",
         "Exp": "Mists of Pandaria",
-        "craftQty": 25,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Bolt of Windwool Cloth", "id": "82441", "count": 15},
-            { "name": "Greater Pearlescent Spellthread", "id": "82444", "count": 2}
+            { "name": "Bolt of Windwool Cloth", "id": "82441", "count": 8},
+            { "name": "Greater Pearlescent Spellthread", "id": "82444", "count": 1}
         ]
     },
     {
@@ -1544,11 +1808,11 @@
         "id": "247661",
         "Prof": "Blacksmithing",
         "Exp": "Mists of Pandaria",
-        "craftQty": 25,
+        "craftQty": 13,
         "recipe": [
-            { "name": "Blood Spirit", "id": "80433", "count": 4},
-            { "name": "Living Steel", "id": "72104", "count": 3},
-            { "name": "Coal", "id": "3857", "count": 5}
+            { "name": "Blood Spirit", "id": "80433", "count": 3},
+            { "name": "Living Steel", "id": "72104", "count": 2},
+            { "name": "Coal", "id": "3857", "count": 4}
         ]
     },
     {
@@ -1556,10 +1820,10 @@
         "id": "247728",
         "Prof": "Jewelcrafting",
         "Exp": "Mists of Pandaria",
-        "craftQty": 10,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Spirit of Harmony", "id": "76061", "count": 2},
-            { "name": "Ghost Iron Bar", "id": "72096", "count": 6}
+            { "name": "Spirit of Harmony", "id": "76061", "count": 1},
+            { "name": "Ghost Iron Bar", "id": "72096", "count": 4}
         ]
     },
     {
@@ -1567,10 +1831,10 @@
         "id": "245509",
         "Prof": "Jewelcrafting",
         "Exp": "Mists of Pandaria",
-        "craftQty": 15,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Spirit of Harmony", "id": "76061", "count": 2},
-            { "name": "Ghost Iron Bar", "id": "72096", "count": 10}
+            { "name": "Spirit of Harmony", "id": "76061", "count": 1},
+            { "name": "Ghost Iron Bar", "id": "72096", "count": 6}
         ]
     },
     {
@@ -1578,11 +1842,11 @@
         "id": "257096",
         "Prof": "Enchanting",
         "Exp": "Mists of Pandaria",
-        "craftQty": 8,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Spirit of Harmony", "id": "76061", "count": 2},
-            { "name": "Ethereal Shard", "id": "72247", "count": 9},
-            { "name": "Windwool Cloth", "id": "72988", "count": 4}
+            { "name": "Spirit of Harmony", "id": "76061", "count": 1},
+            { "name": "Ethereal Shard", "id": "72247", "count": 6},
+            { "name": "Windwool Cloth", "id": "72988", "count": 3}
         ]
     },
     {
@@ -1590,11 +1854,11 @@
         "id": "245514",
         "Prof": "Inscription",
         "Exp": "Mists of Pandaria",
-        "craftQty": 25,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Desecrated Oil", "id": "87872", "count": 5},
-            { "name": "Ink of Dreams", "id": "79254", "count": 6},
-            { "name": "Spirit of Harmony", "id": "76061", "count": 4}
+            { "name": "Desecrated Oil", "id": "87872", "count": 4},
+            { "name": "Ink of Dreams", "id": "79254", "count": 4},
+            { "name": "Spirit of Harmony", "id": "76061", "count": 2}
         ]
     },
     {
@@ -1602,12 +1866,12 @@
         "id": "258216",
         "Prof": "Engineering",
         "Exp": "Mists of Pandaria",
-        "craftQty": 50,
+        "craftQty": 28,
         "recipe": [
-            { "name": "Desecrated Oil", "id": "87872", "count": 4},
-            { "name": "High-Explosive Gunpowder", "id": "77468", "count": 30},
-            { "name": "Ghost Iron Bolts", "id": "77467", "count": 16},
-            { "name": "Trillium Bar", "id": "72095", "count": 40}
+            { "name": "Desecrated Oil", "id": "87872", "count": 3},
+            { "name": "High-Explosive Gunpowder", "id": "77468", "count": 20},
+            { "name": "Ghost Iron Bolts", "id": "77467", "count": 10},
+            { "name": "Trillium Bar", "id": "72095", "count": 15}
         ]
     },
     {
@@ -1615,11 +1879,11 @@
         "id": "247856",
         "Prof": "Leatherworking",
         "Exp": "Mists of Pandaria",
-        "craftQty": 40,
+        "craftQty": 15,
         "recipe": [
-            { "name": "Starlight Ink", "id": "79255", "count": 5},
-            { "name": "Spirit of Harmony", "id": "76061", "count": 5},
-            { "name": "Magnificent Hide", "id": "72163", "count": 8}
+            { "name": "Starlight Ink", "id": "79255", "count": 3},
+            { "name": "Spirit of Harmony", "id": "76061", "count": 3},
+            { "name": "Magnificent Hide", "id": "72163", "count": 3}
         ]
     },
     {
@@ -1627,10 +1891,10 @@
         "id": "245513",
         "Prof": "Inscription",
         "Exp": "Mists of Pandaria",
-        "craftQty": 20,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Ink of Dreams", "id": "79254", "count": 6},
-            { "name": "Spirit of Harmony", "id": "76061", "count": 4}
+            { "name": "Ink of Dreams", "id": "79254", "count": 4},
+            { "name": "Spirit of Harmony", "id": "76061", "count": 2}
         ]
     },
     {
@@ -1638,11 +1902,11 @@
         "id": "247767",
         "Prof": "Leatherworking",
         "Exp": "Mists of Pandaria",
-        "craftQty": 30,
+        "craftQty": 16,
         "recipe": [
-            { "name": "Ink of Dreams", "id": "79254", "count": 5},
-            { "name": "Spirit of Harmony", "id": "76061", "count": 3},
-            { "name": "Magnificent Hide", "id": "72163", "count": 6}
+            { "name": "Ink of Dreams", "id": "79254", "count": 3},
+            { "name": "Spirit of Harmony", "id": "76061", "count": 2},
+            { "name": "Magnificent Hide", "id": "72163", "count": 4}
         ]
     },
     {
@@ -1663,12 +1927,12 @@
         "id": "258557",
         "Prof": "Tailoring",
         "Exp": "Legion",
-        "craftQty": 8,
+        "craftQty": 7,
         "recipe": [
             { "name": "Chaotic Spinel", "id": "130175", "count": 2},
-            { "name": "Roseate Pigment", "id": "129032", "count": 5},
+            { "name": "Roseate Pigment", "id": "129032", "count": 4},
             { "name": "Runic Catgut", "id": "127037", "count": 2},
-            { "name": "Shal'dorei Silk", "id": "124437", "count": 15}
+            { "name": "Shal'dorei Silk", "id": "124437", "count": 10}
         ]
     },
     {
@@ -1676,11 +1940,11 @@
         "id": "247920",
         "Prof": "Tailoring",
         "Exp": "Legion",
-        "craftQty": 40,
+        "craftQty": 14,
         "recipe": [
-            { "name": "Roseate Pigment", "id": "129032", "count": 15},
-            { "name": "Runic Catgut", "id": "127037", "count": 8},
-            { "name": "Shal'dorei Silk", "id": "124437", "count": 40}
+            { "name": "Roseate Pigment", "id": "129032", "count": 10},
+            { "name": "Runic Catgut", "id": "127037", "count": 6},
+            { "name": "Shal'dorei Silk", "id": "124437", "count": 20}
         ]
     },
     {
@@ -1688,11 +1952,11 @@
         "id": "247916",
         "Prof": "Inscription",
         "Exp": "Legion",
-        "craftQty": 35,
+        "craftQty": 18,
         "recipe": [
-            { "name": "Roseate Pigment", "id": "129032", "count": 25},
-            { "name": "Imbued Silkweave", "id": "127004", "count": 6},
-            { "name": "Demonsteel Bar", "id": "124461", "count": 15}
+            { "name": "Roseate Pigment", "id": "129032", "count": 15},
+            { "name": "Imbued Silkweave", "id": "127004", "count": 4},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 8}
         ]
     },
     {
@@ -1700,10 +1964,10 @@
         "id": "258226",
         "Prof": "Engineering",
         "Exp": "Legion",
-        "craftQty": 22,
+        "craftQty": 14,
         "recipe": [
             { "name": "Auto-Hammer", "id": "132514", "count": 1},
-            { "name": "Demonsteel Bar", "id": "124461", "count": 15}
+            { "name": "Demonsteel Bar", "id": "124461", "count": 7}
         ]
     },
     {
@@ -1711,11 +1975,11 @@
         "id": "258224",
         "Prof": "Inscription",
         "Exp": "Legion",
-        "craftQty": 22,
+        "craftQty": 14,
         "recipe": [
-            { "name": "Astral Glory", "id": "151565", "count": 10},
+            { "name": "Astral Glory", "id": "151565", "count": 6},
             { "name": "Straszan Mark", "id": "136693", "count": 1},
-            { "name": "Roseate Pigment", "id": "129032", "count": 15}
+            { "name": "Roseate Pigment", "id": "129032", "count": 8}
         ]
     },
     {
@@ -1723,12 +1987,12 @@
         "id": "258225",
         "Prof": "Engineering",
         "Exp": "Legion",
-        "craftQty": 28,
+        "craftQty": 16,
         "recipe": [
-            { "name": "Oversized Blasting Cap", "id": "136637", "count": 15},
-            { "name": "Loose Trigger", "id": "136633", "count": 10},
-            { "name": "Shadowruby", "id": "130183", "count": 3},
-            { "name": "Demonsteel Bar", "id": "124461", "count": 20}
+            { "name": "Oversized Blasting Cap", "id": "136637", "count": 8},
+            { "name": "Loose Trigger", "id": "136633", "count": 8},
+            { "name": "Shadowruby", "id": "130183", "count": 1},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 8}
         ]
     },
     {
@@ -1736,11 +2000,11 @@
         "id": "257400",
         "Prof": "Leatherworking",
         "Exp": "Legion",
-        "craftQty": 34,
+        "craftQty": 16,
         "recipe": [
-            { "name": "Unbroken Claw", "id": "124438", "count": 10},
-            { "name": "Felhide", "id": "124116", "count": 5},
-            { "name": "Stonehide Leather", "id": "124113", "count": 25}
+            { "name": "Unbroken Claw", "id": "124438", "count": 6},
+            { "name": "Felhide", "id": "124116", "count": 3},
+            { "name": "Stonehide Leather", "id": "124113", "count": 12}
         ]
     },
     {
@@ -1748,13 +2012,13 @@
         "id": "247918",
         "Prof": "Inscription",
         "Exp": "Legion",
-        "craftQty": 28,
+        "craftQty": 15,
         "recipe": [
             { "name": "Gem Chip", "id": "129100", "count": 5},
-            { "name": "Sallow Pigment", "id": "129034", "count": 20},
-            { "name": "Roseate Pigment", "id": "129032", "count": 10},
-            { "name": "Imbued Silkweave", "id": "127004", "count": 3},
-            { "name": "Demonsteel Bar", "id": "124461", "count": 5}
+            { "name": "Sallow Pigment", "id": "129034", "count": 12},
+            { "name": "Roseate Pigment", "id": "129032", "count": 8},
+            { "name": "Imbued Silkweave", "id": "127004", "count": 2},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 3}
         ]
     },
     {
@@ -1762,11 +2026,11 @@
         "id": "256681",
         "Prof": "Enchanting",
         "Exp": "Legion",
-        "craftQty": 48,
+        "craftQty": 20,
         "recipe": [
-            { "name": "Ancient Mana Potion", "id": "127835", "count": 10},
-            { "name": "Demonsteel Bar", "id": "124461", "count": 25},
-            { "name": "Leylight Shard", "id": "124441", "count": 25}
+            { "name": "Ancient Mana Potion", "id": "127835", "count": 7},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 12},
+            { "name": "Leylight Shard", "id": "124441", "count": 12}
         ]
     },
     {
@@ -1774,11 +2038,11 @@
         "id": "245557",
         "Prof": "Jewelcrafting",
         "Exp": "Legion",
-        "craftQty": 25,
+        "craftQty": 14,
         "recipe": [
-            { "name": "Gem Chip", "id": "129100", "count": 20},
+            { "name": "Gem Chip", "id": "129100", "count": 10},
             { "name": "Imbued Silkweave", "id": "127004", "count": 3},
-            { "name": "Demonsteel Bar", "id": "124461", "count": 10}
+            { "name": "Demonsteel Bar", "id": "124461", "count": 5}
         ]
     },
     {
@@ -1786,11 +2050,11 @@
         "id": "248010",
         "Prof": "Tailoring",
         "Exp": "Legion",
-        "craftQty": 40,
+        "craftQty": 18,
         "recipe": [
-            { "name": "Runic Catgut", "id": "127037", "count": 12},
-            { "name": "Imbued Silkweave", "id": "127004", "count": 20},
-            { "name": "Demonsteel Bar", "id": "124461", "count": 12}
+            { "name": "Runic Catgut", "id": "127037", "count": 6},
+            { "name": "Imbued Silkweave", "id": "127004", "count": 10},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 8}
         ]
     },
     {
@@ -1798,10 +2062,10 @@
         "id": "257045",
         "Prof": "Alchemy",
         "Exp": "Legion",
-        "craftQty": 18,
+        "craftQty": 12,
         "recipe": [
             { "name": "Ancient Mana Potion", "id": "127835", "count": 5},
-            { "name": "Arkhana", "id": "124440", "count": 12},
+            { "name": "Arkhana", "id": "124440", "count": 8},
             { "name": "Starlight Rose", "id": "124105", "count": 2}
         ]
     },
@@ -1810,10 +2074,10 @@
         "id": "247923",
         "Prof": "Enchanting",
         "Exp": "Legion",
-        "craftQty": 34,
+        "craftQty": 15,
         "recipe": [
-            { "name": "Demonsteel Bar", "id": "124461", "count": 10},
-            { "name": "Chaos Crystal", "id": "124442", "count": 16}
+            { "name": "Demonsteel Bar", "id": "124461", "count": 5},
+            { "name": "Chaos Crystal", "id": "124442", "count": 7}
         ]
     },
     {
@@ -1821,12 +2085,12 @@
         "id": "245396",
         "Prof": "Inscription",
         "Exp": "Legion",
-        "craftQty": 30,
+        "craftQty": 13,
         "recipe": [
-            { "name": "Sallow Pigment", "id": "129034", "count": 25},
-            { "name": "Roseate Pigment", "id": "129032", "count": 10},
-            { "name": "Imbued Silkweave", "id": "127004", "count": 6},
-            { "name": "Demonsteel Bar", "id": "124461", "count": 15}
+            { "name": "Sallow Pigment", "id": "129034", "count": 14},
+            { "name": "Roseate Pigment", "id": "129032", "count": 6},
+            { "name": "Imbued Silkweave", "id": "127004", "count": 5},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 8}
         ]
     },
     {
@@ -1834,9 +2098,9 @@
         "id": "247922",
         "Prof": "Blacksmithing",
         "Exp": "Legion",
-        "craftQty": 15,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Demonsteel Bar", "id": "124461", "count": 10},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 4},
             { "name": "Leylight Shard", "id": "124441", "count": 1}
         ]
     },
@@ -1845,9 +2109,9 @@
         "id": "247909",
         "Prof": "Blacksmithing",
         "Exp": "Legion",
-        "craftQty": 10,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Demonsteel Bar", "id": "124461", "count": 5},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 3},
             { "name": "Leylight Shard", "id": "124441", "count": 1}
         ]
     },
@@ -1856,7 +2120,7 @@
         "id": "258227",
         "Prof": "Jewelcrafting",
         "Exp": "Legion",
-        "craftQty": 12,
+        "craftQty": 8,
         "recipe": [
             { "name": "Chemirine", "id": "151720", "count": 1},
             { "name": "Argulite", "id": "151718", "count": 2},
@@ -1871,10 +2135,10 @@
         "id": "247925",
         "Prof": "Inscription",
         "Exp": "Legion",
-        "craftQty": 20,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Sallow Pigment", "id": "129034", "count": 20},
-            { "name": "Demonsteel Bar", "id": "124461", "count": 12}
+            { "name": "Sallow Pigment", "id": "129034", "count": 12},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 4}
         ]
     },
     {
@@ -1882,10 +2146,10 @@
         "id": "245407",
         "Prof": "Leatherworking",
         "Exp": "Legion",
-        "craftQty": 15,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Unbroken Claw", "id": "124438", "count": 5},
-            { "name": "Stonehide Leather", "id": "124113", "count": 10}
+            { "name": "Unbroken Claw", "id": "124438", "count": 3},
+            { "name": "Stonehide Leather", "id": "124113", "count": 7}
         ]
     },
     {
@@ -1893,10 +2157,10 @@
         "id": "245406",
         "Prof": "Leatherworking",
         "Exp": "Legion",
-        "craftQty": 20,
+        "craftQty": 9,
         "recipe": [
             { "name": "Unbroken Claw", "id": "124438", "count": 5},
-            { "name": "Stonehide Leather", "id": "124113", "count": 20}
+            { "name": "Stonehide Leather", "id": "124113", "count": 12}
         ]
     },
     {
@@ -1904,12 +2168,12 @@
         "id": "245408",
         "Prof": "Blacksmithing",
         "Exp": "Legion",
-        "craftQty": 35,
+        "craftQty": 14,
         "recipe": [
             { "name": "River Onion", "id": "135591", "count": 3},
             { "name": "Dalapeño Pepper", "id": "133589", "count": 3},
             { "name": "Flaked Sea Salt", "id": "133588", "count": 3},
-            { "name": "Demonsteel Bar", "id": "124461", "count": 20},
+            { "name": "Demonsteel Bar", "id": "124461", "count": 8},
             { "name": "Highmountain Salmon", "id": "124109", "count": 5}
         ]
     },
@@ -1918,11 +2182,11 @@
         "id": "245459",
         "Exp": "Legion",
         "Prof": "Inscription",
-        "craftQty": 15,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Sallow Pigment", "id": "129034", "count": 15},
-            { "name": "Roseate Pigment", "id": "129032", "count": 10},
-            { "name": "Shal'dorei Silk", "id": "124437", "count": 8}
+            { "name": "Sallow Pigment", "id": "129034", "count": 9},
+            { "name": "Roseate Pigment", "id": "129032", "count": 6},
+            { "name": "Shal'dorei Silk", "id": "124437", "count": 5}
         ]
     },
     {
@@ -1930,10 +2194,10 @@
         "id": "252035",
         "Prof": "Inscription",
         "Exp": "Battle for Azeroth",
-        "craftQty": 6,
+        "craftQty": 5,
         "recipe": [
-            { "name": "Aromatic Fish Oil", "id": "160711", "count": 5},
-            { "name": "Tidespray Linen", "id": "152576", "count": 10}
+            { "name": "Aromatic Fish Oil", "id": "160711", "count": 4},
+            { "name": "Tidespray Linen", "id": "152576", "count": 6}
         ]
     },
     {
@@ -1941,11 +2205,11 @@
         "id": "252401",
         "Prof": "Inscription",
         "Exp": "Battle for Azeroth",
-        "craftQty": 8,
+        "craftQty": 6,
         "recipe": [
             { "name": "Aromatic Fish Oil", "id": "160711", "count": 1},
-            { "name": "Tidespray Linen", "id": "152576", "count": 8},
-            { "name": "Monelite Ore", "id": "152512", "count": 8}
+            { "name": "Tidespray Linen", "id": "152576", "count": 6},
+            { "name": "Monelite Ore", "id": "152512", "count": 6}
         ]
     },
     {
@@ -1953,10 +2217,10 @@
         "id": "257046",
         "Prof": "Alchemy",
         "Exp": "Battle for Azeroth",
-        "craftQty": 5,
+        "craftQty": 3,
         "recipe": [
-            { "name": "Tidespray Linen", "id": "152576", "count": 4},
-            { "name": "Sea Stalk", "id": "152511", "count": 8},
+            { "name": "Tidespray Linen", "id": "152576", "count": 2},
+            { "name": "Sea Stalk", "id": "152511", "count": 6},
             { "name": "Crystal Vial", "id": "3371", "count": 1}
         ]
     },
@@ -1965,12 +2229,12 @@
         "id": "245484",
         "Prof": "Cooking",
         "Exp": "Battle for Azeroth",
-        "craftQty": 8,
+        "craftQty": 6,
         "recipe": [
             { "name": "Perfect Preservatives", "id": "259894", "count": 5},
             { "name": "Aromatic Fish Oil", "id": "160711", "count": 2},
             { "name": "Spiced Snapper", "id": "154886", "count": 5},
-            { "name": "Storm Silver Ore", "id": "152579", "count": 4}
+            { "name": "Storm Silver Ore", "id": "152579", "count": 3}
         ]
     },
     {
@@ -1978,10 +2242,10 @@
         "id": "252397",
         "Prof": "Blacksmithing",
         "Exp": "Battle for Azeroth",
-        "craftQty": 18,
+        "craftQty": 5,
         "recipe": [
-            { "name": "Meaty Haunch", "id": "154898", "count": 15},
-            { "name": "Storm Silver Ore", "id": "152579", "count": 20}
+            { "name": "Meaty Haunch", "id": "154898", "count": 7},
+            { "name": "Storm Silver Ore", "id": "152579", "count": 10}
         ]
     },
     {
@@ -1989,11 +2253,11 @@
         "id": "246604",
         "Prof": "Engineering",
         "Exp": "Battle for Azeroth",
-        "craftQty": 42,
+        "craftQty": 16,
         "recipe": [
-            { "name": "Insulated Wiring", "id": "163569", "count": 20},
-            { "name": "Storm Silver Ore", "id": "152579", "count": 30},
-            { "name": "Monelite Ore", "id": "152512", "count": 35}
+            { "name": "Insulated Wiring", "id": "163569", "count": 10},
+            { "name": "Storm Silver Ore", "id": "152579", "count": 14},
+            { "name": "Monelite Ore", "id": "152512", "count": 16}
         ]
     },
     {
@@ -2001,10 +2265,10 @@
         "id": "258560",
         "Prof": "Enchanting",
         "Exp": "Battle for Azeroth",
-        "craftQty": 6,
+        "craftQty": 4,
         "recipe": [
             { "name": "Calcified Bone", "id": "154165", "count": 1},
-            { "name": "Umbra Shard", "id": "152876", "count": 4},
+            { "name": "Umbra Shard", "id": "152876", "count": 3},
             { "name": "Coarse Leather", "id": "152541", "count": 2}
         ]
     },
@@ -2013,10 +2277,10 @@
         "id": "245499",
         "Prof": "Inscription",
         "Exp": "Battle for Azeroth",
-        "craftQty": 35,
+        "craftQty": 16,
         "recipe": [
-            { "name": "Ultramarine Ink", "id": "158187", "count": 20},
-            { "name": "Monelite Ore", "id": "152512", "count": 24}
+            { "name": "Ultramarine Ink", "id": "158187", "count": 10},
+            { "name": "Monelite Ore", "id": "152512", "count": 12}
         ]
     },
     {
@@ -2024,12 +2288,12 @@
         "id": "246486",
         "Prof": "Engineering",
         "Exp": "Battle for Azeroth",
-        "craftQty": 45,
+        "craftQty": 20,
         "recipe": [
-            { "name": "Insulated Wiring", "id": "163569", "count": 18},
-            { "name": "Chemical Blasting Cap", "id": "160502", "count": 15},
-            { "name": "Storm Silver Ore", "id": "152579", "count": 10},
-            { "name": "Monelite Ore", "id": "152512", "count": 20}
+            { "name": "Insulated Wiring", "id": "163569", "count": 12},
+            { "name": "Chemical Blasting Cap", "id": "160502", "count": 12},
+            { "name": "Storm Silver Ore", "id": "152579", "count": 8},
+            { "name": "Monelite Ore", "id": "152512", "count": 15}
         ]
     },
     {
@@ -2037,12 +2301,12 @@
         "id": "246500",
         "Prof": "Engineering",
         "Exp": "Battle for Azeroth",
-        "craftQty": 16,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Insulated Wiring", "id": "163569", "count": 6},
+            { "name": "Insulated Wiring", "id": "163569", "count": 5},
             { "name": "Amberblaze", "id": "154123", "count": 1},
-            { "name": "Storm Silver Ore", "id": "152579", "count": 8},
-            { "name": "Monelite Ore", "id": "152512", "count": 8}
+            { "name": "Storm Silver Ore", "id": "152579", "count": 5},
+            { "name": "Monelite Ore", "id": "152512", "count": 5}
         ]
     },
     {
@@ -2050,11 +2314,11 @@
         "id": "243101",
         "Prof": "Tailoring",
         "Exp": "Battle for Azeroth",
-        "craftQty": 30,
+        "craftQty": 9,
         "recipe": [
-            { "name": "Nylon Thread", "id": "159959", "count": 12},
+            { "name": "Nylon Thread", "id": "159959", "count": 10},
             { "name": "Crimson Ink", "id": "158188", "count": 5},
-            { "name": "Tidespray Linen", "id": "152576", "count": 30}
+            { "name": "Tidespray Linen", "id": "152576", "count": 10}
         ]
     },
     {
@@ -2062,11 +2326,11 @@
         "id": "258558",
         "Prof": "Leatherworking",
         "Exp": "Battle for Azeroth",
-        "craftQty": 22,
+        "craftQty": 16,
         "recipe": [
-            { "name": "Amber Tanning Oil", "id": "160059", "count": 4},
-            { "name": "Storm Silver Ore", "id": "152579", "count": 15},
-            { "name": "Coarse Leather", "id": "152541", "count": 20}
+            { "name": "Amber Tanning Oil", "id": "160059", "count": 3},
+            { "name": "Storm Silver Ore", "id": "152579", "count": 8},
+            { "name": "Coarse Leather", "id": "152541", "count": 16}
         ]
     },
     {
@@ -2074,11 +2338,11 @@
         "id": "245496",
         "Prof": "Jewelcrafting",
         "Exp": "Battle for Azeroth",
-        "craftQty": 20,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Ultramarine Ink", "id": "158187", "count": 6},
+            { "name": "Ultramarine Ink", "id": "158187", "count": 4},
             { "name": "Owlseye", "id": "154120", "count": 2},
-            { "name": "Platinum Ore", "id": "152513", "count": 10}
+            { "name": "Platinum Ore", "id": "152513", "count": 5}
         ]
     },
     {
@@ -2086,10 +2350,10 @@
         "id": "252399",
         "Prof": "Blacksmithing",
         "Exp": "Battle for Azeroth",
-        "craftQty": 20,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Durable Flux", "id": "160298", "count": 10},
-            { "name": "Storm Silver Ore", "id": "152579", "count": 25}
+            { "name": "Durable Flux", "id": "160298", "count": 8},
+            { "name": "Storm Silver Ore", "id": "152579", "count": 12}
         ]
     },
     {
@@ -2097,12 +2361,12 @@
         "id": "258559",
         "Prof": "Enchanting",
         "Exp": "Battle for Azeroth",
-        "craftQty": 35,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Osmenite Ore", "id": "168185", "count": 30},
+            { "name": "Osmenite Ore", "id": "168185", "count": 12},
             { "name": "Distilled Water", "id": "158186", "count": 10},
-            { "name": "Veiled Crystal", "id": "152877", "count": 2},
-            { "name": "Gloom Dust", "id": "152875", "count": 15}
+            { "name": "Veiled Crystal", "id": "152877", "count": 1},
+            { "name": "Gloom Dust", "id": "152875", "count": 10}
         ]
     },
     {
@@ -2110,10 +2374,10 @@
         "id": "245418",
         "Prof": "Tailoring",
         "Exp": "Battle for Azeroth",
-        "craftQty": 35,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Nylon Thread", "id": "159959", "count": 20},
-            { "name": "Embroidered Deep Sea Satin", "id": "158378", "count": 16},
+            { "name": "Nylon Thread", "id": "159959", "count": 12},
+            { "name": "Embroidered Deep Sea Satin", "id": "158378", "count": 6},
             { "name": "Platinum Ore", "id": "152513", "count": 2}
         ]
     },
@@ -2122,9 +2386,9 @@
         "id": "257047",
         "Prof": "Alchemy",
         "Exp": "Battle for Azeroth",
-        "craftQty": 12,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Anchor Weed", "id": "152510", "count": 3},
+            { "name": "Anchor Weed", "id": "152510", "count": 1},
             { "name": "Crystal Vial", "id": "3371", "count": 3}
         ]
     },
@@ -2133,11 +2397,11 @@
         "id": "245412",
         "Prof": "Leatherworking",
         "Exp": "Battle for Azeroth",
-        "craftQty": 40,
+        "craftQty": 15,
         "recipe": [
-            { "name": "Tempest Hide", "id": "154722", "count": 30},
-            { "name": "Blood-Stained Bone", "id": "154164", "count": 12},
-            { "name": "Platinum Ore", "id": "152513", "count": 5}
+            { "name": "Tempest Hide", "id": "154722", "count": 10},
+            { "name": "Blood-Stained Bone", "id": "154164", "count": 8},
+            { "name": "Platinum Ore", "id": "152513", "count": 4}
         ]
     },
     {
@@ -2145,11 +2409,11 @@
         "id": "245414",
         "Prof": "Jewelcrafting",
         "Exp": "Battle for Azeroth",
-        "craftQty": 40,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Amberblaze", "id": "154123", "count": 3},
-            { "name": "Platinum Ore", "id": "152513", "count": 5},
-            { "name": "Monelite Ore", "id": "152512", "count": 30}
+            { "name": "Amberblaze", "id": "154123", "count": 2},
+            { "name": "Platinum Ore", "id": "152513", "count": 3},
+            { "name": "Monelite Ore", "id": "152512", "count": 15}
         ]
     },
     {
@@ -2157,10 +2421,10 @@
         "id": "245415",
         "Prof": "Inscription",
         "Exp": "Battle for Azeroth",
-        "craftQty": 15,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Crimson Ink", "id": "158188", "count": 8},
-            { "name": "Monelite Ore", "id": "152512", "count": 18}
+            { "name": "Crimson Ink", "id": "158188", "count": 5},
+            { "name": "Monelite Ore", "id": "152512", "count": 6}
         ]
     },
     {
@@ -2168,10 +2432,10 @@
         "id": "245416",
         "Prof": "Inscription",
         "Exp": "Battle for Azeroth",
-        "craftQty": 10,
+        "craftQty": 6,
         "recipe": [
             { "name": "Crimson Ink", "id": "158188", "count": 4},
-            { "name": "Monelite Ore", "id": "152512", "count": 6}
+            { "name": "Monelite Ore", "id": "152512", "count": 5}
         ]
     },
     {
@@ -2179,13 +2443,13 @@
         "id": "247225",
         "Prof": "Cooking",
         "Exp": "Dragonflight",
-        "craftQty": 25,
+        "craftQty": 8,
         "recipe": [
             { "name": "Perfect Preservatives", "id": "259894", "count": 15},
             { "name": "Thrice-Spiced Mammoth Kabob", "id": "197996", "count": 4},
             { "name": "Charred Hornswog Steaks", "id": "197774", "count": 3},
             { "name": "Basilisk Eggs", "id": "197745", "count": 2},
-            { "name": "Khaz'gorite Ore", "id": "190313", "count": 4}
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 2}
         ]
     },
     {
@@ -2193,12 +2457,12 @@
         "id": "248121",
         "Prof": "Tailoring",
         "Exp": "Dragonflight",
-        "craftQty": 35,
+        "craftQty": 9,
         "recipe": [
-            { "name": "Blazing Ink", "id": "194846", "count": 5},
-            { "name": "Wildercloth Bolt", "id": "193927", "count": 20},
-            { "name": "Spool of Wilderthread", "id": "192097", "count": 12},
-            { "name": "Serevite Ore", "id": "190396", "count": 16}
+            { "name": "Blazing Ink", "id": "194846", "count": 4},
+            { "name": "Wildercloth Bolt", "id": "193927", "count": 8},
+            { "name": "Spool of Wilderthread", "id": "192097", "count": 7},
+            { "name": "Serevite Ore", "id": "190396", "count": 6}
         ]
     },
     {
@@ -2206,12 +2470,12 @@
         "id": "248114",
         "Prof": "Leatherworking",
         "Exp": "Dragonflight",
-        "craftQty": 45,
+        "craftQty": 17,
         "recipe": [
             { "name": "Mireslush Hide", "id": "193230", "count": 2},
-            { "name": "Dense Hide", "id": "193217", "count": 10},
-            { "name": "Illimited Diamond", "id": "192870", "count": 5},
-            { "name": "Khaz'gorite Ore", "id": "190313", "count": 10}
+            { "name": "Dense Hide", "id": "193217", "count": 6},
+            { "name": "Illimited Diamond", "id": "192870", "count": 2},
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 4}
         ]
     },
     {
@@ -2219,12 +2483,12 @@
         "id": "256170",
         "Prof": "Enchanting",
         "Exp": "Dragonflight",
-        "craftQty": 50,
+        "craftQty": 20,
         "recipe": [
             { "name": "Five Flights' Grimoire", "id": "256171", "count": 1},
-            { "name": "Resonant Crystal", "id": "200113", "count": 5},
+            { "name": "Resonant Crystal", "id": "200113", "count": 4},
             { "name": "Glittering Parchment", "id": "194784", "count": 9},
-            { "name": "Khaz'gorite Ore", "id": "190313", "count": 10}
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 5}
         ]
     },
     {
@@ -2232,12 +2496,12 @@
         "id": "247222",
         "Prof": "Cooking",
         "Exp": "Dragonflight",
-        "craftQty": 28,
+        "craftQty": 15,
         "recipe": [
-            { "name": "Perfect Preservatives", "id": "259894", "count": 15},
+            { "name": "Perfect Preservatives", "id": "259894", "count": 8},
             { "name": "Braised Bruffalon Brisket", "id": "197788", "count": 4},
             { "name": "Salad on the Side", "id": "197764", "count": 5},
-            { "name": "Draconium Ore", "id": "189143", "count": 10}
+            { "name": "Draconium Ore", "id": "189143", "count": 4}
         ]
     },
     {
@@ -2245,10 +2509,10 @@
         "id": "256171",
         "Prof": "Enchanting",
         "Exp": "Dragonflight",
-        "craftQty": 16,
+        "craftQty": 10,
         "recipe": [
             { "name": "Glittering Parchment", "id": "194784", "count": 4},
-            { "name": "Vibrant Shard", "id": "194124", "count": 6},
+            { "name": "Vibrant Shard", "id": "194124", "count": 5},
             { "name": "Wildercloth", "id": "193922", "count": 2},
             { "name": "Awakened Air", "id": "190327", "count": 1}
         ]
@@ -2258,11 +2522,11 @@
         "id": "248118",
         "Prof": "Inscription",
         "Exp": "Dragonflight",
-        "craftQty": 15,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Serene Ink", "id": "194858", "count": 4},
-            { "name": "Flourishing Ink", "id": "194852", "count": 6},
-            { "name": "Glittering Parchment", "id": "194784", "count": 15},
+            { "name": "Serene Ink", "id": "194858", "count": 5},
+            { "name": "Flourishing Ink", "id": "194852", "count": 4},
+            { "name": "Glittering Parchment", "id": "194784", "count": 16},
             { "name": "Blazing Ink", "id": "194846", "count": 3}
         ]
     },
@@ -2271,7 +2535,7 @@
         "id": "248119",
         "Prof": "Inscription",
         "Exp": "Dragonflight",
-        "craftQty": 16,
+        "craftQty": 7,
         "recipe": [
             { "name": "Serene Ink", "id": "194858", "count": 3},
             { "name": "Flourishing Ink", "id": "194852", "count": 6},
@@ -2284,9 +2548,9 @@
         "id": "248120",
         "Prof": "Inscription",
         "Exp": "Dragonflight",
-        "craftQty": 16,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Serene Ink", "id": "194858", "count": 5},
+            { "name": "Serene Ink", "id": "194858", "count": 4},
             { "name": "Glittering Parchment", "id": "194784", "count": 16},
             { "name": "Blazing Ink", "id": "194846", "count": 7}
         ]
@@ -2296,11 +2560,11 @@
         "id": "242948",
         "Prof": "Leatherworking",
         "Exp": "Dragonflight",
-        "craftQty": 15,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Cured Rugged Hide", "id": "15407", "count": 2},
+            { "name": "Cured Rugged Hide", "id": "15407", "count": 1},
             { "name": "Rune Thread", "id": "14341", "count": 2},
-            { "name": "Rugged Leather", "id": "8170", "count": 12}
+            { "name": "Rugged Leather", "id": "8170", "count": 8}
         ]
     },
     {
@@ -2308,10 +2572,10 @@
         "id": "248108",
         "Prof": "Inscription",
         "Exp": "Dragonflight",
-        "craftQty": 14,
+        "craftQty": 12,
         "recipe": [
-            { "name": "Blazing Ink", "id": "194846", "count": 6},
-            { "name": "Serevite Ore", "id": "190396", "count": 10}
+            { "name": "Blazing Ink", "id": "194846", "count": 5},
+            { "name": "Serevite Ore", "id": "190396", "count": 8}
         ]
     },
     {
@@ -2319,7 +2583,7 @@
         "id": "257053",
         "Prof": "Tailoring",
         "Exp": "Dragonflight",
-        "craftQty": 28,
+        "craftQty": 12,
         "recipe": [
             { "name": "Frozen Spellthread", "id": "194012", "count": 2},
             { "name": "Azureweave Bolt", "id": "193939", "count": 1},
@@ -2333,7 +2597,7 @@
         "id": "248113",
         "Prof": "Engineering",
         "Exp": "Dragonflight",
-        "craftQty": 25,
+        "craftQty": 13,
         "recipe": [
             { "name": "Reinforced Machine Chassis", "id": "198200", "count": 4},
             { "name": "Shock-Spring Coil", "id": "198188", "count": 4},
@@ -2346,14 +2610,14 @@
         "id": "258253",
         "Prof": "Engineering",
         "Exp": "Dragonflight",
-        "craftQty": 50,
+        "craftQty": 25,
         "recipe": [
             { "name": "Glowing Titan Orb", "id": "201406", "count": 2},
             { "name": "Iridescent Water", "id": "198487", "count": 20},
-            { "name": "Reinforced Machine Chassis", "id": "198200", "count": 9},
-            { "name": "Greased-Up Gears", "id": "198193", "count": 7},
-            { "name": "Handful of Serevite Bolts", "id": "198185", "count": 8},
-            { "name": "Awakened Order", "id": "190324", "count": 4}
+            { "name": "Reinforced Machine Chassis", "id": "198200", "count": 7},
+            { "name": "Greased-Up Gears", "id": "198193", "count": 5},
+            { "name": "Handful of Serevite Bolts", "id": "198185", "count": 6},
+            { "name": "Awakened Order", "id": "190324", "count": 3}
         ]
     },
     {
@@ -2361,10 +2625,10 @@
         "id": "248106",
         "Prof": "Inscription",
         "Exp": "Dragonflight",
-        "craftQty": 10,
+        "craftQty": 7,
         "recipe": [
             { "name": "Flourishing Ink", "id": "194852", "count": 3},
-            { "name": "Serevite Ore", "id": "190396", "count": 8}
+            { "name": "Serevite Ore", "id": "190396", "count": 7}
         ]
     },
     {
@@ -2372,11 +2636,11 @@
         "id": "247224",
         "Prof": "Cooking",
         "Exp": "Dragonflight",
-        "craftQty": 22,
+        "craftQty": 7,
         "recipe": [
             { "name": "Perfect Preservatives", "id": "259894", "count": 15},
             { "name": "Pebbled Rock Salts", "id": "197756", "count": 6},
-            { "name": "Khaz'gorite Ore", "id": "190313", "count": 4}
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 2}
         ]
     },
     {
@@ -2384,11 +2648,11 @@
         "id": "248109",
         "Prof": "Jewelcrafting",
         "Exp": "Dragonflight",
-        "craftQty": 15,
+        "craftQty": 7,
         "recipe": [
             { "name": "Glossy Stone", "id": "192885", "count": 4},
             { "name": "Fractured Glass", "id": "192872", "count": 2},
-            { "name": "Serevite Ore", "id": "190396", "count": 18}
+            { "name": "Serevite Ore", "id": "190396", "count": 7}
         ]
     },
     {
@@ -2396,10 +2660,10 @@
         "id": "248110",
         "Prof": "Jewelcrafting",
         "Exp": "Dragonflight",
-        "craftQty": 10,
+        "craftQty": 8,
         "recipe": [
             { "name": "Glossy Stone", "id": "192885", "count": 4},
-            { "name": "Serevite Ore", "id": "190396", "count": 8}
+            { "name": "Serevite Ore", "id": "190396", "count": 5}
         ]
     },
     {
@@ -2407,11 +2671,11 @@
         "id": "248654",
         "Prof": "Jewelcrafting",
         "Exp": "Dragonflight",
-        "craftQty": 26,
+        "craftQty": 18,
         "recipe": [
-            { "name": "Glossy Stone", "id": "192885", "count": 10},
+            { "name": "Glossy Stone", "id": "192885", "count": 8},
             { "name": "Illimited Diamond", "id": "192870", "count": 1},
-            { "name": "Khaz'gorite Ore", "id": "190313", "count": 6}
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 4}
         ]
     },
     {
@@ -2419,12 +2683,12 @@
         "id": "256430",
         "Prof": "Blacksmithing",
         "Exp": "Dragonflight",
-        "craftQty": 46,
+        "craftQty": 16,
         "recipe": [
             { "name": "Wildercloth", "id": "193922", "count": 4},
-            { "name": "Potion of Frozen Focus", "id": "191363", "count": 5},
+            { "name": "Potion of Frozen Focus", "id": "191363", "count": 3},
             { "name": "Rot Resistant Cauldron", "id": "204634", "count": 1, "fixPrice": 24000},
-            { "name": "Khaz'gorite Ore", "id": "190313", "count": 9}
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 5}
         ]
     },
     {
@@ -2432,11 +2696,11 @@
         "id": "248657",
         "Prof": "Leatherworking",
         "Exp": "Dragonflight",
-        "craftQty": 40,
+        "craftQty": 18,
         "recipe": [
             { "name": "Wildercloth", "id": "193922", "count": 6},
-            { "name": "Resilient Leather", "id": "193210", "count": 5},
-            { "name": "Khaz'gorite Ore", "id": "190313", "count": 7}
+            { "name": "Resilient Leather", "id": "193210", "count": 40},
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 5}
         ]
     },
     {
@@ -2444,10 +2708,10 @@
         "id": "248107",
         "Prof": "Inscription",
         "Exp": "Dragonflight",
-        "craftQty": 10,
+        "craftQty": 6,
         "recipe": [
-            { "name": "Blazing Ink", "id": "194846", "count": 4},
-            { "name": "Serevite Ore", "id": "190396", "count": 8}
+            { "name": "Blazing Ink", "id": "194846", "count": 2},
+            { "name": "Serevite Ore", "id": "190396", "count": 5}
         ]
     },
     {
@@ -2455,9 +2719,9 @@
         "id": "264679",
         "Prof": "Inscription",
         "Exp": "Dragonflight",
-        "craftQty": 18,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Runed Writhebark", "id": "194863", "count": 2},
+            { "name": "Runed Writhebark", "id": "194863", "count": 1},
             { "name": "Fractured Glass", "id": "192872", "count": 2},
             { "name": "Khaz'gorite Ore", "id": "190313", "count": 2}
         ]
@@ -2467,12 +2731,12 @@
         "id": "248111",
         "Prof": "Alchemy",
         "Exp": "Dragonflight",
-        "craftQty": 28,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Glossy Stone", "id": "192885", "count": 6},
-            { "name": "Omnium Draconis", "id": "191498", "count": 6},
-            { "name": "Awakened Earth", "id": "190316", "count": 4},
-            { "name": "Khaz'gorite Ore", "id": "190313", "count": 3}
+            { "name": "Glossy Stone", "id": "192885", "count": 4},
+            { "name": "Omnium Draconis", "id": "191498", "count": 2},
+            { "name": "Awakened Earth", "id": "190316", "count": 1},
+            { "name": "Khaz'gorite Ore", "id": "190313", "count": 1}
         ]
     },
     {
@@ -2480,14 +2744,14 @@
         "id": "256427",
         "Prof": "Blacksmithing",
         "Exp": "Dragonflight",
-        "craftQty": 42,
+        "craftQty": 18,
         "recipe": [
             { "name": "Eternity Amber", "id": "192850", "count": 1},
             { "name": "Sundered Onyx", "id": "192847", "count": 1},
             { "name": "Vibrant Emerald", "id": "192844", "count": 1},
             { "name": "Mystic Sapphire", "id": "192841", "count": 1},
             { "name": "Queen's Ruby", "id": "192839", "count": 1},
-            { "name": "Primal Molten Alloy", "id": "190313", "count": 12}
+            { "name": "Primal Molten Alloy", "id": "190313", "count": 5}
         ]
     },
     {
@@ -2517,11 +2781,11 @@
         "id": "252758",
         "Prof": "Alchemy",
         "Exp": "The War Within",
-        "craftQty": 34,
+        "craftQty": 20,
         "recipe": [
-            { "name": "Distilled Algari Freshwater", "id": "226205", "count": 12},
-            { "name": "Profaned Tinderbox", "id": "221758", "count": 4},
-            { "name": "Crystalline Powder", "id": "213610", "count": 6},
+            { "name": "Distilled Algari Freshwater", "id": "226205", "count": 8},
+            { "name": "Profaned Tinderbox", "id": "221758", "count": 2},
+            { "name": "Crystalline Powder", "id": "213610", "count": 2},
             { "name": "Harmonious Horticulture", "id": "212564", "count": 1}
         ]
     },
@@ -2530,14 +2794,14 @@
         "id": "239170",
         "Prof": "Cooking",
         "Exp": "The War Within",
-        "craftQty": 10,
+        "craftQty": 6,
         "recipe": [
             { "name": "Perfect Preservatives", "id": "259894", "count": 10},
-            { "name": "Chopped Mycobloom", "id": "222737", "count": 25},
+            { "name": "Chopped Mycobloom", "id": "222737", "count": 20},
             { "name": "Stunning Sapphire", "id": "212508", "count": 2},
-            { "name": "Ironclaw Ore", "id": "210936", "count": 5},
-            { "name": "Aqirite", "id": "210933", "count": 5},
-            { "name": "Bismuth", "id": "210931", "count": 15}
+            { "name": "Ironclaw Ore", "id": "210936", "count": 3},
+            { "name": "Aqirite", "id": "210933", "count": 3},
+            { "name": "Bismuth", "id": "210931", "count": 10}
         ]
     },
     {
@@ -2545,12 +2809,12 @@
         "id": "246708",
         "Prof": "Cooking",
         "Exp": "The War Within",
-        "craftQty": 10,
+        "craftQty": 5,
         "recipe": [
             { "name": "Perfect Preservatives", "id": "259894", "count": 10},
             { "name": "Spiced Meat Stock", "id": "222739", "count": 10},
-            { "name": "Ironclaw Ore", "id": "210936", "count": 5},
-            { "name": "Bismuth", "id": "210931", "count": 10}
+            { "name": "Ironclaw Ore", "id": "210936", "count": 3},
+            { "name": "Bismuth", "id": "210931", "count": 7}
         ]
     },
     {
@@ -2558,11 +2822,11 @@
         "id": "253022",
         "Prof": "Inscription",
         "Exp": "The War Within",
-        "craftQty": 50,
+        "craftQty": 18,
         "recipe": [
             { "name": "Fresh Parchment", "id": "226204", "count": 30},
-            { "name": "Apricate Ink", "id": "222616", "count": 9},
-            { "name": "Codified Greenwood", "id": "222555", "count": 4},
+            { "name": "Apricate Ink", "id": "222616", "count": 6},
+            { "name": "Codified Greenwood", "id": "222555", "count": 3},
             { "name": "Stunning Sapphire", "id": "212508", "count": 2}
         ]
     },
@@ -2571,9 +2835,9 @@
         "id": "252755",
         "Prof": "Tailoring",
         "Exp": "The War Within",
-        "craftQty": 30,
+        "craftQty": 9,
         "recipe": [
-            { "name": "Duskweave", "id": "224824", "count": 6},
+            { "name": "Duskweave", "id": "224824", "count": 4},
             { "name": "Mosswool Thread", "id": "224764", "count": 12},
             { "name": "Apricate Ink", "id": "222616", "count": 4}
         ]
@@ -2583,11 +2847,11 @@
         "id": "253039",
         "Prof": "Enchanting",
         "Exp": "The War Within",
-        "craftQty": 10,
+        "craftQty": 6,
         "recipe": [
             { "name": "Oil of Beledar's Grace", "id": "224108", "count": 2},
-            { "name": "Core Alloy", "id": "222418", "count": 2},
-            { "name": "Gleaming Shard", "id": "219949", "count": 4}
+            { "name": "Core Alloy", "id": "222418", "count": 1},
+            { "name": "Gleaming Shard", "id": "219949", "count": 2}
         ]
     },
     {
@@ -2595,11 +2859,11 @@
         "id": "246709",
         "Prof": "Cooking",
         "Exp": "The War Within",
-        "craftQty": 5,
+        "craftQty": 3,
         "recipe": [
             { "name": "Perfect Preservatives", "id": "259894", "count": 5},
             { "name": "Chopped Mycobloom", "id": "222737", "count": 10},
-            { "name": "Bismuth", "id": "210931", "count": 8}
+            { "name": "Bismuth", "id": "210931", "count": 5}
         ]
     },
     {
@@ -2607,7 +2871,7 @@
         "id": "253167",
         "Prof": "Inscription",
         "Exp": "The War Within",
-        "craftQty": 18,
+        "craftQty": 12,
         "recipe": [
             { "name": "Shadow Ink", "id": "222610", "count": 2},
             { "name": "Core Alloy", "id": "222418", "count": 2}
@@ -2618,11 +2882,11 @@
         "id": "253036",
         "Prof": "Inscription",
         "Exp": "The War Within",
-        "craftQty": 35,
+        "craftQty": 15,
         "recipe": [
-            { "name": "Boundless Cipher", "id": "222559", "count": 3},
-            { "name": "Codified Greenwood", "id": "222555", "count": 6},
-            { "name": "Ringing Deeps Ingot", "id": "221754", "count": 3}
+            { "name": "Boundless Cipher", "id": "222559", "count": 2},
+            { "name": "Codified Greenwood", "id": "222555", "count": 4},
+            { "name": "Ringing Deeps Ingot", "id": "221754", "count": 2}
         ]
     },
     {
@@ -2630,7 +2894,7 @@
         "id": "253253",
         "Prof": "Jewelcrafting",
         "Exp": "The War Within",
-        "craftQty": 25,
+        "craftQty": 13,
         "recipe": [
             { "name": "Core Alloy", "id": "222418", "count": 2},
             { "name": "Inverted Prism", "id": "213760", "count": 1},
@@ -2643,13 +2907,13 @@
         "id": "245326",
         "Prof": "Cooking",
         "Exp": "The War Within",
-        "craftQty": 25,
+        "craftQty": 9,
         "recipe": [
             { "name": "Perfect Preservatives", "id": "259894", "count": 15},
             { "name": "Azj-Kahet Special", "id": "223971", "count": 1},
             { "name": "Outsider's Provisions", "id": "222731", "count": 2},
             { "name": "Roasted Mycobloom", "id": "222705", "count": 2},
-            { "name": "Ringing Deeps Ingot", "id": "221754", "count": 4}
+            { "name": "Ringing Deeps Ingot", "id": "221754", "count": 3}
         ]
     },
     {
@@ -2657,11 +2921,11 @@
         "id": "253169",
         "Prof": "Inscription",
         "Exp": "The War Within",
-        "craftQty": 26,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Shadow Ink", "id": "222610", "count": 3},
+            { "name": "Shadow Ink", "id": "222610", "count": 2},
             { "name": "Coreforged Skeleton Key", "id": "222523", "count": 1},
-            { "name": "Core Alloy", "id": "222418", "count": 5},
+            { "name": "Core Alloy", "id": "222418", "count": 3},
             { "name": "Stormcharged Leather", "id": "212664", "count": 2}
         ]
     },
@@ -2670,10 +2934,10 @@
         "id": "257102",
         "Prof": "Alchemy",
         "Exp": "The War Within",
-        "craftQty": 8,
+        "craftQty": 4,
         "recipe": [
             { "name": "Viridian Charmcap", "id": "221763", "count": 2},
-            { "name": "Slumbering Soul Serum", "id": "212245", "count": 3},
+            { "name": "Slumbering Soul Serum", "id": "212245", "count": 2},
             { "name": "Gilded Vial", "id": "211806", "count": 1}
         ]
     },
@@ -2682,10 +2946,10 @@
         "id": "245559",
         "Prof": "Jewelcrafting",
         "Exp": "The War Within",
-        "craftQty": 16,
+        "craftQty": 8,
         "recipe": [
             { "name": "Ringing Deeps Ingot", "id": "221754", "count": 1},
-            { "name": "Marbled Stone", "id": "213757", "count": 5},
+            { "name": "Marbled Stone", "id": "213757", "count": 3},
             { "name": "Ambivalent Amber", "id": "212498", "count": 4}
         ]
     },
@@ -2694,12 +2958,12 @@
         "id": "253171",
         "Prof": "Enchanting",
         "Exp": "The War Within",
-        "craftQty": 40,
+        "craftQty": 20,
         "recipe": [
-            { "name": "Gyrating Gear", "id": "221860", "count": 6},
-            { "name": "Ringing Deeps Ingot", "id": "221754", "count": 6},
-            { "name": "Refulgent Crystal", "id": "219952", "count": 8},
-            { "name": "Crystalline Powder", "id": "213610", "count": 5}
+            { "name": "Gyrating Gear", "id": "221860", "count": 4},
+            { "name": "Ringing Deeps Ingot", "id": "221754", "count": 4},
+            { "name": "Refulgent Crystal", "id": "219952", "count": 6},
+            { "name": "Crystalline Powder", "id": "213610", "count": 4}
         ]
     },
     {
@@ -2707,12 +2971,12 @@
         "id": "253252",
         "Prof": "Engineering",
         "Exp": "The War Within",
-        "craftQty": 42,
+        "craftQty": 22,
         "recipe": [
-            { "name": "Core Alloy", "id": "222418", "count": 15},
-            { "name": "Entropy Enhancer", "id": "221868", "count": 10},
-            { "name": "Gyrating Gear", "id": "221860", "count": 6},
-            { "name": "Handful of Bismuth Bolts", "id": "221854", "count": 18},
+            { "name": "Core Alloy", "id": "222418", "count": 8},
+            { "name": "Entropy Enhancer", "id": "221868", "count": 5},
+            { "name": "Gyrating Gear", "id": "221860", "count": 3},
+            { "name": "Handful of Bismuth Bolts", "id": "221854", "count": 9},
             { "name": "Vial of Kaheti Oils", "id": "221756", "count": 1},
             { "name": "Ambivalent Amber", "id": "212498", "count": 1}
         ]
@@ -2722,9 +2986,9 @@
         "id": "245312",
         "Prof": "Blacksmithing",
         "Exp": "The War Within",
-        "craftQty": 15,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Core Alloy", "id": "222418", "count": 5},
+            { "name": "Core Alloy", "id": "222418", "count": 4},
             { "name": "Handful of Bismuth Bolts", "id": "221854", "count": 4}
         ]
     },
@@ -2733,10 +2997,10 @@
         "id": "246066",
         "Prof": "Engineering",
         "Exp": "The War Within",
-        "craftQty": 12,
+        "craftQty": 7,
         "recipe": [
             { "name": "Chaos Circuit", "id": "221865", "count": 1},
-            { "name": "Whimsical Wiring", "id": "221857", "count": 6},
+            { "name": "Whimsical Wiring", "id": "221857", "count": 5},
             { "name": "Glittering Glass", "id": "213399", "count": 6}
         ]
     },
@@ -2745,11 +3009,11 @@
         "id": "245323",
         "Prof": "Blacksmithing",
         "Exp": "The War Within",
-        "craftQty": 30,
+        "craftQty": 13,
         "recipe": [
             { "name": "Coreforged Skeleton Key", "id": "222523", "count": 1},
             { "name": "Charged Alloy", "id": "222421", "count": 1},
-            { "name": "Core Alloy", "id": "222418", "count": 5},
+            { "name": "Core Alloy", "id": "222418", "count": 2},
             { "name": "Whimsical Wiring", "id": "221857", "count": 1}
         ]
     },
@@ -2758,11 +3022,11 @@
         "id": "245305",
         "Prof": "Tailoring",
         "Exp": "The War Within",
-        "craftQty": 20,
+        "craftQty": 10,
         "recipe": [
             { "name": "Weavercloth", "id": "228231", "count": 2},
             { "name": "Mosswool Thread", "id": "224764", "count": 20},
-            { "name": "Weavercloth Bolt", "id": "222804", "count": 6}
+            { "name": "Weavercloth Bolt", "id": "222804", "count": 5}
         ]
     },
     {
@@ -2770,12 +3034,12 @@
         "id": "239214",
         "Prof": "Leatherworking",
         "Exp": "The War Within",
-        "craftQty": 38,
+        "craftQty": 14,
         "recipe": [
             { "name": "Mosswool Thread", "id": "224764", "count": 10},
-            { "name": "Handful of Bismuth Bolts", "id": "221854", "count": 9},
-            { "name": "Carapace-Backed Hide", "id": "219881", "count": 6},
-            { "name": "Stormcharged Leather", "id": "212664", "count": 4}
+            { "name": "Handful of Bismuth Bolts", "id": "221854", "count": 7},
+            { "name": "Carapace-Backed Hide", "id": "219881", "count": 4},
+            { "name": "Stormcharged Leather", "id": "212664", "count": 3}
         ]
     },
     {
@@ -2783,7 +3047,7 @@
         "id": "243327",
         "Prof": "Leatherworking",
         "Exp": "The War Within",
-        "craftQty": 30,
+        "craftQty": 9,
         "recipe": [
             { "name": "Mosswool Thread", "id": "224764", "count": 10},
             { "name": "Sporecoated Hide", "id": "219890", "count": 2},
@@ -2808,9 +3072,9 @@
         "id": "257041",
         "Prof": "Alchemy",
         "Exp": "Vanilla",
-        "craftQty": 10,
+        "craftQty": 3,
         "recipe": [
-            { "name": "Dark Rune", "id": "20520", "count": 2},
+            { "name": "Dark Rune", "id": "20520", "count": 1},
             { "name": "Crystal Vial", "id": "3371", "count": 1},
             { "name": "Black Dye", "id": "2325", "count": 2}
         ]
@@ -2820,11 +3084,11 @@
         "id": "257036",
         "Prof": "Blacksmithing",
         "Exp": "Burning Crusade",
-        "craftQty": 25,
+        "craftQty": 14,
         "recipe": [
-            { "name": "Hardened Adamantite Bar", "id": "23573", "count": 4},
-            { "name": "Khorium Bar", "id": "23449", "count": 6},
-            { "name": "Primal Earth", "id": "22452", "count": 4}
+            { "name": "Hardened Adamantite Bar", "id": "23573", "count": 2},
+            { "name": "Khorium Bar", "id": "23449", "count": 2},
+            { "name": "Primal Earth", "id": "22452", "count": 2}
         ]
     },
     {
@@ -2832,12 +3096,12 @@
         "id": "257039",
         "Prof": "Blacksmithing",
         "Exp": "Burning Crusade",
-        "craftQty": 50,
+        "craftQty": 25,
         "recipe": [
-            { "name": "Skyfire Diamond", "id": "25868", "count": 2},
-            { "name": "Hardened Adamantite Bar", "id": "23573", "count": 8},
-            { "name": "Khorium Bar", "id": "23449", "count": 10},
-            { "name": "Primal Fire", "id": "21884", "count": 10}
+            { "name": "Skyfire Diamond", "id": "25868", "count": 1},
+            { "name": "Hardened Adamantite Bar", "id": "23573", "count": 5},
+            { "name": "Khorium Bar", "id": "23449", "count": 2},
+            { "name": "Primal Fire", "id": "21884", "count": 4}
         ]
     },
     {
@@ -2845,11 +3109,11 @@
         "id": "257035",
         "Prof": "Blacksmithing",
         "Exp": "Burning Crusade",
-        "craftQty": 20,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Khorium Bar", "id": "23449", "count": 8},
-            { "name": "Primal Earth", "id": "22452", "count": 4},
-            { "name": "Primal Mooncloth", "id": "21845", "count": 2}
+            { "name": "Khorium Bar", "id": "23449", "count": 2},
+            { "name": "Primal Earth", "id": "22452", "count": 2},
+            { "name": "Primal Mooncloth", "id": "21845", "count": 1}
         ]
     },
     {
@@ -2857,11 +3121,11 @@
         "id": "257037",
         "Prof": "Enchanting",
         "Exp": "Burning Crusade",
-        "craftQty": 20,
+        "craftQty": 9,
         "recipe": [
-            { "name": "Large Prismatic Shard", "id": "22449", "count": 4},
-            { "name": "Greater Planar Essence", "id": "22446", "count": 4},
-            { "name": "Arcane Dust", "id": "22445", "count": 12}
+            { "name": "Large Prismatic Shard", "id": "22449", "count": 2},
+            { "name": "Greater Planar Essence", "id": "22446", "count": 2},
+            { "name": "Arcane Dust", "id": "22445", "count": 8}
         ]
     },
     {
@@ -2869,11 +3133,11 @@
         "id": "257038",
         "Prof": "Enchanting",
         "Exp": "Burning Crusade",
-        "craftQty": 20,
+        "craftQty": 9,
         "recipe": [
-            { "name": "Large Prismatic Shard", "id": "22449", "count": 4},
-            { "name": "Greater Planar Essence", "id": "22446", "count": 4},
-            { "name": "Arcane Dust", "id": "22445", "count": 12}
+            { "name": "Large Prismatic Shard", "id": "22449", "count": 2},
+            { "name": "Greater Planar Essence", "id": "22446", "count": 2},
+            { "name": "Arcane Dust", "id": "22445", "count": 8}
         ]
     },
     {
@@ -2881,11 +3145,11 @@
         "id": "257094",
         "Prof": "Enchanting",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 12,
+        "craftQty": 5,
         "recipe": [
             { "name": "Abyss Crystal", "id": "34057", "count": 2},
-            { "name": "Greater Cosmic Essence", "id": "34055", "count": 6},
-            { "name": "Infinite Dust", "id": "34054", "count": 8}
+            { "name": "Greater Cosmic Essence", "id": "34055", "count": 4},
+            { "name": "Infinite Dust", "id": "34054", "count": 5}
         ]
     },
     {
@@ -2893,10 +3157,10 @@
         "id": "258196",
         "Prof": "Engineering",
         "Exp": "Burning Crusade",
-        "craftQty": 15,
+        "craftQty": 7,
         "recipe": [
-            { "name": "Handful of Fel Iron Bolts", "id": "23783", "count": 6},
-            { "name": "Fel Iron Casing", "id": "23782", "count": 4}
+            { "name": "Handful of Fel Iron Bolts", "id": "23783", "count": 4},
+            { "name": "Fel Iron Casing", "id": "23782", "count": 2}
         ]
     },
     {
@@ -2904,12 +3168,12 @@
         "id": "258194",
         "Prof": "Engineering",
         "Exp": "Burning Crusade",
-        "craftQty": 50,
+        "craftQty": 20,
         "recipe": [
-            { "name": "Icy Blasting Primers", "id": "32423", "count": 50},
-            { "name": "Khorium Power Core", "id": "23786", "count": 4},
-            { "name": "Hardened Adamantite Tube", "id": "23785", "count": 3},
-            { "name": "Handful of Fel Iron Bolts", "id": "23783", "count": 12}
+            { "name": "Icy Blasting Primers", "id": "32423", "count": 30},
+            { "name": "Khorium Power Core", "id": "23786", "count": 2},
+            { "name": "Hardened Adamantite Tube", "id": "23785", "count": 2},
+            { "name": "Handful of Fel Iron Bolts", "id": "23783", "count": 8}
         ]
     },
     {
@@ -2917,10 +3181,10 @@
         "id": "258198",
         "Prof": "Inscription",
         "Exp": "Burning Crusade",
-        "craftQty": 20,
+        "craftQty": 10,
         "recipe": [
-            { "name": "Heavy Knothide Leather", "id": "23793", "count": 3},
-            { "name": "Khorium Bar", "id": "234449", "count": 2}
+            { "name": "Heavy Knothide Leather", "id": "23793", "count": 2},
+            { "name": "Khorium Bar", "id": "234449", "count": 1}
         ]
     },
     {
@@ -2928,11 +3192,11 @@
         "id": "258197",
         "Prof": "Inscription",
         "Exp": "Burning Crusade",
-        "craftQty": 12,
+        "craftQty": 8,
         "recipe": [
-            { "name": "Darkflame Ink", "id": "43125", "count": 3},
+            { "name": "Darkflame Ink", "id": "43125", "count": 2},
             { "name": "Light Parchment", "id": "39354", "count": 1},
-            { "name": "Greater Planar Essence", "id": "22446", "count": 4}
+            { "name": "Greater Planar Essence", "id": "22446", "count": 2}
         ]
     },
     {
@@ -2952,9 +3216,9 @@
         "id": "258209",
         "Prof": "Inscription",
         "Exp": "Wrath of the Lich King",
-        "craftQty": 6,
+        "craftQty": 5,
         "recipe": [
-            { "name": "Snowfall Ink", "id": "43127", "count": 3},
+            { "name": "Snowfall Ink", "id": "43127", "count": 2},
             { "name": "Ametrine", "id": "36931", "count": 2}
         ]
     },
@@ -3054,8 +3318,7 @@
         "craftQty": 4,
         "recipe": [
             { "name": "Silverleaf Thread", "id": "251665", "fixPrice": 0.1, "count": 3},
-            { "name": "Sunfire Silk Bolt", "id": "239201", "altId": "239202", "count": 8},
-            { "name": "Arcanoweave Bolt", "id": "239198", "altId": "239200", "count": 8}
+            { "name": "Arcanoweave Bolt", "id": "239198", "altId": "239200", "count": 4}
         ]
     },
     {
